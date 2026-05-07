@@ -1,0 +1,16 @@
+{
+  "name": "dashboard-cartera-adatec",
+  "version": "1.0.0",
+  "description": "Dashboard de analisis financiero de cartera - ADATEC",
+  "scripts": {
+    "extract": "node scripts/extract_dashboard_data.js",
+    "export-excel": "node scripts/export_cartera.js",
+    "serve": "npx http-server public -p 3000 -c-1 --cors",
+    "dev": "npm run extract && npm run serve"
+  },
+  "dependencies": {
+    "http-server": "^14.1.1",
+    "mssql": "^12.5.2",
+    "xlsx": "^0.18.5"
+  }
+}
