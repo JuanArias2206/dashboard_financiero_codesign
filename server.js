@@ -40,7 +40,7 @@ const PORT = process.env.PORT || 3001;
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.SESSION_SECRET || 'CONFIGURA_SESSION_SECRET_EN_ENV';
 if (!process.env.SESSION_SECRET) {
-  console.warn('[Security] ⚠️  SESSION_SECRET no definido en .env. Usando clave por defecto.');
+  console.error('[Security] ❌ SESSION_SECRET no definido en .env. El sistema no es seguro.');
 }
 
 // Credenciales de usuario desde .env

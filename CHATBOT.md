@@ -76,7 +76,7 @@ Crear archivo `.env` con:
 ```env
 API_KEY_DS=sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 DEEPSEEK_MODEL=deepseek-v4-flash
-SESSION_SECRET=CONFIGURA_SESSION_SECRET_EN_ENV
+SESSION_SECRET=genera_una_clave_secreta_larga_y_aleatoria_aqui
 ```
 
 **Nota**: En Vercel, configurar estas variables en el dashboard de proyecto.
