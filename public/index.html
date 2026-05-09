@@ -325,6 +325,7 @@
     function fmt(n) { if (n === null || n === undefined) return '-'; const abs = Math.abs(n); if (abs >= 1e9) return (n / 1e9).toFixed(2) + 'B'; if (abs >= 1e6) return (n / 1e6).toFixed(2) + 'M'; if (abs >= 1e3) return (n / 1e3).toFixed(1) + 'K'; return n.toLocaleString('es-CO'); }
     function fmtFull(n) { if (n === null || n === undefined) return '-'; return '$' + Number(n).toLocaleString('es-CO', { maximumFractionDigits: 0 }); }
     function fmtPct(n) { return Number(n).toFixed(1) + '%'; }
+    function fmtDate(isoStr) { if (!isoStr) return ''; const d = new Date(isoStr); return d.toLocaleDateString('es-CO', { month: 'short', year: 'numeric' }); }
     function loadChart(id, config) { if (chartInstances[id]) chartInstances[id].destroy(); const ctx = document.getElementById(id); if (!ctx) return; chartInstances[id] = new Chart(ctx, config); }
     const chartDefaults = { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#94a3b8', font: { size: 12 }, padding: 16 } } }, scales: { x: { ticks: { color: '#64748b', font: { size: 11 } }, grid: { color: '#33415530' } }, y: { ticks: { color: '#64748b', font: { size: 11 } }, grid: { color: '#33415550' } } } };
     function getActiveData() { return CURRENT_DATA || ALL_DATA; }
@@ -352,7 +353,7 @@
         CURRENT_DATA.facturacion_mensual = ALL_DATA.facturacion_mensual.filter(f => { const d = new Date(f.mes); return d >= desde && d < hasta; });
         CURRENT_DATA.recaudos_mensual = ALL_DATA.recaudos_mensual.filter(r => { const d = new Date(r.mes); return d >= desde && d < hasta; });
         CURRENT_DATA.pedidos_mensual = ALL_DATA.pedidos_mensual.filter(p => { const d = new Date(p.mes); return d >= desde && d < hasta; });
-        // Aplicar snapshot de período para Resumen General (kpis, aging, clientes, vendedores)
+        // Aplicar snapshot de período para todas las pestañas
         // Solo cuando se usa un botón de período preset (periodMonths != null)
         if (periodMonths != null) {
           const pKey = periodKeyFromMonths(periodMonths);
@@ -362,6 +363,9 @@
             CURRENT_DATA.aging = snap.aging;
             CURRENT_DATA.top_clientes = snap.top_clientes;
             CURRENT_DATA.cartera_vendedor = snap.cartera_vendedor;
+            CURRENT_DATA.concentracion = snap.concentracion;
+            CURRENT_DATA.tipo_documento = snap.tipo_documento;
+            CURRENT_DATA.evolucion_cartera = snap.evolucion_cartera;
           }
         }
         document.getElementById('filterIndicator').classList.add('visible');
@@ -454,7 +458,7 @@
       const sorted = [...allMonths].sort();
       const factMap = {}; fact.forEach(f => factMap[f.mes] = f.facturado);
       const recaudoMap = {}; recaudo.forEach(r => recaudoMap[r.mes] = r.recaudado);
-      loadChart('factVsRecaudoChart', { type: 'line', data: { labels: sorted, datasets: [{ label: 'Facturado', data: sorted.map(m => factMap[m] || 0), borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', fill: true, tension: 0.3, pointRadius: 2, borderWidth: 2 }, { label: 'Recaudado', data: sorted.map(m => recaudoMap[m] || 0), borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.1)', fill: true, tension: 0.3, pointRadius: 2, borderWidth: 2 }] }, options: { ...chartDefaults, plugins: { ...chartDefaults.plugins, tooltip: { callbacks: { label: (ctx) => ctx.dataset.label + ': ' + fmtFull(ctx.raw) } } }, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, ticks: { ...chartDefaults.scales.y.ticks, callback: (v) => fmt(v) } } } } });
+      loadChart('factVsRecaudoChart', { type: 'line', data: { labels: sorted.map(fmtDate), datasets: [{ label: 'Facturado', data: sorted.map(m => factMap[m] || 0), borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', fill: true, tension: 0.3, pointRadius: 3, borderWidth: 2 }, { label: 'Recaudado', data: sorted.map(m => recaudoMap[m] || 0), borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.1)', fill: true, tension: 0.3, pointRadius: 3, borderWidth: 2 }] }, options: { ...chartDefaults, plugins: { ...chartDefaults.plugins, tooltip: { callbacks: { title: (items) => items[0] ? fmtDate(sorted[items[0].dataIndex]) : '', label: (ctx) => ctx.dataset.label + ': ' + fmtFull(ctx.raw) } } }, scales: { ...chartDefaults.scales, x: { ...chartDefaults.scales.x, ticks: { ...chartDefaults.scales.x.ticks, maxRotation: 45, minRotation: 0 } }, y: { ...chartDefaults.scales.y, ticks: { ...chartDefaults.scales.y.ticks, callback: (v) => fmt(v) } } } } });
     }
 
     function renderCarteraEvol() {
@@ -465,7 +469,7 @@
         saldo_acumulado: f.saldo,
         saldo_vencido: f.saldo * (data.kpis.pct_vencida / 100)
       })));
-      loadChart('carteraEvolChart', { type: 'line', data: { labels: evol.map(e => e.mes), datasets: [{ label: 'Saldo Total', data: evol.map(e => e.saldo_acumulado), borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', fill: true, tension: 0.4, pointRadius: 1, borderWidth: 2 }, { label: 'Saldo Vencido (est.)', data: evol.map(e => e.saldo_vencido), borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.05)', fill: true, tension: 0.4, pointRadius: 1, borderWidth: 2 }] }, options: { ...chartDefaults, plugins: { ...chartDefaults.plugins, tooltip: { callbacks: { label: (ctx) => ctx.dataset.label + ': ' + fmtFull(ctx.raw) } } }, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, ticks: { ...chartDefaults.scales.y.ticks, callback: (v) => fmt(v) } } } } });
+      loadChart('carteraEvolChart', { type: 'line', data: { labels: evol.map(e => fmtDate(e.mes)), datasets: [{ label: 'Saldo Total', data: evol.map(e => e.saldo_acumulado), borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', fill: true, tension: 0.4, pointRadius: 3, borderWidth: 2 }, { label: 'Saldo Vencido (est.)', data: evol.map(e => e.saldo_vencido), borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.05)', fill: true, tension: 0.4, pointRadius: 3, borderWidth: 2 }] }, options: { ...chartDefaults, plugins: { ...chartDefaults.plugins, tooltip: { callbacks: { title: (items) => items[0] ? fmtDate(evol[items[0].dataIndex].mes) : '', label: (ctx) => ctx.dataset.label + ': ' + fmtFull(ctx.raw) } } }, scales: { ...chartDefaults.scales, x: { ...chartDefaults.scales.x, ticks: { ...chartDefaults.scales.x.ticks, maxRotation: 45, minRotation: 0 } }, y: { ...chartDefaults.scales.y, ticks: { ...chartDefaults.scales.y.ticks, callback: (v) => fmt(v) } } } } });
     }
 
     function renderEficiencia() {
@@ -493,7 +497,7 @@
         if (c) { c.style.display = 'none'; const p = c.parentElement; if (!p.querySelector('.no-data-msg')) { const d = document.createElement('div'); d.className = 'no-data-msg'; d.style.cssText = 'padding:40px 20px;text-align:center;color:var(--text-muted);font-style:italic;'; d.textContent = 'Sin datos de pedidos disponibles (no incluidos en la fuente de datos)'; p.appendChild(d); } } return;
       }
       const c = document.getElementById('pedidosChart'); if (c) { c.style.display = ''; const m = c.parentElement.querySelector('.no-data-msg'); if (m) m.remove(); }
-      loadChart('pedidosChart', { type: 'line', data: { labels: pedidos.map(p => p.mes), datasets: [{ label: 'Valor Ventas', data: pedidos.map(p => p.valor_ventas), borderColor: '#06b6d4', backgroundColor: 'rgba(6,182,212,0.1)', fill: true, tension: 0.3, pointRadius: 2, borderWidth: 2 }] }, options: { ...chartDefaults, plugins: { ...chartDefaults.plugins, legend: { display: false }, tooltip: { callbacks: { label: (ctx) => fmtFull(ctx.raw) } } }, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, ticks: { ...chartDefaults.scales.y.ticks, callback: (v) => fmt(v) } } } } });
+      loadChart('pedidosChart', { type: 'line', data: { labels: pedidos.map(p => fmtDate(p.mes)), datasets: [{ label: 'Valor Ventas', data: pedidos.map(p => p.valor_ventas), borderColor: '#06b6d4', backgroundColor: 'rgba(6,182,212,0.1)', fill: true, tension: 0.3, pointRadius: 3, borderWidth: 2 }] }, options: { ...chartDefaults, plugins: { ...chartDefaults.plugins, legend: { display: false }, tooltip: { callbacks: { title: (items) => items[0] ? fmtDate(pedidos[items[0].dataIndex].mes) : '', label: (ctx) => fmtFull(ctx.raw) } } }, scales: { ...chartDefaults.scales, x: { ...chartDefaults.scales.x, ticks: { ...chartDefaults.scales.x.ticks, maxRotation: 45, minRotation: 0 } }, y: { ...chartDefaults.scales.y, ticks: { ...chartDefaults.scales.y.ticks, callback: (v) => fmt(v) } } } } });
     }
 
     function renderRecaudo() {
@@ -504,7 +508,7 @@
         if (c) { c.style.display = 'none'; const p = c.parentElement; if (!p.querySelector('.no-data-msg')) { const d = document.createElement('div'); d.className = 'no-data-msg'; d.style.cssText = 'padding:40px 20px;text-align:center;color:var(--text-muted);font-style:italic;'; d.textContent = 'Sin datos de recaudo disponibles (no incluidos en la fuente de datos)'; p.appendChild(d); } } return;
       }
       const c = document.getElementById('recaudoChart'); if (c) { c.style.display = ''; const m = c.parentElement.querySelector('.no-data-msg'); if (m) m.remove(); }
-      loadChart('recaudoChart', { type: 'bar', data: { labels: recaudo.map(r => r.mes), datasets: [{ label: 'Recaudado', data: recaudo.map(r => r.recaudado), backgroundColor: recaudo.map((r, i) => { const prev = i > 0 ? recaudo[i - 1].recaudado : 0; return r.recaudado >= prev ? '#10b981' : '#ef4444'; }), borderRadius: 4, borderSkipped: false }] }, options: { ...chartDefaults, plugins: { ...chartDefaults.plugins, legend: { display: false }, tooltip: { callbacks: { label: (ctx) => fmtFull(ctx.raw) } } }, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, ticks: { ...chartDefaults.scales.y.ticks, callback: (v) => fmt(v) } } } } });
+      loadChart('recaudoChart', { type: 'bar', data: { labels: recaudo.map(r => fmtDate(r.mes)), datasets: [{ label: 'Recaudado', data: recaudo.map(r => r.recaudado), backgroundColor: recaudo.map((r, i) => { const prev = i > 0 ? recaudo[i - 1].recaudado : 0; return r.recaudado >= prev ? '#10b981' : '#ef4444'; }), borderRadius: 4, borderSkipped: false }] }, options: { ...chartDefaults, plugins: { ...chartDefaults.plugins, legend: { display: false }, tooltip: { callbacks: { title: (items) => items[0] ? fmtDate(recaudo[items[0].dataIndex].mes) : '', label: (ctx) => fmtFull(ctx.raw) } } }, scales: { ...chartDefaults.scales, x: { ...chartDefaults.scales.x, ticks: { ...chartDefaults.scales.x.ticks, maxRotation: 45, minRotation: 0 } }, y: { ...chartDefaults.scales.y, ticks: { ...chartDefaults.scales.y.ticks, callback: (v) => fmt(v) } } } } });
     }
 
     function renderPareto() {
