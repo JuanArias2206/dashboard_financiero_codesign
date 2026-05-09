@@ -366,6 +366,19 @@
             CURRENT_DATA.concentracion = snap.concentracion;
             CURRENT_DATA.tipo_documento = snap.tipo_documento;
             CURRENT_DATA.evolucion_cartera = snap.evolucion_cartera;
+            // Rebuild sellers_full from snapshot so Equipo de Ventas tab gets filtered too
+            if (ALL_DATA.sellers_full && snap.cartera_vendedor) {
+              const snapMap = {};
+              snap.cartera_vendedor.forEach(v => { snapMap[v.codigo] = v; });
+              CURRENT_DATA.sellers_full = ALL_DATA.sellers_full
+                .filter(s => snapMap[s.codigo])
+                .map(s => ({
+                  ...s,
+                  cartera_total: snapMap[s.codigo].saldo_total,
+                  cartera_vencida: snapMap[s.codigo].saldo_vencido,
+                  documentos: snapMap[s.codigo].documentos
+                }));
+            }
           }
         }
         document.getElementById('filterIndicator').classList.add('visible');
@@ -627,13 +640,15 @@
       const products = data.products || [];
       const totalStock = inv.reduce((s, i) => s + (i.cantidad || 0), 0);
       const totalValue = inv.reduce((s, i) => s + (i.valor || 0), 0);
+      const isFiltered = !!CURRENT_DATA;
+      const filterNote = isFiltered ? '<div style="grid-column: 1 / -1; padding: 10px 16px; background: rgba(245,158,11,0.1); border-left: 3px solid var(--accent-yellow); border-radius: 6px; color: var(--text-secondary); font-size: 13px; margin-bottom: 10px;"><strong>Nota:</strong> El inventario refleja el estado actual en tiempo real. El filtro temporal no aplica a productos.</div>' : '';
       const kpis = [
         { label: 'Total Productos', value: products.length, sub: 'En catalogo', cls: 'info' },
         { label: 'Stock Total', value: fmt(totalStock), sub: 'Unidades en inventario', cls: 'success' },
         { label: 'Valor Inventario', value: fmtFull(totalValue), sub: 'Stock x precio', cls: 'purple' },
         { label: 'Sin Stock', value: products.filter(p => (p.stock || 0) === 0).length, sub: 'Productos agotados', cls: 'warning' }
       ];
-      document.getElementById('productsKpiGrid').innerHTML = kpis.map(kpi => '<div class="kpi-card ' + kpi.cls + '"><div class="kpi-label">' + kpi.label + '</div><div class="kpi-value">' + kpi.value + '</div><div class="kpi-sub">' + kpi.sub + '</div></div>').join('');
+      document.getElementById('productsKpiGrid').innerHTML = filterNote + kpis.map(kpi => '<div class="kpi-card ' + kpi.cls + '"><div class="kpi-label">' + kpi.label + '</div><div class="kpi-value">' + kpi.value + '</div><div class="kpi-sub">' + kpi.sub + '</div></div>').join('');
     }
 
     function renderProductsStockChart() {
