@@ -336,6 +336,9 @@
         <div class="bi-filter-group"><label>Estado cartera</label><select id="cc-estado-v"><option value="">Todas</option><option value="mora">Vencida</option><option value="corriente">Al Día</option></select></div>
         <div class="bi-filter-group"><label>Edad cartera</label><select id="cc-edad-v"><option value="">Todas</option><option value="sin_vencer">0) Sin vencer</option><option value="0_30">1) 0-30 días</option><option value="31_60">2) 31-60 días</option><option value="61_90">3) 61-90 días</option><option value="91_120">4) 91-120 días</option><option value="mas_120">5) 120+ días</option></select></div>
         <div class="bi-filter-group"><label>Vendedor</label><select id="cc-vend-sel"><option value="">Todos</option></select></div>
+        <div class="bi-filter-group" style="justify-content:flex-end;">
+          <button onclick="document.getElementById('cc-estado-v').value='';document.getElementById('cc-edad-v').value='';document.getElementById('cc-vend-sel').value='';applyCCFilters();" style="padding:6px 14px;background:var(--bg-primary);border:1px solid var(--border);color:var(--text-secondary);border-radius:6px;font-size:12px;cursor:pointer;margin-top:16px;">↺ Reiniciar filtros</button>
+        </div>
       </div>
 
       <div class="charts-grid">
@@ -397,8 +400,10 @@
       <div class="bi-data-source">📊 Fuente: Excel SQL Server · 2,854 clientes únicos con cartera pendiente</div>
       <div class="bi-filters">
         <div class="bi-filter-group"><label>Estado cartera</label><select id="cc-estado-cl"><option value="">Todas</option><option value="mora">Vencida</option><option value="corriente">Al Día</option></select></div>
-        <div class="bi-filter-group"><label>Tipo de cliente</label><select id="cc-tipo-cl"><option value="">Todos</option><option>Persona Natural</option><option>Empresa</option></select></div>
-        <div class="bi-filter-group"><label>Buscar cliente</label><input type="text" id="cc-cliente-search" placeholder="Nombre o NIT…"></div>
+        <div class="bi-filter-group"><label>Buscar cliente</label><input type="text" id="cc-cliente-search" placeholder="Nombre, NIT o ciudad…"></div>
+        <div class="bi-filter-group" style="justify-content:flex-end;">
+          <button onclick="document.getElementById('cc-estado-cl').value='';document.getElementById('cc-cliente-search').value='';document.getElementById('cc-cliente-table-search').value='';applyCCClientFilters();" style="padding:6px 14px;background:var(--bg-primary);border:1px solid var(--border);color:var(--text-secondary);border-radius:6px;font-size:12px;cursor:pointer;margin-top:16px;">↺ Reiniciar filtros</button>
+        </div>
       </div>
 
       <div class="charts-grid">
@@ -1693,6 +1698,115 @@
     }
     window.addEventListener('resize', resizeEChartsAll);
 
+    // ─── CC Filter helpers ─────────────────────────────────────────────────────
+    function getCCVendFilters() {
+      return {
+        estado:   document.getElementById('cc-estado-v')?.value  || '',
+        edad:     document.getElementById('cc-edad-v')?.value    || '',
+        vendedor: document.getElementById('cc-vend-sel')?.value  || ''
+      };
+    }
+    function getCCBucketSaldo(aging, key) {
+      if (!aging) return 0;
+      switch(key) {
+        case 'sin_vencer': return aging.corriente  || 0;
+        case '0_30':       return aging['1_30']    || 0;
+        case '31_60':      return aging['31_60']   || 0;
+        case '61_90':      return aging['61_90']   || 0;
+        case '91_120':     return aging['91_180']  || 0;
+        case 'mas_120':    return (aging['181_360']||0) + (aging['mas_360']||0);
+        default: return 0;
+      }
+    }
+    function getFilteredVendors() {
+      const d = CARTERA_BI_DATA;
+      if (!d) return [];
+      const f = getCCVendFilters();
+      return (d.vendors || []).filter(v => {
+        if (f.vendedor && v.cod_vendedor !== f.vendedor) return false;
+        if (f.estado === 'mora'      && (v.saldo_vencido  || 0) <= 0) return false;
+        if (f.estado === 'corriente' && (v.saldo_corriente|| 0) <= 0) return false;
+        if (f.edad) {
+          const amt = getCCBucketSaldo(v.aging, f.edad);
+          if (amt <= 0) return false;
+        }
+        return true;
+      });
+    }
+    function getFilteredAgingBI() {
+      const vendors = getFilteredVendors();
+      const t = { corriente:0, '1_30':0, '31_60':0, '61_90':0, '91_180':0, '181_360':0, 'mas_360':0 };
+      vendors.forEach(v => { const a = v.aging || {}; Object.keys(t).forEach(k => { t[k] += a[k]||0; }); });
+      return [
+        { key:'sin_vencer', label:'0) Sin vencer', saldo: t.corriente },
+        { key:'0_30',       label:'1) 0-30 días',  saldo: t['1_30'] },
+        { key:'31_60',      label:'2) 31-60 días', saldo: t['31_60'] },
+        { key:'61_90',      label:'3) 61-90 días', saldo: t['61_90'] },
+        { key:'91_120',     label:'4) 91-120 días',saldo: t['91_180'] },
+        { key:'mas_120',    label:'5) 120+ días',  saldo: t['181_360']+t['mas_360'] }
+      ];
+    }
+    function getFilteredEstadoSummary() {
+      const vendors = getFilteredVendors();
+      const vs = vendors.reduce((s,v) => s + (v.saldo_vencido||0), 0);
+      const cs = vendors.reduce((s,v) => s + (v.saldo_corriente||0), 0);
+      const vd = vendors.reduce((s,v) => s + ((v.saldo_vencido||0)>0 ? (v.docs||0) : 0), 0);
+      const cd = vendors.reduce((s,v) => s + ((v.saldo_corriente||0)>0 ? (v.docs||0) : 0), 0);
+      return { vencido:{ saldo:vs, docs:vd }, corriente:{ saldo:cs, docs:cd } };
+    }
+    function updateCCKpisFromFilter() {
+      const vendors = getFilteredVendors();
+      const total = vendors.reduce((s,v) => s + (v.saldo||0), 0);
+      const mora  = vendors.reduce((s,v) => s + (v.saldo_vencido||0), 0);
+      const corr  = vendors.reduce((s,v) => s + (v.saldo_corriente||0), 0);
+      const docs  = vendors.reduce((s,v) => s + (v.docs||0), 0);
+      document.getElementById('cc-saldo-total').textContent     = fmtBil(total);
+      document.getElementById('cc-saldo-mora').textContent      = fmtBil(mora);
+      document.getElementById('cc-pct-mora').textContent        = total > 0 ? (mora/total*100).toFixed(1)+'%' : '—';
+      document.getElementById('cc-saldo-corriente').textContent = fmtBil(corr);
+      document.getElementById('cc-total-docs').textContent      = docs.toLocaleString('es-CO') + ' documentos';
+      document.getElementById('cc-total-vendedores').textContent= vendors.length;
+      document.getElementById('cc-vend-con-saldo').textContent  = vendors.filter(v=>v.saldo>0).length + ' con saldo';
+    }
+    function applyCCFilters() {
+      if (!CARTERA_BI_DATA) return;
+      updateCCKpisFromFilter();
+      renderCCEstadoChart();
+      renderCCEdadChart();
+      renderCCVendedorBarChart();
+      renderCCVendedorTable();
+      renderCCAgingTable();
+      setTimeout(resizeEChartsAll, 150);
+    }
+    // CC client filter helpers
+    function getCCClientFilters() {
+      const s1 = document.getElementById('cc-cliente-search')?.value  || '';
+      const s2 = document.getElementById('cc-cliente-table-search')?.value || '';
+      return {
+        estado: document.getElementById('cc-estado-cl')?.value || '',
+        search: (s1 || s2).toLowerCase().trim()
+      };
+    }
+    function getFilteredCustomers() {
+      const d = CARTERA_BI_DATA;
+      if (!d) return [];
+      const f = getCCClientFilters();
+      return (d.customers || []).filter(c => {
+        if (f.estado === 'mora'      && (c.saldo_vencido  ||0) <= 0) return false;
+        if (f.estado === 'corriente' && (c.saldo_corriente||0) <= 0) return false;
+        if (f.search) {
+          const hay = ((c.nombre_cliente||'') + ' ' + (c.nit||'') + ' ' + (c.ciudad||'')).toLowerCase();
+          if (!hay.includes(f.search)) return false;
+        }
+        return true;
+      });
+    }
+    function applyCCClientFilters() {
+      if (!CARTERA_BI_DATA) return;
+      renderCCClienteTable();
+      renderCCClienteAgingTable();
+    }
+
     function ecInit(id, opts) {
       if (ecInstances[id]) { try { ecInstances[id].dispose(); } catch(e){} }
       const el = document.getElementById(id);
@@ -1801,9 +1915,10 @@
 
     function renderCCEstadoChart() {
       const d = CARTERA_BI_DATA;
-      if (!d || !d.estado) return;
-      const ven = d.estado.vencido || {};
-      const cor = d.estado.corriente || {};
+      if (!d) return;
+      const est = getFilteredEstadoSummary();
+      const ven = est.vencido;
+      const cor = est.corriente;
       ecInit('ccEstadoChart', {
         backgroundColor: EC_BG,
         tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: params => {
@@ -1835,7 +1950,8 @@
 
     function renderCCEdadChart() {
       const d = CARTERA_BI_DATA;
-      if (!d || !d.aging_bi) return;
+      if (!d) return;
+      const agingData = getFilteredAgingBI();
       ecInit('ccEdadChart', {
         backgroundColor: EC_BG,
         tooltip: { trigger: 'item', formatter: p => p.name + '<br/>' + fmtBil(p.value) + ' (' + p.percent + '%)' },
@@ -1844,7 +1960,7 @@
           name: 'Edad cartera', type: 'pie', radius: ['38%','65%'], center: ['40%','50%'],
           avoidLabelOverlap: true,
           label: { show: false },
-          data: d.aging_bi.map((b,i) => ({
+          data: agingData.map((b,i) => ({
             value: Math.max(0, b.saldo||0), name: b.label,
             itemStyle:{ color: EC_AGING_COLORS[i] }
           }))
@@ -1854,8 +1970,8 @@
 
     function renderCCVendedorBarChart() {
       const d = CARTERA_BI_DATA;
-      if (!d || !d.vendors) return;
-      const vendors = d.vendors.slice(0, 20);
+      if (!d) return;
+      const vendors = getFilteredVendors().slice(0, 20);
       ecInit('ccVendedorBarChart', {
         backgroundColor: EC_BG,
         tooltip: { trigger: 'axis', axisPointer:{ type:'shadow' },
@@ -1886,9 +2002,9 @@
 
     function renderCCVendedorTable() {
       const d = CARTERA_BI_DATA;
-      if (!d || !d.vendors) return;
+      if (!d) return;
       const tbody = document.getElementById('ccVendedorBody');
-      const rows = d.vendors.map(v => {
+      const rows = getFilteredVendors().map(v => {
         const pct = v.pct_vencido || 0;
         const badge = pct > 70 ? 'high' : pct > 30 ? 'mid' : 'low';
         return `<tr>
@@ -1905,9 +2021,9 @@
 
     function renderCCAgingTable() {
       const d = CARTERA_BI_DATA;
-      if (!d || !d.vendors) return;
+      if (!d) return;
       const tbody = document.getElementById('ccAgingBody');
-      const rows = d.vendors.map(v => {
+      const rows = getFilteredVendors().map(v => {
         const ag = v.aging || {};
         const corriente = ag.corriente || 0;
         const d30 = ag['1_30'] || ag['_30'] || 0;
@@ -2020,8 +2136,7 @@
     function renderCCClienteTable(filter) {
       const d = CARTERA_BI_DATA;
       if (!d || !d.customers) return;
-      const q = (filter || '').toLowerCase();
-      const rows = d.customers.filter(c => !q || c.nombre_cliente?.toLowerCase().includes(q) || c.nit?.toLowerCase().includes(q) || c.ciudad?.toLowerCase().includes(q)).map(c => {
+      const rows = getFilteredCustomers().map(c => {
         const pct = c.pct_vencido || 0;
         const badge = pct > 70 ? 'high' : pct > 30 ? 'mid' : 'low';
         return `<tr>
@@ -2037,15 +2152,30 @@
       document.getElementById('ccClienteBody').innerHTML = rows.join('');
     }
 
-    document.getElementById('cc-cliente-table-search').addEventListener('input', e => {
-      renderCCClienteTable(e.target.value);
+    // Wire vendor filters
+    ['cc-estado-v', 'cc-edad-v', 'cc-vend-sel'].forEach(function(id) {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('change', applyCCFilters);
+    });
+    // Wire client filters
+    ['cc-estado-cl', 'cc-tipo-cl'].forEach(function(id) {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('change', applyCCClientFilters);
+    });
+    document.getElementById('cc-cliente-table-search').addEventListener('input', function(e) {
+      document.getElementById('cc-cliente-search').value = e.target.value;
+      applyCCClientFilters();
+    });
+    document.getElementById('cc-cliente-search').addEventListener('input', function(e) {
+      document.getElementById('cc-cliente-table-search').value = e.target.value;
+      applyCCClientFilters();
     });
 
     function renderCCClienteAgingTable() {
       const d = CARTERA_BI_DATA;
       if (!d || !d.customers) return;
       const tbody = document.getElementById('ccClienteAgingBody');
-      const rows = d.customers.map(c => {
+      const rows = getFilteredCustomers().map(c => {
         const ag = c.aging || {};
         const corriente = ag.corriente || 0;
         const d30 = ag['1_30'] || 0;
