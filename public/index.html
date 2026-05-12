@@ -447,7 +447,14 @@
 
       <!-- Evolución mensual cartera -->
       <div class="chart-card" style="margin-bottom:20px;">
-        <div class="chart-header"><div><div class="chart-title">Evolución mensual de la cartera</div><div class="chart-subtitle">Saldo total y clientes con deuda pendiente por mes</div></div></div>
+        <div class="chart-header" style="flex-wrap:wrap;gap:8px;align-items:flex-start;">
+          <div><div class="chart-title">Evolución mensual de la cartera</div><div class="chart-subtitle">Saldo total y clientes con deuda pendiente por mes</div></div>
+          <div class="rgc-period-row" style="margin-bottom:0;">
+            <button class="rgc-period-btn active" data-ccperiod="12">Último año</button>
+            <button class="rgc-period-btn" data-ccperiod="24">2 años</button>
+            <button class="rgc-period-btn" data-ccperiod="0">Todo</button>
+          </div>
+        </div>
         <div id="ccTimelineChart" class="ec-chart" style="height:340px;"></div>
       </div>
     </div>
@@ -597,8 +604,8 @@
     </div>
     <!-- Charts grid -->
     <div class="charts-grid">
-      <div class="chart-card"><div class="chart-header"><div><div class="chart-title">$ Ventas por tipo de transacción</div></div></div><div class="chart-container"><canvas id="rgcVentasTipoChart"></canvas></div></div>
-      <div class="chart-card"><div class="chart-header"><div><div class="chart-title">$ Recaudos por estado</div></div></div><div class="chart-container"><canvas id="rgcRecaudosEstadoChart"></canvas></div></div>
+      <div class="chart-card"><div class="chart-header"><div><div class="chart-title">$ Ventas por tipo de transacción</div><div class="chart-subtitle">Fuente: Excel SQL Server · Distribución por tipo de documento</div></div></div><div id="rgcVentasTipoChart" class="ec-chart" style="height:280px;"></div></div>
+      <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Estado de cartera por edad</div><div class="chart-subtitle">Distribución actual del saldo pendiente · Fuente Excel</div></div></div><div id="rgcRecaudosEstadoChart" class="ec-chart" style="height:280px;"></div></div>
       <div class="chart-card"><div class="chart-header"><div><div class="chart-title">% Canceladas / Vencidas / Cumplidas</div></div></div><div class="chart-container"><canvas id="rgcCumplimientoChart"></canvas></div></div>
       <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Agendas por etapa y categoría</div></div></div><div class="chart-container"><canvas id="rgcAgendasEtapaChart"></canvas></div></div>
       <div class="chart-card full">
@@ -610,12 +617,16 @@
       </div>
       <div class="chart-card full">
         <div class="chart-header"><div><div class="chart-title">Análisis por usuarios</div><div class="chart-subtitle">Ventas, recaudos y gestiones por usuario</div></div></div>
-        <div class="table-wrapper"><table class="rgc-users-table"><thead><tr><th>Usuario</th><th>$ Ventas</th><th>Tx. Ventas</th><th>$ Recaudos</th><th>Tx. Recaudos</th><th>Visitas</th></tr></thead><tbody id="rgcUsuariosBody"></tbody></table></div>
+        <div class="table-wrapper"><table class="rgc-users-table"><thead><tr><th>Vendedor</th><th>Saldo en cartera</th><th>Saldo en mora</th><th>% Mora</th><th>Cant. facturas</th><th>Visitas RSales</th></tr></thead><tbody id="rgcUsuariosBody"></tbody></table></div>
       </div>
       <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Causales de visita</div><div class="chart-subtitle">% del total</div></div></div><div class="chart-container tall"><canvas id="rgcCausalesChart"></canvas></div></div>
       <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Formulario</div><div class="chart-subtitle">Distribución por tipo</div></div></div><div class="chart-container tall"><canvas id="rgcFormularioChart"></canvas></div></div>
       <div class="chart-card full"><div class="chart-header"><div><div class="chart-title">Ventas y Recaudos por día</div><div class="chart-subtitle">Valores diarios del período</div></div></div><div class="chart-container tall"><canvas id="rgcVentasDiaChart"></canvas></div></div>
       <div class="chart-card full"><div class="chart-header"><div><div class="chart-title">Ventas vs Recaudos — Acumulado por día</div><div class="chart-subtitle">Evolución acumulada en el período</div></div></div><div class="chart-container tall"><canvas id="rgcAcumuladoChart"></canvas></div></div>
+      <div class="chart-card full">
+        <div class="chart-header"><div><div class="chart-title">Evolución mensual de cartera</div><div class="chart-subtitle">Saldo vencido y corriente por mes · Fuente: Excel SQL Server</div></div></div>
+        <div id="rgcEvolucionMensualChart" class="ec-chart" style="height:300px;"></div>
+      </div>
     </div>
   </div>
   </div><!-- /section-resumen-gestion -->
@@ -859,6 +870,9 @@
     function renderResumenGestion() {
       const range = getDateRange('mes');
       fetchGestionData(range.from, range.to);
+      // Ensure Excel cartera data is loaded for the monetary charts
+      if (!CARTERA_BI_DATA) loadCarteraData();
+      else setTimeout(renderRGCExcelCharts, 200);
     }
 
     async function fetchGestionData(dateFrom, dateTo) {
@@ -896,12 +910,8 @@
       document.getElementById('rgc-usuarios').textContent = labor.length;
       document.getElementById('rgc-clientes').textContent = d.clientes?.gestionados || 0;
 
-      // Ventas / Recaudos: not available via REST API — show info card
-      var noDataHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;gap:12px;padding:20px;text-align:center;"><div style="font-size:28px;">📊</div><div style="color:var(--text-secondary);font-size:14px;font-weight:600;">Dato no disponible vía API</div><div style="color:var(--text-muted);font-size:12px;max-width:240px;line-height:1.5;">Esta métrica proviene del BI interno de RSales. El endpoint de la API no expone datos monetarios de ventas ni recaudos con las credenciales actuales.</div></div>';
-      var ventasContainer = document.querySelector('#rgcVentasTipoChart')?.parentElement;
-      if (ventasContainer) { if (chartInstances['rgcVentasTipoChart']) { chartInstances['rgcVentasTipoChart'].destroy(); delete chartInstances['rgcVentasTipoChart']; } ventasContainer.innerHTML = noDataHTML; }
-      var recaudosContainer = document.querySelector('#rgcRecaudosEstadoChart')?.parentElement;
-      if (recaudosContainer) { if (chartInstances['rgcRecaudosEstadoChart']) { chartInstances['rgcRecaudosEstadoChart'].destroy(); delete chartInstances['rgcRecaudosEstadoChart']; } recaudosContainer.innerHTML = noDataHTML; }
+      // Ventas / Recaudos: rendered from Excel data — see renderRGCExcelCharts()
+      window._rgcLabor = labor; // Store RSales labor for merging in vendor table
 
       // Chart: % Cumplimiento agendas (real)
       var pctCumplidas = totalAg > 0 ? +((ag.cumplidas/totalAg)*100).toFixed(1) : 0;
@@ -941,12 +951,8 @@
         return '<div class="tx-legend-item"><div class="tx-legend-dot" style="background:'+t.color+'"></div><div><div class="tx-legend-label">'+t.tipo+'</div><div class="tx-legend-sub">'+t.cantidad+' registros ('+t.pct+'%)</div></div></div>';
       }).join('');
 
-      // Table: análisis por usuarios (real appointment data)
-      document.getElementById('rgcUsuariosBody').innerHTML = labor.length
-        ? labor.slice(0,15).map(function(u){
-            return '<tr><td><strong>'+u.nombre+'</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td>'+u.gestiones+'</td></tr>';
-          }).join('')
-        : '<tr><td colspan="6" style="text-align:center;color:var(--text-muted)">Sin actividad en el período</td></tr>';
+      // Table: will be merged with Excel vendor data by renderRGCExcelCharts()
+      window._rgcLabor = labor;
 
       // Causales: keyword-categorized from appointment observations (from backend)
       var causales = d.causales || [];
@@ -994,6 +1000,8 @@
           plugins:{ legend:{ labels:{ color:'#94a3b8', font:{size:12}, padding:16 } } },
           scales:{ x:{ ticks:{color:'#64748b',font:{size:11}}, grid:{color:'#33415530'} }, y:{ ticks:{color:'#64748b',font:{size:11}}, grid:{color:'#33415550'} } } }
       });
+      // Render Excel-based charts (tipo doc, aging, evolution, vendor table)
+      requestAnimationFrame(() => requestAnimationFrame(() => renderRGCExcelCharts()));
     }
 
     // ─── Theme ────────────────────────────────────
@@ -1648,8 +1656,11 @@
       if (ecInstances[id]) { try { ecInstances[id].dispose(); } catch(e){} }
       const el = document.getElementById(id);
       if (!el) return null;
-      const ec = echarts.init(el, 'dark', { renderer: 'canvas' });
+      if (typeof echarts === 'undefined') { console.warn('ECharts not loaded yet, skipping', id); return null; }
+      const ec = echarts.init(el, null, { renderer: 'canvas' });
       ec.setOption(opts);
+      // Force resize so ECharts picks up the real container width after layout
+      requestAnimationFrame(() => { try { ec.resize(); } catch(e){} });
       ecInstances[id] = ec;
       return ec;
     }
@@ -1722,6 +1733,11 @@
         renderCCClienteTable();
         renderCCClienteAgingTable();
         renderCCTimelineChart();
+        // Extra resize pass after DOM paints
+        setTimeout(resizeEChartsAll, 250);
+        setTimeout(resizeEChartsAll, 800);
+        // Update RGC charts if user has already visited that section
+        if (renderedSections.has('resumen-gestion')) setTimeout(renderRGCExcelCharts, 350);
       }));
     }
 
@@ -2009,7 +2025,7 @@
     function renderCCTimelineChart() {
       const d = CARTERA_BI_DATA;
       if (!d || !d.period) return;
-      const periods = d.period.slice(-18);
+      const periods = (typeof ccTimelinePeriod !== 'undefined' && ccTimelinePeriod > 0) ? d.period.slice(-ccTimelinePeriod) : d.period;
       ecInit('ccTimelineChart', {
         backgroundColor: EC_BG,
         tooltip: { trigger: 'axis', axisPointer:{ type:'cross' },
@@ -2028,6 +2044,103 @@
         ]
       });
     }
+
+    // ─── RGC Excel Charts (powered by Excel data, independent of RSales API) ────
+    function renderRGCExcelCharts() {
+      const d = CARTERA_BI_DATA;
+      if (!d) return;
+      const tipoDoc = d.tipo_doc_grouped || [];
+      const facturas = tipoDoc.find(t => t.label === 'Factura') || {};
+      const recibos  = tipoDoc.find(t => t.label === 'Recibo')  || {};
+
+      // KPIs
+      const rgcTV = document.getElementById('rgc-total-ventas');   if (rgcTV) rgcTV.textContent = fmtBil(facturas.saldo || 0);
+      const rgcTxV = document.getElementById('rgc-tx-ventas');     if (rgcTxV) rgcTxV.textContent = (facturas.docs||0).toLocaleString('es-CO');
+      const rgcPV = document.getElementById('rgc-prom-venta');     if (rgcPV) rgcPV.textContent = facturas.docs > 0 ? fmtBil(Math.round((facturas.saldo||0)/facturas.docs)) : '—';
+      const rgcTR = document.getElementById('rgc-total-recaudos'); if (rgcTR) rgcTR.textContent = fmtBil(recibos.saldo || 0);
+      const rgcTxR = document.getElementById('rgc-tx-recaudos');   if (rgcTxR) rgcTxR.textContent = (recibos.docs||0).toLocaleString('es-CO');
+      const rgcPR = document.getElementById('rgc-prom-recaudo');   if (rgcPR) rgcPR.textContent = recibos.docs > 0 ? fmtBil(Math.round((recibos.saldo||0)/recibos.docs)) : '—';
+      const rgcU = document.getElementById('rgc-usuarios');        if (rgcU) rgcU.textContent = d.kpis?.total_vendedores || '—';
+      const rgcC = document.getElementById('rgc-clientes');        if (rgcC) rgcC.textContent = d.kpis?.total_clientes || '—';
+
+      // Chart: $ Ventas por tipo de transacción
+      const vtEl = document.getElementById('rgcVentasTipoChart');
+      if (vtEl) ecInit('rgcVentasTipoChart', {
+        backgroundColor: EC_BG,
+        tooltip: { trigger:'axis', axisPointer:{ type:'shadow' },
+          formatter: params => params[0].axisValueLabel+'<br/>'+params.map(p => p.marker+' '+p.seriesName+': '+(p.seriesIndex===0?fmtBil(p.value):Number(p.value).toLocaleString('es-CO'))).join('<br/>') },
+        legend: { data:['Saldo en cartera','Cant. documentos'], textStyle:{ color:EC_TEXT }, bottom:0 },
+        grid: { left:'12%', right:'10%', top:'8%', bottom:'14%' },
+        xAxis: { type:'category', data: tipoDoc.map(t => t.label), axisLabel:{ color:EC_TEXT } },
+        yAxis: [
+          { type:'value', name:'Saldo', axisLabel:{ color:EC_TEXT, formatter:fmtBilAxis }, splitLine:{ lineStyle:{ color:EC_GRID } } },
+          { type:'value', name:'Docs', position:'right', axisLabel:{ color:EC_TEXT }, splitLine:{ show:false } }
+        ],
+        series: [
+          { name:'Saldo en cartera', type:'bar', barMaxWidth:80,
+            data: tipoDoc.map((t,i) => ({ value:Math.max(0,t.saldo||0), itemStyle:{ color:[EC_BLUE,EC_GREEN,'#a78bfa','#f97316'][i]||EC_BLUE } })) },
+          { name:'Cant. documentos', type:'line', yAxisIndex:1, symbol:'circle', symbolSize:7,
+            itemStyle:{ color:EC_YELLOW }, lineStyle:{ width:2 }, data: tipoDoc.map(t => t.docs||0) }
+        ]
+      });
+
+      // Chart: Estado de cartera por edad (aging buckets — horizontal bar)
+      const aging = d.aging_bi || [];
+      const reEl = document.getElementById('rgcRecaudosEstadoChart');
+      if (reEl) ecInit('rgcRecaudosEstadoChart', {
+        backgroundColor: EC_BG,
+        tooltip: { trigger:'axis', axisPointer:{ type:'shadow' },
+          formatter: params => params[0].name+'<br/>'+fmtBil(params[0].value) },
+        grid: { left:'22%', right:'16%', top:'5%', bottom:'8%' },
+        xAxis: { type:'value', axisLabel:{ color:EC_TEXT, formatter:fmtBilAxis }, splitLine:{ lineStyle:{ color:EC_GRID } } },
+        yAxis: { type:'category', data: aging.map(a => a.label), axisLabel:{ color:EC_TEXT, fontSize:11 } },
+        series: [{ type:'bar', barMaxWidth:40,
+          data: aging.map((a,i) => ({ value:Math.max(0,a.saldo||0), itemStyle:{ color:EC_AGING_COLORS[i] } })),
+          label: { show:true, position:'right', color:EC_TEXT, formatter:p=>fmtBil(p.value), fontSize:10 }
+        }]
+      });
+
+      // Chart: Evolución mensual de cartera
+      const period = d.period || [];
+      const last24 = period.slice(-24);
+      const evolEl = document.getElementById('rgcEvolucionMensualChart');
+      if (evolEl) ecInit('rgcEvolucionMensualChart', {
+        backgroundColor: EC_BG,
+        tooltip: { trigger:'axis', axisPointer:{ type:'cross' },
+          formatter: params => params[0].name+'<br/>'+params.map(p => p.marker+' '+p.seriesName+': '+fmtBil(p.value)).join('<br/>') },
+        legend: { data:['Saldo vencido','Saldo corriente'], textStyle:{ color:EC_TEXT }, bottom:0 },
+        grid: { left:'12%', right:'5%', top:'8%', bottom:'14%' },
+        xAxis: { type:'category', data: last24.map(p => p.mes), axisLabel:{ color:EC_TEXT, rotate:30, fontSize:10 } },
+        yAxis: { type:'value', axisLabel:{ color:EC_TEXT, formatter:fmtBilAxis }, splitLine:{ lineStyle:{ color:EC_GRID } } },
+        series: [
+          { name:'Saldo vencido',   type:'bar', stack:'s', itemStyle:{ color:EC_RED,   opacity:0.85 }, data: last24.map(p => Math.max(0,p.saldo_vencido||0)) },
+          { name:'Saldo corriente', type:'bar', stack:'s', itemStyle:{ color:EC_GREEN, opacity:0.85 }, data: last24.map(p => Math.max(0,(p.saldo||0)-(p.saldo_vencido||0))) }
+        ]
+      });
+
+      // Table: Análisis por usuarios — vendor data (Excel) + RSales gestiones
+      const laborMap = {};
+      (window._rgcLabor || []).forEach(u => { laborMap[(u.nombre||'').toUpperCase()] = u.gestiones; });
+      const rows = (d.vendors || []).slice(0,20).map(v => {
+        const pct = v.pct_vencido || 0;
+        const badge = pct > 70 ? 'high' : pct > 30 ? 'mid' : 'low';
+        return `<tr><td><strong>${v.vendedor}</strong></td><td style="text-align:right;">${fmtBil(v.saldo)}</td><td style="text-align:right;color:var(--accent-red);">${fmtBil(v.saldo_vencido)}</td><td style="text-align:center;"><span class="mora-badge ${badge}">${pct.toFixed(1)}%</span></td><td style="text-align:right;">${(v.docs||0).toLocaleString('es-CO')}</td><td style="text-align:right;color:var(--accent-blue);">${laborMap[v.vendedor?.toUpperCase()]||'—'}</td></tr>`;
+      });
+      const tbEl = document.getElementById('rgcUsuariosBody');
+      if (tbEl) tbEl.innerHTML = rows.join('');
+
+      setTimeout(resizeEChartsAll, 200);
+    }
+
+    // ─── CC timeline period filter ───────────────────────────────────────────
+    let ccTimelinePeriod = 12;
+    document.addEventListener('click', function(e) {
+      const btn = e.target.closest('[data-ccperiod]');
+      if (!btn) return;
+      ccTimelinePeriod = parseInt(btn.dataset.ccperiod) || 0;
+      document.querySelectorAll('[data-ccperiod]').forEach(b => b.classList.toggle('active', b === btn));
+      if (CARTERA_BI_DATA) renderCCTimelineChart();
+    });
 
     // Init CC on page load (since control-cartera is first/active section)
     requestAnimationFrame(() => requestAnimationFrame(() => loadCarteraData()));

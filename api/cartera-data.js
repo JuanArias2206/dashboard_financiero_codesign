@@ -50,24 +50,41 @@ function loadData() {
   // Build aging in Power BI format (6 buckets)
   const agingBI = _mapAgingToBIBuckets(aging);
 
-  // Vendor aging also in BI buckets
+  // Vendors: exclude EMPLEADOS (internal accounts), keep raw aging object for tables
   const vendorsBI = vendors
-    .filter(v => v.cod_vendedor !== '101') // Exclude EMPLEADOS (internal accounts)
+    .filter(v => v.cod_vendedor !== '101')
     .map(v => ({
-      ...v,
-      aging_bi: _mapAgingToBIBuckets(
-        Object.entries(v.aging || {}).map(([k, saldo]) => ({ key: k, saldo }))
-      )
+      cod_vendedor: v.cod_vendedor,
+      vendedor: v.vendedor,
+      docs: v.docs,
+      saldo: v.saldo,
+      saldo_vencido: v.saldo_vencido,
+      saldo_corriente: v.saldo_corriente,
+      total_clientes: v.total_clientes,
+      pct_total: v.pct_total,
+      pct_vencido: v.pct_vencido,
+      aging: v.aging  // raw keys: corriente,1_30,31_60,61_90,91_180,181_360,mas_360
     }));
 
-  // Customer aging in BI buckets
+  // Customers: exclude extreme outlier, keep raw aging object for tables
   const customersBI = customers
-    .filter(c => c.cod_cliente !== '67040225-0') // Exclude extreme outlier
+    .filter(c => c.cod_cliente !== '67040225-0')
     .map(c => ({
-      ...c,
-      aging_bi: _mapAgingToBIBuckets(
-        Object.entries(c.aging || {}).map(([k, saldo]) => ({ key: k, saldo }))
-      )
+      cod_cliente: c.cod_cliente,
+      nombre_cliente: c.nombre_cliente,
+      nit: c.nit,
+      ciudad: c.ciudad,
+      cod_vendedor: c.cod_vendedor,
+      vendedor: c.vendedor,
+      docs: c.docs,
+      saldo: c.saldo,
+      saldo_vencido: c.saldo_vencido,
+      saldo_corriente: c.saldo_corriente,
+      dias_mora_max: c.dias_mora_max,
+      pct_total: c.pct_total,
+      pct_vencido: c.pct_vencido,
+      riesgo: c.riesgo,
+      aging: c.aging
     }));
 
   // Tipo doc categories
@@ -92,7 +109,7 @@ function loadData() {
     tipo_doc: tipoDoc.slice(0, 20),
     tipo_doc_grouped: tipoDocGrouped,
     cobrador: cobrador.filter(c => c.cod !== '101').slice(0, 20),
-    period: period.slice(-36), // last 3 years
+    period: period.slice(-24), // last 2 years (default; frontend can filter)
     rgc_monthly: rgcMonthly,
     generated_at: summary.generado_en || new Date().toISOString()
   };
