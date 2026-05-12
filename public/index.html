@@ -346,19 +346,19 @@
         <!-- Saldo por estado + Cant. facturas -->
         <div class="chart-card">
           <div class="chart-header"><div><div class="chart-title">Saldo en cartera y cantidad de facturas por estado</div></div></div>
-          <div id="ccEstadoChart" class="ec-chart" style="height:300px;"></div>
+          <div style="height:300px;position:relative;"><canvas id="ccEstadoChart"></canvas></div>
         </div>
         <!-- Estado de cartera por edad (donut) -->
         <div class="chart-card">
           <div class="chart-header"><div><div class="chart-title">Estado de cartera por edad</div></div></div>
-          <div id="ccEdadChart" class="ec-chart" style="height:300px;"></div>
+          <div style="height:300px;position:relative;"><canvas id="ccEdadChart"></canvas></div>
         </div>
       </div>
 
       <!-- Análisis por usuario -->
       <div class="chart-card" style="margin-bottom:20px;">
         <div class="chart-header"><div><div class="chart-title">Análisis por usuario</div><div class="chart-subtitle">Saldo en cartera y % saldo en mora por vendedor</div></div></div>
-        <div id="ccVendedorBarChart" class="ec-chart" style="height:420px;"></div>
+        <div style="height:420px;position:relative;"><canvas id="ccVendedorBarChart"></canvas></div>
       </div>
 
       <!-- Table: Saldo por usuario -->
@@ -392,7 +392,7 @@
       <!-- Saldo por cobrador -->
       <div class="chart-card" style="margin-bottom:20px;">
         <div class="chart-header"><div><div class="chart-title">Saldo en cartera por cobrador</div></div></div>
-        <div id="ccCobradorChart" class="ec-chart" style="height:360px;"></div>
+        <div style="height:360px;position:relative;"><canvas id="ccCobradorChart"></canvas></div>
       </div>
     </div>
 
@@ -410,18 +410,18 @@
       <div class="charts-grid">
         <div class="chart-card">
           <div class="chart-header"><div><div class="chart-title">Saldo en cartera y cantidad de facturas por estado</div></div></div>
-          <div id="ccClienteEstadoChart" class="ec-chart" style="height:300px;"></div>
+          <div style="height:300px;position:relative;"><canvas id="ccClienteEstadoChart"></canvas></div>
         </div>
         <div class="chart-card">
           <div class="chart-header"><div><div class="chart-title">Estado de cartera por edad</div></div></div>
-          <div id="ccClienteEdadChart" class="ec-chart" style="height:300px;"></div>
+          <div style="height:300px;position:relative;"><canvas id="ccClienteEdadChart"></canvas></div>
         </div>
       </div>
 
       <!-- Saldo por tipo de documento -->
       <div class="chart-card" style="margin-bottom:20px;">
         <div class="chart-header"><div><div class="chart-title">Saldo en cartera y % en mora por Tipo de documento</div></div></div>
-        <div id="ccTipoDocChart" class="ec-chart" style="height:340px;"></div>
+        <div style="height:340px;position:relative;"><canvas id="ccTipoDocChart"></canvas></div>
       </div>
 
       <!-- Table: Análisis por cliente -->
@@ -466,7 +466,7 @@
             <button class="rgc-period-btn" data-ccperiod="0">Todo</button>
           </div>
         </div>
-        <div id="ccTimelineChart" class="ec-chart" style="height:340px;"></div>
+        <div style="height:340px;position:relative;"><canvas id="ccTimelineChart"></canvas></div>
       </div>
     </div>
   </div>
@@ -626,7 +626,7 @@
       <div class="chart-card full"><div class="chart-header"><div><div class="chart-title">Gestiones acumuladas</div><div class="chart-subtitle">Evolución acumulada en el período · Fuente: RSales API</div></div></div><div class="chart-container tall"><canvas id="rgcAcumuladoChart"></canvas></div></div>
       <div class="chart-card full">
         <div class="chart-header"><div><div class="chart-title">Evolución mensual de cartera</div><div class="chart-subtitle">Saldo vencido y corriente por mes · Fuente: Excel SQL Server</div></div></div>
-        <div id="rgcEvolucionMensualChart" class="ec-chart" style="height:300px;"></div>
+        <div style="height:300px;position:relative;"><canvas id="rgcEvolucionMensualChart"></canvas></div>
       </div>
     </div>
   </div>
@@ -667,24 +667,24 @@
       <div class="charts-grid">
         <div class="chart-card">
           <div class="chart-header"><div><div class="chart-title">Documentos de recaudo por tipo</div><div class="chart-subtitle">Facturas, Recibos y Notas del período · Excel</div></div></div>
-          <div id="rrTipoChart" class="ec-chart" style="height:300px;"></div>
+          <div style="height:300px;position:relative;"><canvas id="rrTipoChart"></canvas></div>
         </div>
         <div class="chart-card">
           <div class="chart-header"><div><div class="chart-title">Estado de cartera (mora vs al día)</div><div class="chart-subtitle">Distribución actual · Excel</div></div></div>
-          <div id="rrEstadoChart" class="ec-chart" style="height:300px;"></div>
+          <div style="height:300px;position:relative;"><canvas id="rrEstadoChart"></canvas></div>
         </div>
       </div>
 
       <!-- Evolución mensual recibos -->
       <div class="chart-card" style="margin-bottom:20px;">
         <div class="chart-header"><div><div class="chart-title">Evolución mensual — Recibos y Facturas</div><div class="chart-subtitle">Historial de documentos por mes · Excel</div></div></div>
-        <div id="rrEvolucionChart" class="ec-chart" style="height:340px;"></div>
+        <div style="height:340px;position:relative;"><canvas id="rrEvolucionChart"></canvas></div>
       </div>
 
       <!-- Análisis por vendedor -->
       <div class="chart-card" style="margin-bottom:20px;">
         <div class="chart-header"><div><div class="chart-title">Análisis por vendedor</div><div class="chart-subtitle">Saldo en cartera y % mora · Excel</div></div></div>
-        <div id="rrVendedorChart" class="ec-chart" style="height:380px;"></div>
+        <div style="height:380px;position:relative;"><canvas id="rrVendedorChart"></canvas></div>
       </div>
 
       <!-- Tabla vendedores -->
@@ -702,11 +702,11 @@
       <div class="charts-grid">
         <div class="chart-card">
           <div class="chart-header"><div><div class="chart-title">Cartera por edad (distribución)</div><div class="chart-subtitle">Saldo en cada bucket de mora · Excel</div></div></div>
-          <div id="rrEdadChart" class="ec-chart" style="height:300px;"></div>
+          <div style="height:300px;position:relative;"><canvas id="rrEdadChart"></canvas></div>
         </div>
         <div class="chart-card">
           <div class="chart-header"><div><div class="chart-title">Top clientes con mayor cartera</div><div class="chart-subtitle">Saldo total pendiente · Excel</div></div></div>
-          <div id="rrTopClientesChart" class="ec-chart" style="height:300px;"></div>
+          <div style="height:300px;position:relative;"><canvas id="rrTopClientesChart"></canvas></div>
         </div>
       </div>
 
@@ -2019,7 +2019,7 @@
     });
 
     // ── Chart.js wrapper for EC-chart divs (no ECharts dependency) ────────────
-    function ccChart(id, config) {
+    function loadChart(id, config) {
       if (chartInstances[id]) { try { chartInstances[id].destroy(); } catch(e){} delete chartInstances[id]; }
       const div = document.getElementById(id);
       if (!div) return null;
@@ -2040,7 +2040,7 @@
       if (!d) return;
       const est = getFilteredEstadoSummary();
       const ven = est.vencido, cor = est.corriente;
-      ccChart('ccEstadoChart', {
+      loadChart('ccEstadoChart', {
         data: { labels:['Vencido','Al Día'],
           datasets:[
             { label:'Saldo en cartera', type:'bar', data:[Math.max(0,ven.saldo||0),Math.max(0,cor.saldo||0)], backgroundColor:[EC_RED,EC_GREEN], borderRadius:4, yAxisID:'y' },
@@ -2055,7 +2055,7 @@
       const d = CARTERA_BI_DATA;
       if (!d) return;
       const agingData = getFilteredAgingBI();
-      ccChart('ccEdadChart', {
+      loadChart('ccEdadChart', {
         type:'doughnut',
         data:{ labels:agingData.map(a=>a.label), datasets:[{ data:agingData.map(a=>Math.max(0,a.saldo||0)), backgroundColor:EC_AGING_COLORS, borderWidth:0, hoverOffset:6 }] },
         options:{ responsive:true, maintainAspectRatio:false, cutout:'58%', plugins:{ legend:{ position:'right', labels:{color:'#94a3b8',font:{size:11},padding:10} }, tooltip:{ callbacks:{label:ctx=>ctx.label+': '+fmtBil(ctx.raw)} } } }
@@ -2066,7 +2066,7 @@
       const d = CARTERA_BI_DATA;
       if (!d) return;
       const vendors = getFilteredVendors().slice(0, 20);
-      ccChart('ccVendedorBarChart', {
+      loadChart('ccVendedorBarChart', {
         type:'bar',
         data:{ labels:vendors.map(v=>v.vendedor.substring(0,18)),
           datasets:[
@@ -2133,7 +2133,7 @@
       const d = CARTERA_BI_DATA;
       if (!d || !d.cobrador) return;
       const cobs = d.cobrador.filter(c => c.cod !== '101').slice(0, 12).reverse();
-      ccChart('ccCobradorChart', {
+      loadChart('ccCobradorChart', {
         type:'bar',
         data:{ labels:cobs.map(c=>'Cobrador '+c.cod),
           datasets:[
@@ -2153,7 +2153,7 @@
       const d = CARTERA_BI_DATA;
       if (!d || !d.estado) return;
       const ven = d.estado.vencido || {}, cor = d.estado.corriente || {};
-      ccChart('ccClienteEstadoChart', {
+      loadChart('ccClienteEstadoChart', {
         data:{ labels:['Vencido','Al Día'],
           datasets:[
             { label:'Saldo en cartera', type:'bar', data:[Math.max(0,ven.saldo||0),Math.max(0,cor.saldo||0)], backgroundColor:[EC_RED,EC_GREEN], borderRadius:4, yAxisID:'y' },
@@ -2167,7 +2167,7 @@
     function renderCCClienteEdadChart() {
       const d = CARTERA_BI_DATA;
       if (!d || !d.aging_bi) return;
-      ccChart('ccClienteEdadChart', {
+      loadChart('ccClienteEdadChart', {
         type:'doughnut',
         data:{ labels:d.aging_bi.map(b=>b.label), datasets:[{ data:d.aging_bi.map(b=>Math.max(0,b.saldo||0)), backgroundColor:EC_AGING_COLORS, borderWidth:0, hoverOffset:6 }] },
         options:{ responsive:true, maintainAspectRatio:false, cutout:'58%', plugins:{ legend:{ position:'right', labels:{color:'#94a3b8',font:{size:11},padding:10} }, tooltip:{ callbacks:{label:ctx=>ctx.label+': '+fmtBil(ctx.raw)} } } }
@@ -2178,7 +2178,7 @@
       const d = CARTERA_BI_DATA;
       if (!d || !d.tipo_doc_grouped) return;
       const items = d.tipo_doc_grouped;
-      ccChart('ccTipoDocChart', {
+      loadChart('ccTipoDocChart', {
         data:{ labels:items.map(i=>i.label),
           datasets:[
             { label:'Saldo en cartera', type:'bar', data:items.map(i=>Math.max(0,i.saldo||0)), backgroundColor:['#3b82f6','#10b981','#a78bfa','#f97316'], borderRadius:4, yAxisID:'y' },
@@ -2257,7 +2257,7 @@
       const d = CARTERA_BI_DATA;
       if (!d || !d.period) return;
       const periods = (typeof ccTimelinePeriod !== 'undefined' && ccTimelinePeriod > 0) ? d.period.slice(-ccTimelinePeriod) : d.period;
-      ccChart('ccTimelineChart', {
+      loadChart('ccTimelineChart', {
         data:{ labels:periods.map(p=>p.mes),
           datasets:[
             { label:'Saldo total', type:'bar', data:periods.map(p=>Math.max(0,p.saldo||0)), backgroundColor:EC_BLUE+'cc', borderRadius:3, yAxisID:'y' },
@@ -2307,39 +2307,7 @@
       const rgcU   = document.getElementById('rgc-usuarios');        if (rgcU)   rgcU.textContent   = d.kpis?.total_vendedores || '—';
       const rgcC   = document.getElementById('rgc-clientes');        if (rgcC)   rgcC.textContent   = d.kpis?.total_clientes   || '—';
 
-      // Chart: $ Ventas por tipo de transacción — filtered by selected month
-      const vtEl = document.getElementById('rgcVentasTipoChart');
-      if (vtEl) {
-        const tipoItems = monthly.filter(r => r.saldo > 0);
-        if (tipoItems.length > 0) {
-          ecInit('rgcVentasTipoChart', {
-            backgroundColor: EC_BG,
-            tooltip: { trigger:'axis', axisPointer:{ type:'shadow' },
-              formatter: params => params[0].axisValueLabel+'<br/>'+params.map(p => p.marker+' '+p.seriesName+': '+(p.seriesIndex===0?fmtBil(p.value):Number(p.value).toLocaleString('es-CO'))).join('<br/>') },
-            legend: { data:['Saldo documentos','Cant. documentos'], textStyle:{ color:EC_TEXT }, bottom:0 },
-            grid: { left:'12%', right:'10%', top:'8%', bottom:'14%' },
-            xAxis: { type:'category', data: tipoItems.map(t => t.cat), axisLabel:{ color:EC_TEXT } },
-            yAxis: [
-              { type:'value', name:'Saldo', axisLabel:{ color:EC_TEXT, formatter:fmtBilAxis }, splitLine:{ lineStyle:{ color:EC_GRID } } },
-              { type:'value', name:'Docs', position:'right', axisLabel:{ color:EC_TEXT }, splitLine:{ show:false } }
-            ],
-            series: [
-              { name:'Saldo documentos', type:'bar', barMaxWidth:80,
-                data: tipoItems.map((t,i) => ({ value:Math.max(0,t.saldo||0), itemStyle:{ color:[EC_BLUE,EC_GREEN,'#a78bfa','#f97316'][i]||EC_BLUE } })) },
-              { name:'Cant. documentos', type:'line', yAxisIndex:1, symbol:'circle', symbolSize:7,
-                itemStyle:{ color:EC_YELLOW }, lineStyle:{ width:2 }, data: tipoItems.map(t => t.docs||0) }
-            ]
-          });
-        } else {
-          if (ecInstances['rgcVentasTipoChart']) { try { ecInstances['rgcVentasTipoChart'].dispose(); } catch(e){} delete ecInstances['rgcVentasTipoChart']; }
-          vtEl.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-muted);font-size:13px;">Sin datos para ' + mesKey + '</div>';
-        }
-      }
-
-      // Chart: Estado de cartera por edad (static snapshot — doesn't change with period)
-      renderRGCAgingChart();
-
-      // Chart: Evolución mensual
+      // Chart: Evolución mensual cartera (Excel)
       renderRGCEvolucionChart();
     }
 
@@ -2368,20 +2336,15 @@
       if (!d) return;
       const period = d.period || [];
       const last24 = period.slice(-24);
-      const evolEl = document.getElementById('rgcEvolucionMensualChart');
-      if (!evolEl) return;
-      ecInit('rgcEvolucionMensualChart', {
-        backgroundColor: EC_BG,
-        tooltip: { trigger:'axis', axisPointer:{ type:'cross' },
-          formatter: params => params[0].name+'<br/>'+params.map(p => p.marker+' '+p.seriesName+': '+fmtBil(p.value)).join('<br/>') },
-        legend: { data:['Saldo vencido','Saldo corriente'], textStyle:{ color:EC_TEXT }, bottom:0 },
-        grid: { left:'12%', right:'5%', top:'8%', bottom:'14%' },
-        xAxis: { type:'category', data: last24.map(p => p.mes), axisLabel:{ color:EC_TEXT, rotate:30, fontSize:10 } },
-        yAxis: { type:'value', axisLabel:{ color:EC_TEXT, formatter:fmtBilAxis }, splitLine:{ lineStyle:{ color:EC_GRID } } },
-        series: [
-          { name:'Saldo vencido',   type:'bar', stack:'s', itemStyle:{ color:EC_RED,   opacity:0.85 }, data: last24.map(p => Math.max(0,p.saldo_vencido||0)) },
-          { name:'Saldo corriente', type:'bar', stack:'s', itemStyle:{ color:EC_GREEN, opacity:0.85 }, data: last24.map(p => Math.max(0,(p.saldo||0)-(p.saldo_vencido||0))) }
-        ]
+      loadChart('rgcEvolucionMensualChart', {
+        type:'bar',
+        data:{ labels:last24.map(p=>p.mes),
+          datasets:[
+            { label:'Saldo vencido',   data:last24.map(p=>Math.max(0,p.saldo_vencido||0)),                  backgroundColor:EC_RED+'cc',   borderRadius:2, stack:'s' },
+            { label:'Saldo corriente', data:last24.map(p=>Math.max(0,(p.saldo||0)-(p.saldo_vencido||0))),   backgroundColor:EC_GREEN+'cc', borderRadius:2, stack:'s' }
+          ]
+        },
+        options:{ ...CJ, scales:{ x:{ticks:{color:'#64748b',font:{size:9},maxRotation:40},grid:{color:'#33415530'}}, y:{ticks:{color:'#64748b',callback:v=>fmtBilAxis(v)},grid:{color:'#33415550'}} } }
       });
     }
 
@@ -2499,7 +2462,7 @@
       ].filter(t=>t.docs>0);
 
       // Chart: tipo documentos
-      ccChart('rrTipoChart', {
+      loadChart('rrTipoChart', {
         data:{ labels:tipoData.map(t=>t.cat), datasets:[
           { label:'Saldo', type:'bar', data:tipoData.map(t=>Math.max(0,t.saldo)), backgroundColor:['#3b82f6','#10b981','#a78bfa'], borderRadius:4, yAxisID:'y' },
           { label:'Documentos', type:'line', data:tipoData.map(t=>t.docs), borderColor:EC_YELLOW, backgroundColor:'transparent', pointRadius:6, yAxisID:'y2' }
@@ -2508,7 +2471,7 @@
       });
 
       // Chart: estado mora vs corriente
-      ccChart('rrEstadoChart', {
+      loadChart('rrEstadoChart', {
         type:'doughnut',
         data:{ labels:['En mora','Al día'], datasets:[{ data:[Math.max(0,totMora),Math.max(0,totCorr)], backgroundColor:[EC_RED,EC_GREEN], borderWidth:0, hoverOffset:6 }] },
         options:{ responsive:true, maintainAspectRatio:false, cutout:'58%', plugins:{ legend:{position:'right',labels:{color:'#94a3b8',font:{size:12},padding:12}}, tooltip:{ callbacks:{label:ctx=>ctx.label+': '+fmtBil(ctx.raw)} } } }
@@ -2521,7 +2484,7 @@
         if(r.cat==='Factura') factByMes[r.mes]=(factByMes[r.mes]||0)+(r.saldo||0);
         if(r.cat==='Recibo')  recByMes[r.mes] =(recByMes[r.mes]||0)+(r.saldo||0);
       });
-      ccChart('rrEvolucionChart', {
+      loadChart('rrEvolucionChart', {
         data:{ labels:allMonths, datasets:[
           { label:'Facturas (ventas)', type:'bar', data:allMonths.map(m=>Math.max(0,factByMes[m]||0)), backgroundColor:EC_BLUE+'bb', borderRadius:2 },
           { label:'Recibos (cobros)',  type:'line', data:allMonths.map(m=>Math.max(0,recByMes[m]||0)),  borderColor:EC_GREEN, backgroundColor:'transparent', pointRadius:3, tension:0.3 }
@@ -2531,7 +2494,7 @@
 
       // Chart: vendedores bar
       const vSlice = vendors.slice(0,15);
-      ccChart('rrVendedorChart', {
+      loadChart('rrVendedorChart', {
         type:'bar',
         data:{ labels:vSlice.map(v=>v.vendedor.substring(0,16)), datasets:[
           { label:'Saldo corriente', data:vSlice.map(v=>Math.max(0,v.saldo_corriente||0)), backgroundColor:EC_GREEN, stack:'s', borderRadius:2 },
@@ -2543,7 +2506,7 @@
 
       // Chart: aging pie
       const agingData = getFilteredAgingBI();
-      ccChart('rrEdadChart', {
+      loadChart('rrEdadChart', {
         type:'doughnut',
         data:{ labels:agingData.map(b=>b.label), datasets:[{ data:agingData.map(b=>Math.max(0,b.saldo||0)), backgroundColor:EC_AGING_COLORS, borderWidth:0, hoverOffset:6 }] },
         options:{ responsive:true, maintainAspectRatio:false, cutout:'58%', plugins:{ legend:{position:'right',labels:{color:'#94a3b8',font:{size:11},padding:10}}, tooltip:{callbacks:{label:ctx=>ctx.label+': '+fmtBil(ctx.raw)}} } }
@@ -2551,7 +2514,7 @@
 
       // Chart: top 10 clientes horizontal bar
       const topC = (d.customers||[]).filter(c=>c.saldo>0).slice(0,10);
-      ccChart('rrTopClientesChart', {
+      loadChart('rrTopClientesChart', {
         type:'bar',
         data:{ labels:topC.map(c=>(c.nombre_cliente||'').substring(0,22)), datasets:[{ label:'Saldo en cartera', data:topC.map(c=>Math.max(0,c.saldo||0)), backgroundColor:EC_AGING_COLORS.map((c,i)=>topC[i]?.saldo_vencido>0?EC_RED:EC_GREEN), borderRadius:3 }] },
         options:{ ...CJ, indexAxis:'y', plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>fmtBil(ctx.raw)}}}, scales:{ x:{ticks:{color:'#64748b',callback:v=>fmtBilAxis(v)},grid:{color:'#33415550'}}, y:{ticks:{color:'#64748b',font:{size:10}},grid:{color:'#33415530'}} } }
