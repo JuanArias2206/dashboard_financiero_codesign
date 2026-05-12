@@ -146,10 +146,15 @@ module.exports = async (req, res) => {
     let horaInicio = '—', horaFin = '—';
     if (execTimes.length > 0) {
       const hours = execTimes.map(d => d.getHours() + d.getMinutes() / 60);
-      const toHM = h =>
-        `${String(Math.floor(h)).padStart(2, '0')}:${String(Math.round((h % 1) * 60)).padStart(2, '0')}`;
-      horaInicio = toHM(Math.min(...hours));
-      horaFin    = toHM(Math.max(...hours));
+      const minH = Math.min(...hours);
+      const maxH = Math.max(...hours);
+      const toHM = h => {
+        const hh = Math.floor(h);
+        const mm = Math.round((h - hh) * 60);
+        return String(hh).padStart(2,'0') + ':' + String(mm).padStart(2,'0');
+      };
+      horaInicio = toHM(minH);
+      horaFin    = toHM(maxH);
     }
 
     // Client stats
@@ -188,6 +193,24 @@ module.exports = async (req, res) => {
         realizadas: counts.realizadas
       }));
 
+    // Causales from appointment observations (free text, keyword-categorized)
+    const causalesMap = {};
+    inRange.forEach(a => {
+      const obs = (a.observations || '').toLowerCase().trim();
+      if (!obs) return;
+      const cat = /\bpedido\b|\bordenar?\b/.test(obs) ? 'Pedido/Orden'
+        : /recaudo|cobr|pago|factura|caja/.test(obs) ? 'Recaudo/Cobro'
+        : /inventario|stock|mercanc[íi]a/.test(obs) ? 'Inventario'
+        : /seguimiento|retom|llamar|telemercadeo/.test(obs) ? 'Seguimiento'
+        : /visita|visitar/.test(obs) ? 'Visita presencial'
+        : 'Otro';
+      causalesMap[cat] = (causalesMap[cat] || 0) + 1;
+    });
+    const totalObs = Object.values(causalesMap).reduce((s, v) => s + v, 0) || 1;
+    const causales = Object.entries(causalesMap)
+      .sort((a, b) => b[1] - a[1])
+      .map(([cat, count]) => ({ cat, count, pct: +((count / totalObs) * 100).toFixed(1) }));
+
     return res.status(200).json({
       period:  { from: date_from, to: date_to, label: buildPeriodLabel(date_from, date_to) },
       agendas: { cumplidas, vencidas, pendientes, extraruta },
@@ -200,6 +223,7 @@ module.exports = async (req, res) => {
       },
       labor,
       gestiones_dia,
+      causales,
       total_appointments: inRange.length,
       updated: new Date().toISOString()
     });

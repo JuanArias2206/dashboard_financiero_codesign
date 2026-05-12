@@ -800,24 +800,12 @@
       document.getElementById('rgc-usuarios').textContent = labor.length;
       document.getElementById('rgc-clientes').textContent = d.clientes?.gestionados || 0;
 
-      // Chart: Ventas por tipo — no disponible, muestra placeholder
-      loadChart('rgcVentasTipoChart', {
-        type:'doughnut',
-        data:{ labels:['Sin datos'], datasets:[{ data:[1], backgroundColor:['#334155'], borderWidth:0 }] },
-        options:{ responsive:true, maintainAspectRatio:false, cutout:'50%',
-          plugins:{ legend:{ position:'bottom', labels:{ color:'#64748b', font:{size:12} } },
-            tooltip:{ callbacks:{ label:function(){ return 'Datos monetarios no disponibles'; } } } },
-          scales:{ x:{display:false}, y:{display:false} } }
-      });
-
-      // Chart: Recaudos por estado — no disponible
-      loadChart('rgcRecaudosEstadoChart', {
-        type:'bar',
-        data:{ labels:['Sin datos'], datasets:[{ data:[0], backgroundColor:['#334155'], borderRadius:6 }] },
-        options:{ responsive:true, maintainAspectRatio:false,
-          plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:function(){ return 'Datos monetarios no disponibles'; } } } },
-          scales:{ x:{ ticks:{color:'#64748b',font:{size:11}}, grid:{color:'#33415530'} }, y:{ ticks:{color:'#64748b',font:{size:11}}, grid:{color:'#33415550'} } } }
-      });
+      // Ventas / Recaudos: not available via REST API — show info card
+      var noDataHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;gap:12px;padding:20px;text-align:center;"><div style="font-size:28px;">📊</div><div style="color:var(--text-secondary);font-size:14px;font-weight:600;">Dato no disponible vía API</div><div style="color:var(--text-muted);font-size:12px;max-width:240px;line-height:1.5;">Esta métrica proviene del BI interno de RSales. El endpoint de la API no expone datos monetarios de ventas ni recaudos con las credenciales actuales.</div></div>';
+      var ventasContainer = document.querySelector('#rgcVentasTipoChart')?.parentElement;
+      if (ventasContainer) { if (chartInstances['rgcVentasTipoChart']) { chartInstances['rgcVentasTipoChart'].destroy(); delete chartInstances['rgcVentasTipoChart']; } ventasContainer.innerHTML = noDataHTML; }
+      var recaudosContainer = document.querySelector('#rgcRecaudosEstadoChart')?.parentElement;
+      if (recaudosContainer) { if (chartInstances['rgcRecaudosEstadoChart']) { chartInstances['rgcRecaudosEstadoChart'].destroy(); delete chartInstances['rgcRecaudosEstadoChart']; } recaudosContainer.innerHTML = noDataHTML; }
 
       // Chart: % Cumplimiento agendas (real)
       var pctCumplidas = totalAg > 0 ? +((ag.cumplidas/totalAg)*100).toFixed(1) : 0;
@@ -864,23 +852,23 @@
           }).join('')
         : '<tr><td colspan="6" style="text-align:center;color:var(--text-muted)">Sin actividad en el período</td></tr>';
 
-      // Chart: Causales de visita — no disponible
-      loadChart('rgcCausalesChart', {
-        type:'bar',
-        data:{ labels:['Sin datos API'], datasets:[{ data:[0], backgroundColor:'#334155', borderRadius:4 }] },
-        options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y',
-          plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:function(){ return 'Causales no disponibles en esta API'; } } } },
-          scales:{ x:{ ticks:{color:'#64748b',font:{size:11}}, grid:{color:'#33415530'} }, y:{ ticks:{color:'#64748b',font:{size:11}} } } }
-      });
-
-      // Chart: Formulario — no disponible
-      loadChart('rgcFormularioChart', {
-        type:'bar',
-        data:{ labels:['Sin datos API'], datasets:[{ data:[0], backgroundColor:'#334155', borderRadius:4 }] },
-        options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y',
-          plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:function(){ return 'Formularios no disponibles en esta API'; } } } },
-          scales:{ x:{ ticks:{color:'#64748b',font:{size:11}}, grid:{color:'#33415530'} }, y:{ ticks:{color:'#64748b',font:{size:11}} } } }
-      });
+      // Causales: keyword-categorized from appointment observations (from backend)
+      var causales = d.causales || [];
+      if (causales.length > 0) {
+        loadChart('rgcCausalesChart', {
+          type:'bar',
+          data:{ labels:causales.map(function(c){return c.cat;}), datasets:[{ data:causales.map(function(c){return c.pct;}), backgroundColor:'#3b82f6', borderRadius:4, borderSkipped:false }] },
+          options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y',
+            plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:function(ctx){ return ctx.raw+'% ('+causales[ctx.dataIndex].count+' appts)'; } } } },
+            scales:{ x:{ ticks:{color:'#64748b',font:{size:11},callback:function(v){return v+'%';}}, grid:{color:'#33415530'} }, y:{ ticks:{color:'#64748b',font:{size:11}} } } }
+        });
+      } else {
+        var causalesEl2 = document.querySelector('#rgcCausalesChart') ? document.querySelector('#rgcCausalesChart').parentElement : null;
+        if (causalesEl2) causalesEl2.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:160px;color:var(--text-muted);font-size:13px;">Sin observaciones en el período</div>';
+      }
+      // Formulario: not available from appointments API
+      var formularioEl2 = document.querySelector('#rgcFormularioChart') ? document.querySelector('#rgcFormularioChart').parentElement : null;
+      if (formularioEl2) { if (chartInstances['rgcFormularioChart']) { chartInstances['rgcFormularioChart'].destroy(); delete chartInstances['rgcFormularioChart']; } formularioEl2.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:160px;color:var(--text-muted);font-size:13px;text-align:center;padding:16px;">Formularios no disponibles en la API REST de RSales</div>'; }
 
       // Chart: Gestiones por día — real
       var dias = d.gestiones_dia || [];
@@ -1060,12 +1048,18 @@
     }
 
     function renderInsights() {
-      const data = getActiveData(); const k = data.kpis; const aging = data.aging;
-      const vencida = k.cartera_vencida; const total = k.saldo_total;
+      const data = getActiveData();
+      const el = document.getElementById('insightsGrid');
+      if (!data || !data.kpis || !data.top_clientes || data.top_clientes.length === 0) {
+        el.innerHTML = '<div class="insight-card info"><div class="insight-title">Sin datos de cartera</div><div class="insight-text">No hay datos disponibles para el período seleccionado. Use el botón Sincronizar para actualizar.</div></div>';
+        return;
+      }
+      const k = data.kpis; const aging = data.aging || [];
+      const vencida = k.cartera_vencida || 0; const total = k.saldo_total || 1;
       const pctV = (vencida / total * 100).toFixed(1);
-      const top1 = data.top_clientes[0]; const top1Pct = (top1.saldo / data.kpis.saldo_base_total * 100).toFixed(1);
-      const top3V = data.cartera_vendedor.slice(0, 3);
-      const allVendorSaldo = data.cartera_vendedor.reduce((s, v) => s + v.saldo_total, 0);
+      const top1 = data.top_clientes[0]; const top1Pct = total > 0 ? (top1.saldo / (data.kpis.saldo_base_total || 1) * 100).toFixed(1) : '0.0';
+      const top3V = (data.cartera_vendedor || []).slice(0, 3);
+      const allVendorSaldo = (data.cartera_vendedor || []).reduce((s, v) => s + v.saldo_total, 0);
       const top3Saldo = top3V.reduce((s, v) => s + v.saldo_total, 0);
       const top3Pct = allVendorSaldo > 0 ? (top3Saldo / allVendorSaldo * 100).toFixed(1) : '0.0';
       const mas90Buckets = aging.filter(a => ['91_180','181_360','mas_360'].includes(a.key));
