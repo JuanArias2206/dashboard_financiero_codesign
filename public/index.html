@@ -156,11 +156,16 @@
     .labor-info .labor-name { font-size: 12px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; line-height: 1.3; }
     .labor-info .labor-gestiones { font-size: 11px; color: var(--accent-cyan); font-weight: 600; }
     /* ─── Resumen Gestión Comercial ──────────────── */
-    .rgc-filters { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: flex-end; background: var(--bg-secondary); padding: 12px 16px; border-radius: var(--radius); border: 1px solid var(--border); }
-    .rgc-filters select { background: var(--bg-primary); border: 1px solid var(--border); color: var(--text-primary); padding: 7px 12px; border-radius: 7px; font-size: 13px; outline: none; min-width: 140px; }
+    .rgc-unified-bar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 16px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 16px; margin-bottom: 16px; }
+    .rgc-period-group { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+    .rgc-period-group .rgc-period-label-txt { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; margin-right: 4px; white-space: nowrap; }
+    .rgc-divider { width: 1px; height: 28px; background: var(--border); align-self: center; margin: 0 4px; }
+    .rgc-filters { display: contents; }
+    .rgc-filters select { background: var(--bg-primary); border: 1px solid var(--border); color: var(--text-primary); padding: 6px 10px; border-radius: 6px; font-size: 12px; outline: none; min-width: 100px; }
     .rgc-filters select:focus { border-color: var(--accent-blue); }
-    .rgc-filter-lbl { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 4px; }
+    .rgc-filter-lbl { font-size: 10px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 3px; }
     .rgc-filter-set { display: flex; flex-direction: column; gap: 0; }
+    .rgc-updated-inline { font-size: 11px; color: var(--text-muted); white-space: nowrap; margin-left: auto; align-self: center; }
     .rgc-kpi-bar { display: grid; grid-template-columns: repeat(8, 1fr); margin-bottom: 20px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
     @media (max-width: 1400px) { .rgc-kpi-bar { grid-template-columns: repeat(4, 1fr); } }
     @media (max-width: 768px) { .rgc-kpi-bar { grid-template-columns: repeat(2, 1fr); } }
@@ -558,38 +563,31 @@
        ══════════════════════════════════════════════════════════ -->
   <div class="section-content" id="section-resumen-gestion">
   <div class="container">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
-      <div class="rgc-period-row">
-        <span style="font-size:12px;color:var(--text-muted);font-weight:600;margin-right:4px;">Período:</span>
+    <!-- UNIFIED FILTER BAR: period + dropdowns in one row -->
+    <div class="rgc-unified-bar">
+      <div class="rgc-period-group">
+        <span class="rgc-period-label-txt">Período:</span>
         <button class="rgc-period-btn" data-periodo="ayer">Ayer</button>
         <button class="rgc-period-btn" data-periodo="hoy">Hoy</button>
-        <button class="rgc-period-btn" data-periodo="semana">Esta semana</button>
+        <button class="rgc-period-btn" data-periodo="semana">Semana</button>
         <button class="rgc-period-btn active" data-periodo="mes">Este mes</button>
-        <button class="rgc-period-btn" data-periodo="mes-pasado">Mes pasado</button>
-        <button class="rgc-period-btn" data-periodo="custom">Personalizado</button>
+        <button class="rgc-period-btn" data-periodo="mes-pasado">Mes ant.</button>
+        <button class="rgc-period-btn" data-periodo="custom">Custom</button>
         <span class="rgc-periodo-label" id="rgcPeriodoLabel"></span>
         <div class="rgc-custom-range" id="rgcCustomRange">
           <input type="date" id="rgcDateFrom">
-          <span style="font-size:12px;color:var(--text-muted);">→</span>
+          <span style="font-size:11px;color:var(--text-muted);">→</span>
           <input type="date" id="rgcDateTo">
-          <button class="rsales-apply-btn" id="rgcApplyCustom">Aplicar</button>
+          <button class="rsales-apply-btn" id="rgcApplyCustom">OK</button>
         </div>
       </div>
-      <div class="rgc-updated" id="rgcUpdated" style="margin-bottom:0;"></div>
-    </div>
-    <!-- Filters -->
-    <div class="rgc-filters">
+      <div class="rgc-divider"></div>
       <div class="rgc-filter-set"><div class="rgc-filter-lbl">Supervisor</div><select id="rgcSupervisor"><option>Todos</option></select></div>
       <div class="rgc-filter-set"><div class="rgc-filter-lbl">Usuario</div><select id="rgcUsuario"><option>Todos</option></select></div>
       <div class="rgc-filter-set"><div class="rgc-filter-lbl">Año</div><select id="rgcAnio"><option selected>2026</option><option>2025</option></select></div>
-      <div class="rgc-filter-set"><div class="rgc-filter-lbl">Mes</div>
-        <select id="rgcMes">
-          <option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option><option value="4">Abril</option>
-          <option value="5" selected>Mayo</option><option value="6">Junio</option><option value="7">Julio</option><option value="8">Agosto</option>
-          <option value="9">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
-        </select>
-      </div>
-      <div class="rgc-filter-set"><div class="rgc-filter-lbl">Estado Transacción</div><select id="rgcEstado"><option>Todos</option><option>Aprobado</option><option>Pendiente</option><option>Rechazado</option></select></div>
+      <div class="rgc-filter-set"><div class="rgc-filter-lbl">Mes</div><select id="rgcMes"><option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option><option value="4">Abril</option><option value="5" selected>Mayo</option><option value="6">Junio</option><option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></div>
+      <div class="rgc-filter-set"><div class="rgc-filter-lbl">Estado</div><select id="rgcEstado"><option>Todos</option><option>Aprobado</option><option>Pendiente</option><option>Rechazado</option></select></div>
+      <div class="rgc-updated-inline" id="rgcUpdated"></div>
     </div>
     <!-- KPI Bar -->
     <div class="rgc-kpi-bar">
@@ -680,8 +678,9 @@
           }));
         }
       } else if (sectionId === 'control-cartera') {
-        // Re-render charts on every revisit (resize fix)
         requestAnimationFrame(() => requestAnimationFrame(() => resizeEChartsAll()));
+      } else if (sectionId === 'resumen-gestion') {
+        setTimeout(() => { resizeEChartsAll(); if (CARTERA_BI_DATA) renderRGCExcelCharts(); }, 150);
       }
     }
 
@@ -870,9 +869,13 @@
     function renderResumenGestion() {
       const range = getDateRange('mes');
       fetchGestionData(range.from, range.to);
-      // Ensure Excel cartera data is loaded for the monetary charts
-      if (!CARTERA_BI_DATA) loadCarteraData();
-      else setTimeout(renderRGCExcelCharts, 200);
+      // Ensure Excel cartera data is loaded; renderRGCExcelCharts is called
+      // from renderCarteraBI() once data arrives, or right now if already cached
+      if (!CARTERA_BI_DATA) {
+        loadCarteraData(); // renderCarteraBI() will call renderRGCExcelCharts when done
+      } else {
+        setTimeout(renderRGCExcelCharts, 300);
+      }
     }
 
     async function fetchGestionData(dateFrom, dateTo) {
@@ -1000,8 +1003,8 @@
           plugins:{ legend:{ labels:{ color:'#94a3b8', font:{size:12}, padding:16 } } },
           scales:{ x:{ ticks:{color:'#64748b',font:{size:11}}, grid:{color:'#33415530'} }, y:{ ticks:{color:'#64748b',font:{size:11}}, grid:{color:'#33415550'} } } }
       });
-      // Render Excel-based charts (tipo doc, aging, evolution, vendor table)
-      requestAnimationFrame(() => requestAnimationFrame(() => renderRGCExcelCharts()));
+      // Render Excel-based charts — delay to ensure layout is settled
+      setTimeout(renderRGCExcelCharts, 200);
     }
 
     // ─── Theme ────────────────────────────────────
@@ -1657,10 +1660,13 @@
       const el = document.getElementById(id);
       if (!el) return null;
       if (typeof echarts === 'undefined') { console.warn('ECharts not loaded yet, skipping', id); return null; }
-      const ec = echarts.init(el, null, { renderer: 'canvas' });
+      const ec = echarts.init(el, null, { renderer: 'canvas', width: el.offsetWidth || undefined });
       ec.setOption(opts);
-      // Force resize so ECharts picks up the real container width after layout
-      requestAnimationFrame(() => { try { ec.resize(); } catch(e){} });
+      // Multiple resize passes to handle layout settling
+      const resize = () => { try { ec.resize(); } catch(e){} };
+      requestAnimationFrame(resize);
+      setTimeout(resize, 80);
+      setTimeout(resize, 400);
       ecInstances[id] = ec;
       return ec;
     }
@@ -1736,8 +1742,8 @@
         // Extra resize pass after DOM paints
         setTimeout(resizeEChartsAll, 250);
         setTimeout(resizeEChartsAll, 800);
-        // Update RGC charts if user has already visited that section
-        if (renderedSections.has('resumen-gestion')) setTimeout(renderRGCExcelCharts, 350);
+        // Also update RGC section if visible (user is on that tab)
+        if (renderedSections.has('resumen-gestion')) setTimeout(renderRGCExcelCharts, 400);
       }));
     }
 
@@ -2048,7 +2054,11 @@
     // ─── RGC Excel Charts (powered by Excel data, independent of RSales API) ────
     function renderRGCExcelCharts() {
       const d = CARTERA_BI_DATA;
-      if (!d) return;
+      // If data not ready yet, retry once more after a delay
+      if (!d) { setTimeout(renderRGCExcelCharts, 800); return; }
+      // If section not visible, skip (charts won't measure correctly)
+      const section = document.getElementById('section-resumen-gestion');
+      if (section && !section.classList.contains('active')) return;
       const tipoDoc = d.tipo_doc_grouped || [];
       const facturas = tipoDoc.find(t => t.label === 'Factura') || {};
       const recibos  = tipoDoc.find(t => t.label === 'Recibo')  || {};
@@ -2130,6 +2140,7 @@
       if (tbEl) tbEl.innerHTML = rows.join('');
 
       setTimeout(resizeEChartsAll, 200);
+      setTimeout(resizeEChartsAll, 600);
     }
 
     // ─── CC timeline period filter ───────────────────────────────────────────
