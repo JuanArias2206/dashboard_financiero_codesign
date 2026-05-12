@@ -608,7 +608,6 @@
     </div>
     <!-- Charts grid -->
     <div class="charts-grid">
-      <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Documentos del período por tipo</div><div class="chart-subtitle">Fuente: Excel · Facturas, Recibos y Notas del mes seleccionado</div></div></div><div id="rgcVentasTipoChart" class="ec-chart" style="height:280px;"></div></div>
       <div class="chart-card"><div class="chart-header"><div><div class="chart-title">% Canceladas / Vencidas / Cumplidas</div><div class="chart-subtitle">Agendas del período · Fuente: RSales API</div></div></div><div class="chart-container"><canvas id="rgcCumplimientoChart"></canvas></div></div>
       <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Agendas por etapa</div><div class="chart-subtitle">Fuente: RSales API</div></div></div><div class="chart-container"><canvas id="rgcAgendasEtapaChart"></canvas></div></div>
       <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Causales de visita</div><div class="chart-subtitle">% del total · Fuente: RSales API</div></div></div><div class="chart-container tall"><canvas id="rgcCausalesChart"></canvas></div></div>
@@ -2019,38 +2018,36 @@
       });
     });
 
+    // ── Chart.js wrapper for EC-chart divs (no ECharts dependency) ────────────
+    function ccChart(id, config) {
+      if (chartInstances[id]) { try { chartInstances[id].destroy(); } catch(e){} delete chartInstances[id]; }
+      const div = document.getElementById(id);
+      if (!div) return null;
+      div.innerHTML = '';
+      const canvas = document.createElement('canvas');
+      div.appendChild(canvas);
+      chartInstances[id] = new Chart(canvas, config);
+      return chartInstances[id];
+    }
+    const CJ = { // Chart.js common options
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#94a3b8', font: { size: 12 }, padding: 14 } } },
+      scales: { x: { ticks:{ color:'#64748b', font:{size:11} }, grid:{ color:'#33415530' } }, y: { ticks:{ color:'#64748b', font:{size:11} }, grid:{ color:'#33415550' } } }
+    };
+
     function renderCCEstadoChart() {
       const d = CARTERA_BI_DATA;
       if (!d) return;
       const est = getFilteredEstadoSummary();
-      const ven = est.vencido;
-      const cor = est.corriente;
-      ecInit('ccEstadoChart', {
-        backgroundColor: EC_BG,
-        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: params => {
-          let s = params[0].name + '<br/>';
-          params.forEach(p => { s += p.marker + ' ' + p.seriesName + ': ' + (p.seriesIndex===0 ? fmtBil(p.value) : Number(p.value).toLocaleString('es-CO')) + '<br/>'; });
-          return s;
-        }},
-        legend: { data: ['Saldo en cartera','Cant. facturas'], textStyle:{ color: EC_TEXT }, bottom: 0 },
-        grid: { left: '10%', right: '12%', top: '8%', bottom: '12%' },
-        xAxis: { type: 'category', data: ['Vencido','Al Día'], axisLabel: { color: EC_TEXT } },
-        yAxis: [
-          { type: 'value', name: 'Saldo', axisLabel: { color: EC_TEXT, formatter: fmtBilAxis }, splitLine: { lineStyle:{ color: EC_GRID } } },
-          { type: 'value', name: 'Facturas', position: 'right', axisLabel: { color: EC_TEXT }, splitLine: { show: false } }
-        ],
-        series: [
-          { name: 'Saldo en cartera', type: 'bar', barMaxWidth: 80,
-            data: [
-              { value: Math.max(0, ven.saldo||0), itemStyle:{ color: EC_RED } },
-              { value: Math.max(0, cor.saldo||0), itemStyle:{ color: EC_GREEN } }
-            ]
-          },
-          { name: 'Cant. facturas', type: 'line', yAxisIndex: 1, symbol: 'circle', symbolSize: 8,
-            itemStyle:{ color: EC_BLUE }, lineStyle:{ width: 2 },
-            data: [ven.docs||0, cor.docs||0]
-          }
-        ]
+      const ven = est.vencido, cor = est.corriente;
+      ccChart('ccEstadoChart', {
+        data: { labels:['Vencido','Al Día'],
+          datasets:[
+            { label:'Saldo en cartera', type:'bar', data:[Math.max(0,ven.saldo||0),Math.max(0,cor.saldo||0)], backgroundColor:[EC_RED,EC_GREEN], borderRadius:4, yAxisID:'y' },
+            { label:'Cant. facturas', type:'line', data:[ven.docs||0,cor.docs||0], borderColor:EC_BLUE, backgroundColor:'transparent', pointRadius:6, yAxisID:'y2' }
+          ]
+        },
+        options:{ ...CJ, scales:{ y:{ ticks:{color:'#64748b',callback:v=>fmtBilAxis(v)}, grid:{color:'#33415550'} }, y2:{position:'right',ticks:{color:'#64748b'},grid:{display:false}} } }
       });
     }
 
@@ -2058,19 +2055,10 @@
       const d = CARTERA_BI_DATA;
       if (!d) return;
       const agingData = getFilteredAgingBI();
-      ecInit('ccEdadChart', {
-        backgroundColor: EC_BG,
-        tooltip: { trigger: 'item', formatter: p => p.name + '<br/>' + fmtBil(p.value) + ' (' + p.percent + '%)' },
-        legend: { orient: 'vertical', right: '5%', top: 'center', textStyle:{ color: EC_TEXT, fontSize: 11 } },
-        series: [{
-          name: 'Edad cartera', type: 'pie', radius: ['38%','65%'], center: ['40%','50%'],
-          avoidLabelOverlap: true,
-          label: { show: false },
-          data: agingData.map((b,i) => ({
-            value: Math.max(0, b.saldo||0), name: b.label,
-            itemStyle:{ color: EC_AGING_COLORS[i] }
-          }))
-        }]
+      ccChart('ccEdadChart', {
+        type:'doughnut',
+        data:{ labels:agingData.map(a=>a.label), datasets:[{ data:agingData.map(a=>Math.max(0,a.saldo||0)), backgroundColor:EC_AGING_COLORS, borderWidth:0, hoverOffset:6 }] },
+        options:{ responsive:true, maintainAspectRatio:false, cutout:'58%', plugins:{ legend:{ position:'right', labels:{color:'#94a3b8',font:{size:11},padding:10} }, tooltip:{ callbacks:{label:ctx=>ctx.label+': '+fmtBil(ctx.raw)} } } }
       });
     }
 
@@ -2078,31 +2066,20 @@
       const d = CARTERA_BI_DATA;
       if (!d) return;
       const vendors = getFilteredVendors().slice(0, 20);
-      ecInit('ccVendedorBarChart', {
-        backgroundColor: EC_BG,
-        tooltip: { trigger: 'axis', axisPointer:{ type:'shadow' },
-          formatter: params => {
-            let s = params[0].axisValueLabel + '<br/>';
-            params.forEach(p => { s += p.marker + ' ' + p.seriesName + ': ' + (p.seriesIndex < 2 ? fmtBil(p.value) : p.value?.toFixed(1)+'%') + '<br/>'; });
-            return s;
-          }
+      ccChart('ccVendedorBarChart', {
+        type:'bar',
+        data:{ labels:vendors.map(v=>v.vendedor.substring(0,18)),
+          datasets:[
+            { label:'Saldo corriente', data:vendors.map(v=>Math.max(0,v.saldo_corriente||0)), backgroundColor:EC_GREEN, stack:'s', borderRadius:2 },
+            { label:'Saldo mora',      data:vendors.map(v=>Math.max(0,v.saldo_vencido||0)),   backgroundColor:EC_RED,   stack:'s', borderRadius:2 },
+            { label:'% Mora', type:'line', data:vendors.map(v=>v.pct_vencido||0), borderColor:EC_YELLOW, backgroundColor:'transparent', pointRadius:4, yAxisID:'y2' }
+          ]
         },
-        legend: { data: ['Saldo corriente','Saldo mora','% Mora'], textStyle:{ color: EC_TEXT }, bottom: 0 },
-        grid: { left: '12%', right: '10%', top: '8%', bottom: '14%' },
-        xAxis: [{ type: 'category', data: vendors.map(v => v.vendedor.substring(0,18)), axisLabel: { color: EC_TEXT, rotate: 35, fontSize: 10 } }],
-        yAxis: [
-          { type: 'value', name: 'Saldo', axisLabel: { color: EC_TEXT, formatter: fmtBilAxis }, splitLine: { lineStyle:{ color: EC_GRID } } },
-          { type: 'value', name: '% Mora', max: 100, min: 0, position: 'right', axisLabel: { color: EC_TEXT, formatter: v => v+'%' }, splitLine: { show: false } }
-        ],
-        series: [
-          { name: 'Saldo corriente', type: 'bar', stack: 'saldo', itemStyle:{ color: EC_GREEN },
-            data: vendors.map(v => Math.max(0, v.saldo_corriente||0)) },
-          { name: 'Saldo mora', type: 'bar', stack: 'saldo', itemStyle:{ color: EC_RED },
-            data: vendors.map(v => Math.max(0, v.saldo_vencido||0)) },
-          { name: '% Mora', type: 'line', yAxisIndex: 1, symbol: 'circle', symbolSize: 6,
-            itemStyle:{ color: EC_YELLOW }, lineStyle:{ width: 2 },
-            data: vendors.map(v => v.pct_vencido||0) }
-        ]
+        options:{ ...CJ, scales:{
+          x:{ ticks:{color:'#64748b',font:{size:10},maxRotation:40}, grid:{color:'#33415530'} },
+          y:{ ticks:{color:'#64748b',callback:v=>fmtBilAxis(v)}, grid:{color:'#33415550'} },
+          y2:{ position:'right', max:100, min:0, ticks:{color:'#64748b',callback:v=>v+'%'}, grid:{display:false} }
+        }, plugins:{ legend:{ labels:{color:'#94a3b8',font:{size:12},padding:14} } } }
       });
     }
 
@@ -2155,21 +2132,19 @@
     function renderCCCobradorChart() {
       const d = CARTERA_BI_DATA;
       if (!d || !d.cobrador) return;
-      const cobs = d.cobrador.filter(c => c.cod !== '101').slice(0, 15);
-      ecInit('ccCobradorChart', {
-        backgroundColor: EC_BG,
-        tooltip: { trigger: 'axis', axisPointer:{ type:'shadow' },
-          formatter: params => params[0].name + '<br/>' + params.map(p => p.marker + ' ' + p.seriesName + ': ' + fmtBil(p.value)).join('<br/>') },
-        legend: { data: ['Saldo corriente','Saldo mora'], textStyle:{ color: EC_TEXT }, bottom: 0 },
-        grid: { left: '14%', right: '5%', top: '5%', bottom: '12%' },
-        xAxis: { type: 'value', axisLabel:{ color: EC_TEXT, formatter: fmtBilAxis }, splitLine:{ lineStyle:{ color: EC_GRID } } },
-        yAxis: { type: 'category', data: cobs.map(c => 'Cobrador ' + c.cod).reverse(), axisLabel:{ color: EC_TEXT, fontSize: 11 } },
-        series: [
-          { name: 'Saldo corriente', type: 'bar', stack: 'saldo', itemStyle:{ color: EC_GREEN },
-            data: cobs.map(c => Math.max(0,(c.saldo||0)-(c.saldo_vencido||0))).reverse() },
-          { name: 'Saldo mora', type: 'bar', stack: 'saldo', itemStyle:{ color: EC_RED },
-            data: cobs.map(c => Math.max(0, c.saldo_vencido||0)).reverse() }
-        ]
+      const cobs = d.cobrador.filter(c => c.cod !== '101').slice(0, 12).reverse();
+      ccChart('ccCobradorChart', {
+        type:'bar',
+        data:{ labels:cobs.map(c=>'Cobrador '+c.cod),
+          datasets:[
+            { label:'Saldo corriente', data:cobs.map(c=>Math.max(0,(c.saldo||0)-(c.saldo_vencido||0))), backgroundColor:EC_GREEN, stack:'s', borderRadius:2 },
+            { label:'Saldo mora',      data:cobs.map(c=>Math.max(0,c.saldo_vencido||0)),                 backgroundColor:EC_RED,   stack:'s', borderRadius:2 }
+          ]
+        },
+        options:{ ...CJ, indexAxis:'y', plugins:{ legend:{ labels:{color:'#94a3b8',font:{size:12},padding:14} } }, scales:{
+          x:{ ticks:{color:'#64748b',callback:v=>fmtBilAxis(v)}, grid:{color:'#33415550'} },
+          y:{ ticks:{color:'#64748b',font:{size:11}}, grid:{color:'#33415530'} }
+        } }
       });
     }
 
@@ -2177,40 +2152,25 @@
     function renderCCClienteEstadoChart() {
       const d = CARTERA_BI_DATA;
       if (!d || !d.estado) return;
-      const ven = d.estado.vencido || {};
-      const cor = d.estado.corriente || {};
-      ecInit('ccClienteEstadoChart', {
-        backgroundColor: EC_BG,
-        tooltip: { trigger: 'axis', axisPointer:{ type:'shadow' } },
-        legend: { data: ['Saldo en cartera','Cant. clientes'], textStyle:{ color: EC_TEXT }, bottom: 0 },
-        grid: { left: '10%', right: '12%', top: '8%', bottom: '12%' },
-        xAxis: { type: 'category', data: ['Vencido','Al Día'], axisLabel:{ color: EC_TEXT } },
-        yAxis: [
-          { type: 'value', name: 'Saldo', axisLabel:{ color: EC_TEXT, formatter: fmtBilAxis }, splitLine:{ lineStyle:{ color: EC_GRID } } },
-          { type: 'value', name: 'Clientes', position: 'right', axisLabel:{ color: EC_TEXT }, splitLine:{ show: false } }
-        ],
-        series: [
-          { name: 'Saldo en cartera', type: 'bar', barMaxWidth: 80,
-            data: [{ value: Math.max(0,ven.saldo||0), itemStyle:{ color: EC_RED } }, { value: Math.max(0,cor.saldo||0), itemStyle:{ color: EC_GREEN } }] },
-          { name: 'Cant. clientes', type: 'line', yAxisIndex: 1, symbol: 'circle', symbolSize: 8,
-            itemStyle:{ color: EC_BLUE }, lineStyle:{ width: 2 },
-            data: [d.kpis?.total_clientes||0, 0] }
-        ]
+      const ven = d.estado.vencido || {}, cor = d.estado.corriente || {};
+      ccChart('ccClienteEstadoChart', {
+        data:{ labels:['Vencido','Al Día'],
+          datasets:[
+            { label:'Saldo en cartera', type:'bar', data:[Math.max(0,ven.saldo||0),Math.max(0,cor.saldo||0)], backgroundColor:[EC_RED,EC_GREEN], borderRadius:4, yAxisID:'y' },
+            { label:'Cant. clientes', type:'line', data:[d.kpis?.total_clientes||0,0], borderColor:EC_BLUE, backgroundColor:'transparent', pointRadius:6, yAxisID:'y2' }
+          ]
+        },
+        options:{ ...CJ, scales:{ y:{ticks:{color:'#64748b',callback:v=>fmtBilAxis(v)},grid:{color:'#33415550'}}, y2:{position:'right',ticks:{color:'#64748b'},grid:{display:false}} } }
       });
     }
 
     function renderCCClienteEdadChart() {
       const d = CARTERA_BI_DATA;
       if (!d || !d.aging_bi) return;
-      ecInit('ccClienteEdadChart', {
-        backgroundColor: EC_BG,
-        tooltip: { trigger: 'item', formatter: p => p.name + '<br/>' + fmtBil(p.value) + ' (' + p.percent + '%)' },
-        legend: { orient: 'vertical', right: '5%', top: 'center', textStyle:{ color: EC_TEXT, fontSize: 11 } },
-        series: [{
-          name: 'Edad cartera', type: 'pie', radius: ['38%','65%'], center: ['40%','50%'],
-          label: { show: false },
-          data: d.aging_bi.map((b,i) => ({ value: Math.max(0,b.saldo||0), name: b.label, itemStyle:{ color: EC_AGING_COLORS[i] } }))
-        }]
+      ccChart('ccClienteEdadChart', {
+        type:'doughnut',
+        data:{ labels:d.aging_bi.map(b=>b.label), datasets:[{ data:d.aging_bi.map(b=>Math.max(0,b.saldo||0)), backgroundColor:EC_AGING_COLORS, borderWidth:0, hoverOffset:6 }] },
+        options:{ responsive:true, maintainAspectRatio:false, cutout:'58%', plugins:{ legend:{ position:'right', labels:{color:'#94a3b8',font:{size:11},padding:10} }, tooltip:{ callbacks:{label:ctx=>ctx.label+': '+fmtBil(ctx.raw)} } } }
       });
     }
 
@@ -2218,24 +2178,14 @@
       const d = CARTERA_BI_DATA;
       if (!d || !d.tipo_doc_grouped) return;
       const items = d.tipo_doc_grouped;
-      ecInit('ccTipoDocChart', {
-        backgroundColor: EC_BG,
-        tooltip: { trigger: 'axis', axisPointer:{ type:'shadow' },
-          formatter: params => params[0].axisValueLabel + '<br/>' + params.map(p => p.marker + ' ' + p.seriesName + ': ' + (p.seriesIndex===0 ? fmtBil(p.value) : p.value?.toFixed(1)+'%')).join('<br/>') },
-        legend: { data: ['Saldo en cartera','% Mora'], textStyle:{ color: EC_TEXT }, bottom: 0 },
-        grid: { left: '10%', right: '10%', top: '8%', bottom: '12%' },
-        xAxis: { type: 'category', data: items.map(i => i.label), axisLabel:{ color: EC_TEXT } },
-        yAxis: [
-          { type: 'value', name: 'Saldo', axisLabel:{ color: EC_TEXT, formatter: fmtBilAxis }, splitLine:{ lineStyle:{ color: EC_GRID } } },
-          { type: 'value', name: '% Mora', max: 100, position: 'right', axisLabel:{ color: EC_TEXT, formatter: v => v+'%' }, splitLine:{ show: false } }
-        ],
-        series: [
-          { name: 'Saldo en cartera', type: 'bar', barMaxWidth: 90,
-            data: items.map((i,idx) => ({ value: Math.max(0,i.saldo||0), itemStyle:{ color: [EC_BLUE,EC_GREEN,'#a78bfa','#f97316'][idx] || EC_BLUE } })) },
-          { name: '% Mora', type: 'line', yAxisIndex: 1, symbol: 'circle', symbolSize: 7,
-            itemStyle:{ color: EC_RED }, lineStyle:{ width: 2 },
-            data: items.map(i => i.pct_vencido||0) }
-        ]
+      ccChart('ccTipoDocChart', {
+        data:{ labels:items.map(i=>i.label),
+          datasets:[
+            { label:'Saldo en cartera', type:'bar', data:items.map(i=>Math.max(0,i.saldo||0)), backgroundColor:['#3b82f6','#10b981','#a78bfa','#f97316'], borderRadius:4, yAxisID:'y' },
+            { label:'% Mora', type:'line', data:items.map(i=>i.pct_vencido||0), borderColor:EC_RED, backgroundColor:'transparent', pointRadius:5, yAxisID:'y2' }
+          ]
+        },
+        options:{ ...CJ, scales:{ y:{ticks:{color:'#64748b',callback:v=>fmtBilAxis(v)},grid:{color:'#33415550'}}, y2:{position:'right',max:100,ticks:{color:'#64748b',callback:v=>v+'%'},grid:{display:false}} } }
       });
     }
 
@@ -2307,22 +2257,18 @@
       const d = CARTERA_BI_DATA;
       if (!d || !d.period) return;
       const periods = (typeof ccTimelinePeriod !== 'undefined' && ccTimelinePeriod > 0) ? d.period.slice(-ccTimelinePeriod) : d.period;
-      ecInit('ccTimelineChart', {
-        backgroundColor: EC_BG,
-        tooltip: { trigger: 'axis', axisPointer:{ type:'cross' },
-          formatter: params => params[0].name + '<br/>' + params.map(p => p.marker + ' ' + p.seriesName + ': ' + (p.seriesIndex === 0 ? fmtBil(p.value) : p.value?.toLocaleString('es-CO'))).join('<br/>') },
-        legend: { data: ['Saldo total','Clientes'], textStyle:{ color: EC_TEXT }, bottom: 0 },
-        grid: { left: '10%', right: '10%', top: '8%', bottom: '12%' },
-        xAxis: { type: 'category', data: periods.map(p => p.mes), axisLabel:{ color: EC_TEXT, rotate: 30, fontSize: 10 } },
-        yAxis: [
-          { type: 'value', name: 'Saldo', axisLabel:{ color: EC_TEXT, formatter: fmtBilAxis }, splitLine:{ lineStyle:{ color: EC_GRID } } },
-          { type: 'value', name: 'Clientes', position: 'right', axisLabel:{ color: EC_TEXT }, splitLine:{ show: false } }
-        ],
-        series: [
-          { name: 'Saldo total', type: 'bar', itemStyle:{ color: EC_BLUE, opacity: 0.8 }, data: periods.map(p => Math.max(0,p.saldo||0)) },
-          { name: 'Clientes', type: 'line', yAxisIndex: 1, symbol: 'circle', symbolSize: 5,
-            itemStyle:{ color: EC_GREEN }, lineStyle:{ width: 2 }, data: periods.map(p => p.clientes||0) }
-        ]
+      ccChart('ccTimelineChart', {
+        data:{ labels:periods.map(p=>p.mes),
+          datasets:[
+            { label:'Saldo total', type:'bar', data:periods.map(p=>Math.max(0,p.saldo||0)), backgroundColor:EC_BLUE+'cc', borderRadius:3, yAxisID:'y' },
+            { label:'Clientes', type:'line', data:periods.map(p=>p.clientes||0), borderColor:EC_GREEN, backgroundColor:'transparent', pointRadius:3, tension:0.3, yAxisID:'y2' }
+          ]
+        },
+        options:{ ...CJ, scales:{
+          x:{ticks:{color:'#64748b',font:{size:10},maxRotation:40},grid:{color:'#33415530'}},
+          y:{ticks:{color:'#64748b',callback:v=>fmtBilAxis(v)},grid:{color:'#33415550'}},
+          y2:{position:'right',ticks:{color:'#64748b'},grid:{display:false}}
+        } }
       });
     }
 
@@ -2527,12 +2473,17 @@
       const totDocs  = vendors.reduce((s,v)=>s+(v.docs||0),0);
       const cliMora  = (d.customers||[]).filter(c=>c.saldo_vencido>0).length;
 
-      document.getElementById('rr-total-recibos').textContent    = fmtBil(totSaldo);
+      // Use kpis for totals (more reliable than vendor sum)
+      const k = d.kpis || {};
+      const kTotal = Math.abs(k.saldo_total||totSaldo);
+      const kMora  = Math.abs(k.cartera_vencida||totMora);
+      const kCorr  = Math.abs(k.cartera_corriente||totCorr);
+      document.getElementById('rr-total-recibos').textContent    = fmtBil(kTotal);
       document.getElementById('rr-docs-recibos').textContent     = totDocs.toLocaleString('es-CO') + ' documentos';
-      document.getElementById('rr-saldo-mora').textContent       = fmtBil(totMora);
-      document.getElementById('rr-pct-mora').textContent         = totSaldo>0?(totMora/totSaldo*100).toFixed(1)+'%':'—';
-      document.getElementById('rr-saldo-corriente').textContent  = fmtBil(totCorr);
-      document.getElementById('rr-total-clientes').textContent   = d.kpis?.total_clientes||'—';
+      document.getElementById('rr-saldo-mora').textContent       = fmtBil(kMora);
+      document.getElementById('rr-pct-mora').textContent         = kTotal>0?(kMora/kTotal*100).toFixed(1)+'%':'—';
+      document.getElementById('rr-saldo-corriente').textContent  = fmtBil(kCorr);
+      document.getElementById('rr-total-clientes').textContent   = k.total_clientes||'—';
       document.getElementById('rr-clientes-mora').textContent    = cliMora;
 
       // ── Filter rgc_monthly ────────────────────────────────────────────────
@@ -2548,88 +2499,62 @@
       ].filter(t=>t.docs>0);
 
       // Chart: tipo documentos
-      ecInit('rrTipoChart', {
-        backgroundColor:EC_BG,
-        tooltip:{ trigger:'axis', axisPointer:{type:'shadow'}, formatter: params=>params[0].axisValueLabel+'<br/>'+params.map(p=>p.marker+' '+p.seriesName+': '+(p.seriesIndex===0?fmtBil(p.value):p.value.toLocaleString('es-CO'))).join('<br/>') },
-        legend:{data:['Saldo','Documentos'],textStyle:{color:EC_TEXT},bottom:0},
-        grid:{left:'12%',right:'10%',top:'8%',bottom:'14%'},
-        xAxis:{type:'category',data:tipoData.map(t=>t.cat),axisLabel:{color:EC_TEXT}},
-        yAxis:[{type:'value',name:'Saldo',axisLabel:{color:EC_TEXT,formatter:fmtBilAxis},splitLine:{lineStyle:{color:EC_GRID}}},{type:'value',name:'Docs',position:'right',axisLabel:{color:EC_TEXT},splitLine:{show:false}}],
-        series:[
-          {name:'Saldo',type:'bar',barMaxWidth:80,data:tipoData.map((t,i)=>({value:Math.max(0,t.saldo),itemStyle:{color:[EC_BLUE,EC_GREEN,'#a78bfa'][i]||EC_BLUE}}))},
-          {name:'Documentos',type:'line',yAxisIndex:1,symbol:'circle',symbolSize:7,itemStyle:{color:EC_YELLOW},lineStyle:{width:2},data:tipoData.map(t=>t.docs)}
-        ]
+      ccChart('rrTipoChart', {
+        data:{ labels:tipoData.map(t=>t.cat), datasets:[
+          { label:'Saldo', type:'bar', data:tipoData.map(t=>Math.max(0,t.saldo)), backgroundColor:['#3b82f6','#10b981','#a78bfa'], borderRadius:4, yAxisID:'y' },
+          { label:'Documentos', type:'line', data:tipoData.map(t=>t.docs), borderColor:EC_YELLOW, backgroundColor:'transparent', pointRadius:6, yAxisID:'y2' }
+        ]},
+        options:{ ...CJ, scales:{ y:{ticks:{color:'#64748b',callback:v=>fmtBilAxis(v)},grid:{color:'#33415550'}}, y2:{position:'right',ticks:{color:'#64748b'},grid:{display:false}} } }
       });
 
       // Chart: estado mora vs corriente
-      ecInit('rrEstadoChart', {
-        backgroundColor:EC_BG,
-        tooltip:{trigger:'item',formatter:p=>p.name+'<br/>'+fmtBil(p.value)+' ('+p.percent+'%)'},
-        legend:{orient:'vertical',right:'5%',top:'center',textStyle:{color:EC_TEXT,fontSize:11}},
-        series:[{name:'Estado',type:'pie',radius:['38%','65%'],center:['40%','50%'],label:{show:false},
-          data:[
-            {value:Math.max(0,totMora),name:'En mora',itemStyle:{color:EC_RED}},
-            {value:Math.max(0,totCorr),name:'Al día',itemStyle:{color:EC_GREEN}}
-          ]
-        }]
+      ccChart('rrEstadoChart', {
+        type:'doughnut',
+        data:{ labels:['En mora','Al día'], datasets:[{ data:[Math.max(0,totMora),Math.max(0,totCorr)], backgroundColor:[EC_RED,EC_GREEN], borderWidth:0, hoverOffset:6 }] },
+        options:{ responsive:true, maintainAspectRatio:false, cutout:'58%', plugins:{ legend:{position:'right',labels:{color:'#94a3b8',font:{size:12},padding:12}}, tooltip:{ callbacks:{label:ctx=>ctx.label+': '+fmtBil(ctx.raw)} } } }
       });
 
-      // Chart: evolución mensual (last 18 months of the selected year and prior)
+      // Chart: evolución mensual (last 18 months)
       const allMonths = [...new Set((d.rgc_monthly||[]).map(r=>r.mes))].sort().slice(-18);
       const factByMes = {}, recByMes = {};
       (d.rgc_monthly||[]).filter(r=>allMonths.includes(r.mes)).forEach(r=>{
         if(r.cat==='Factura') factByMes[r.mes]=(factByMes[r.mes]||0)+(r.saldo||0);
         if(r.cat==='Recibo')  recByMes[r.mes] =(recByMes[r.mes]||0)+(r.saldo||0);
       });
-      ecInit('rrEvolucionChart', {
-        backgroundColor:EC_BG,
-        tooltip:{trigger:'axis',axisPointer:{type:'cross'},formatter:params=>params[0].name+'<br/>'+params.map(p=>p.marker+' '+p.seriesName+': '+fmtBil(p.value)).join('<br/>')},
-        legend:{data:['Facturas (ventas)','Recibos (cobros)'],textStyle:{color:EC_TEXT},bottom:0},
-        grid:{left:'12%',right:'5%',top:'8%',bottom:'14%'},
-        xAxis:{type:'category',data:allMonths,axisLabel:{color:EC_TEXT,rotate:30,fontSize:10}},
-        yAxis:{type:'value',axisLabel:{color:EC_TEXT,formatter:fmtBilAxis},splitLine:{lineStyle:{color:EC_GRID}}},
-        series:[
-          {name:'Facturas (ventas)',type:'bar',stack:'s',itemStyle:{color:EC_BLUE,opacity:0.8},data:allMonths.map(m=>Math.max(0,factByMes[m]||0))},
-          {name:'Recibos (cobros)',type:'line',symbol:'circle',symbolSize:5,itemStyle:{color:EC_GREEN},lineStyle:{width:2},data:allMonths.map(m=>Math.max(0,recByMes[m]||0))}
-        ]
+      ccChart('rrEvolucionChart', {
+        data:{ labels:allMonths, datasets:[
+          { label:'Facturas (ventas)', type:'bar', data:allMonths.map(m=>Math.max(0,factByMes[m]||0)), backgroundColor:EC_BLUE+'bb', borderRadius:2 },
+          { label:'Recibos (cobros)',  type:'line', data:allMonths.map(m=>Math.max(0,recByMes[m]||0)),  borderColor:EC_GREEN, backgroundColor:'transparent', pointRadius:3, tension:0.3 }
+        ]},
+        options:{ ...CJ, scales:{ x:{ticks:{color:'#64748b',font:{size:10},maxRotation:40},grid:{color:'#33415530'}}, y:{ticks:{color:'#64748b',callback:v=>fmtBilAxis(v)},grid:{color:'#33415550'}} } }
       });
 
       // Chart: vendedores bar
       const vSlice = vendors.slice(0,15);
-      ecInit('rrVendedorChart', {
-        backgroundColor:EC_BG,
-        tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:params=>{let s=params[0].axisValueLabel+'<br/>';params.forEach(p=>{s+=p.marker+' '+p.seriesName+': '+(p.seriesIndex<2?fmtBil(p.value):p.value.toFixed(1)+'%')+'<br/>';});return s;}},
-        legend:{data:['Saldo corriente','Saldo mora','% Mora'],textStyle:{color:EC_TEXT},bottom:0},
-        grid:{left:'12%',right:'10%',top:'8%',bottom:'18%'},
-        xAxis:[{type:'category',data:vSlice.map(v=>v.vendedor.substring(0,16)),axisLabel:{color:EC_TEXT,rotate:35,fontSize:10}}],
-        yAxis:[{type:'value',name:'Saldo',axisLabel:{color:EC_TEXT,formatter:fmtBilAxis},splitLine:{lineStyle:{color:EC_GRID}}},{type:'value',name:'% Mora',max:100,min:0,position:'right',axisLabel:{color:EC_TEXT,formatter:v=>v+'%'},splitLine:{show:false}}],
-        series:[
-          {name:'Saldo corriente',type:'bar',stack:'saldo',itemStyle:{color:EC_GREEN},data:vSlice.map(v=>Math.max(0,v.saldo_corriente||0))},
-          {name:'Saldo mora',type:'bar',stack:'saldo',itemStyle:{color:EC_RED},data:vSlice.map(v=>Math.max(0,v.saldo_vencido||0))},
-          {name:'% Mora',type:'line',yAxisIndex:1,symbol:'circle',symbolSize:6,itemStyle:{color:EC_YELLOW},lineStyle:{width:2},data:vSlice.map(v=>v.pct_vencido||0)}
-        ]
+      ccChart('rrVendedorChart', {
+        type:'bar',
+        data:{ labels:vSlice.map(v=>v.vendedor.substring(0,16)), datasets:[
+          { label:'Saldo corriente', data:vSlice.map(v=>Math.max(0,v.saldo_corriente||0)), backgroundColor:EC_GREEN, stack:'s', borderRadius:2 },
+          { label:'Saldo mora',      data:vSlice.map(v=>Math.max(0,v.saldo_vencido||0)),   backgroundColor:EC_RED,   stack:'s', borderRadius:2 },
+          { label:'% Mora', type:'line', data:vSlice.map(v=>v.pct_vencido||0), borderColor:EC_YELLOW, backgroundColor:'transparent', pointRadius:4, yAxisID:'y2' }
+        ]},
+        options:{ ...CJ, scales:{ x:{ticks:{color:'#64748b',font:{size:10},maxRotation:40},grid:{color:'#33415530'}}, y:{ticks:{color:'#64748b',callback:v=>fmtBilAxis(v)},grid:{color:'#33415550'}}, y2:{position:'right',max:100,min:0,ticks:{color:'#64748b',callback:v=>v+'%'},grid:{display:false}} } }
       });
 
       // Chart: aging pie
       const agingData = getFilteredAgingBI();
-      ecInit('rrEdadChart', {
-        backgroundColor:EC_BG,
-        tooltip:{trigger:'item',formatter:p=>p.name+'<br/>'+fmtBil(p.value)+' ('+p.percent+'%)'},
-        legend:{orient:'vertical',right:'5%',top:'center',textStyle:{color:EC_TEXT,fontSize:11}},
-        series:[{name:'Edad cartera',type:'pie',radius:['38%','65%'],center:['40%','50%'],label:{show:false},
-          data:agingData.map((b,i)=>({value:Math.max(0,b.saldo||0),name:b.label,itemStyle:{color:EC_AGING_COLORS[i]}}))
-        }]
+      ccChart('rrEdadChart', {
+        type:'doughnut',
+        data:{ labels:agingData.map(b=>b.label), datasets:[{ data:agingData.map(b=>Math.max(0,b.saldo||0)), backgroundColor:EC_AGING_COLORS, borderWidth:0, hoverOffset:6 }] },
+        options:{ responsive:true, maintainAspectRatio:false, cutout:'58%', plugins:{ legend:{position:'right',labels:{color:'#94a3b8',font:{size:11},padding:10}}, tooltip:{callbacks:{label:ctx=>ctx.label+': '+fmtBil(ctx.raw)}} } }
       });
 
-      // Chart: top 10 clientes
+      // Chart: top 10 clientes horizontal bar
       const topC = (d.customers||[]).filter(c=>c.saldo>0).slice(0,10);
-      ecInit('rrTopClientesChart', {
-        backgroundColor:EC_BG,
-        tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:params=>params[0].name+'<br/>'+fmtBil(params[0].value)},
-        grid:{left:'30%',right:'15%',top:'5%',bottom:'5%'},
-        xAxis:{type:'value',axisLabel:{color:EC_TEXT,formatter:fmtBilAxis},splitLine:{lineStyle:{color:EC_GRID}}},
-        yAxis:{type:'category',data:topC.map(c=>(c.nombre_cliente||'').substring(0,22)).reverse(),axisLabel:{color:EC_TEXT,fontSize:10}},
-        series:[{type:'bar',barMaxWidth:30,data:topC.map((c,i)=>({value:Math.max(0,c.saldo||0),itemStyle:{color:EC_AGING_COLORS[i]||EC_BLUE}})).reverse(),label:{show:true,position:'right',color:EC_TEXT,formatter:p=>fmtBil(p.value),fontSize:10}}]
+      ccChart('rrTopClientesChart', {
+        type:'bar',
+        data:{ labels:topC.map(c=>(c.nombre_cliente||'').substring(0,22)), datasets:[{ label:'Saldo en cartera', data:topC.map(c=>Math.max(0,c.saldo||0)), backgroundColor:EC_AGING_COLORS.map((c,i)=>topC[i]?.saldo_vencido>0?EC_RED:EC_GREEN), borderRadius:3 }] },
+        options:{ ...CJ, indexAxis:'y', plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>fmtBil(ctx.raw)}}}, scales:{ x:{ticks:{color:'#64748b',callback:v=>fmtBilAxis(v)},grid:{color:'#33415550'}}, y:{ticks:{color:'#64748b',font:{size:10}},grid:{color:'#33415530'}} } }
       });
 
       // Table vendedores
