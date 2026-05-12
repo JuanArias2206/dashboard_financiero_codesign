@@ -7,6 +7,7 @@
   <title>ADATEC Analytics</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
   <style>
     :root {
       --bg-primary: #0f172a; --bg-secondary: #1e293b; --bg-card: #1e293b; --bg-card-hover: #273548;
@@ -198,6 +199,36 @@
     .rgc-custom-range.visible { display: flex; }
     .rgc-custom-range input[type="date"] { background: var(--bg-primary); border: 1px solid var(--border); color: var(--text-primary); padding: 5px 10px; border-radius: 6px; font-size: 12px; outline: none; }
     .rgc-periodo-label { font-size: 12px; color: var(--accent-blue); font-weight: 600; margin-left: 4px; }
+    /* ─── Power BI-like styles ─────────────────────────── */
+    .bi-kpi-bar { display: flex; flex-wrap: wrap; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 20px; overflow: hidden; box-shadow: var(--shadow); }
+    .bi-kpi-item { flex: 1; min-width: 160px; padding: 16px 20px; border-right: 1px solid var(--border); }
+    .bi-kpi-item:last-child { border-right: none; }
+    .bi-kpi-val { font-size: 24px; font-weight: 800; color: var(--text-primary); line-height: 1.2; margin-bottom: 4px; }
+    .bi-kpi-val.danger { color: var(--accent-red); }
+    .bi-kpi-val.warning { color: var(--accent-yellow); }
+    .bi-kpi-val.success { color: var(--accent-green); }
+    .bi-kpi-lbl { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; line-height: 1.4; }
+    .bi-kpi-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+    .bi-tabs { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 20px; gap: 0; }
+    .bi-tab { padding: 10px 28px; background: none; border: none; color: var(--text-secondary); font-size: 14px; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.2s; font-weight: 500; }
+    .bi-tab:hover { color: var(--text-primary); background: var(--bg-card-hover); }
+    .bi-tab.active { color: var(--accent-blue); border-bottom-color: var(--accent-blue); font-weight: 700; background: var(--bg-card); }
+    .bi-tab-content { display: none; }
+    .bi-tab-content.active { display: block; }
+    .bi-filters { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 20px; background: var(--bg-secondary); padding: 12px 16px; border-radius: var(--radius); border: 1px solid var(--border); align-items: flex-end; }
+    .bi-filter-group { display: flex; flex-direction: column; gap: 4px; }
+    .bi-filter-group label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; font-weight: 600; }
+    .bi-filter-group select, .bi-filter-group input { background: var(--bg-primary); border: 1px solid var(--border); color: var(--text-primary); padding: 7px 10px; border-radius: 6px; font-size: 13px; outline: none; min-width: 140px; }
+    .bi-filter-group select:focus, .bi-filter-group input:focus { border-color: var(--accent-blue); }
+    .ec-chart { width: 100%; }
+    .bi-section-title { font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+    .bi-section-sub { font-size: 11px; color: var(--text-muted); margin-bottom: 16px; }
+    .mora-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; }
+    .mora-badge.high { background: rgba(239,68,68,0.15); color: var(--accent-red); }
+    .mora-badge.mid { background: rgba(245,158,11,0.15); color: var(--accent-yellow); }
+    .mora-badge.low { background: rgba(16,185,129,0.15); color: var(--accent-green); }
+    .bi-data-source { font-size: 11px; color: var(--text-muted); background: rgba(59,130,246,0.08); padding: 6px 12px; border-radius: 6px; border-left: 3px solid var(--accent-blue); margin-bottom: 16px; }
+    .cc-loading { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 60px; color: var(--text-muted); font-size: 14px; }
   </style>
 </head>
 <body>
@@ -253,116 +284,171 @@
 
   <div class="section-content active" id="section-control-cartera">
   <div class="container">
-    <div class="temporal-filters">
-      <div class="filter-group">
-        <label>Período:</label>
-        <div class="filter-period">
-          <button class="period-btn" data-months="0">Todo</button>
-          <button class="period-btn active" data-months="12">1 Año</button>
-          <button class="period-btn" data-months="6">6 Meses</button>
-          <button class="period-btn" data-months="3">3 Meses</button>
-          <button class="period-btn" data-months="1">1 Mes</button>
+    <!-- Loading state -->
+    <div class="cc-loading" id="ccLoading"><span>Cargando datos del Excel…</span></div>
+
+    <!-- KPI Header bar -->
+    <div class="bi-kpi-bar" id="ccKpiBar" style="display:none;">
+      <div class="bi-kpi-item">
+        <div class="bi-kpi-val" id="cc-saldo-total">—</div>
+        <div class="bi-kpi-lbl">Saldo total en cartera</div>
+        <div class="bi-kpi-sub" id="cc-total-docs">— documentos</div>
+      </div>
+      <div class="bi-kpi-item">
+        <div class="bi-kpi-val danger" id="cc-saldo-mora">—</div>
+        <div class="bi-kpi-lbl">Saldo cartera en mora</div>
+      </div>
+      <div class="bi-kpi-item">
+        <div class="bi-kpi-val danger" id="cc-pct-mora">—</div>
+        <div class="bi-kpi-lbl">% saldo en mora</div>
+      </div>
+      <div class="bi-kpi-item">
+        <div class="bi-kpi-val" id="cc-saldo-corriente">—</div>
+        <div class="bi-kpi-lbl">Cartera corriente</div>
+      </div>
+      <div class="bi-kpi-item">
+        <div class="bi-kpi-val info" id="cc-total-vendedores">—</div>
+        <div class="bi-kpi-lbl">Total vendedores</div>
+        <div class="bi-kpi-sub" id="cc-vend-con-saldo">— con saldo</div>
+      </div>
+      <div class="bi-kpi-item">
+        <div class="bi-kpi-val info" id="cc-total-clientes">—</div>
+        <div class="bi-kpi-lbl">Total clientes</div>
+        <div class="bi-kpi-sub" id="cc-clientes-mora">— en mora</div>
+      </div>
+    </div>
+
+    <!-- BI Tabs: Cartera vendedor / Cartera cliente -->
+    <div class="bi-tabs" id="ccBiTabs" style="display:none;">
+      <button class="bi-tab active" data-bitab="vendedor">Cartera vendedor</button>
+      <button class="bi-tab" data-bitab="cliente">Cartera cliente</button>
+    </div>
+
+    <!-- ═══════════════════════ TAB: CARTERA VENDEDOR ═══════════════════════ -->
+    <div class="bi-tab-content active" id="bitab-vendedor">
+      <div class="bi-data-source">📊 Fuente: Excel SQL Server exportado el 12/05/2026 · 89,064 documentos · Última actualización del archivo</div>
+      <div class="bi-filters">
+        <div class="bi-filter-group"><label>Estado cartera</label><select id="cc-estado-v"><option value="">Todas</option><option value="mora">Vencida</option><option value="corriente">Al Día</option></select></div>
+        <div class="bi-filter-group"><label>Edad cartera</label><select id="cc-edad-v"><option value="">Todas</option><option value="sin_vencer">0) Sin vencer</option><option value="0_30">1) 0-30 días</option><option value="31_60">2) 31-60 días</option><option value="61_90">3) 61-90 días</option><option value="91_120">4) 91-120 días</option><option value="mas_120">5) 120+ días</option></select></div>
+        <div class="bi-filter-group"><label>Vendedor</label><select id="cc-vend-sel"><option value="">Todos</option></select></div>
+      </div>
+
+      <div class="charts-grid">
+        <!-- Saldo por estado + Cant. facturas -->
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Saldo en cartera y cantidad de facturas por estado</div></div></div>
+          <div id="ccEstadoChart" class="ec-chart" style="height:300px;"></div>
+        </div>
+        <!-- Estado de cartera por edad (donut) -->
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Estado de cartera por edad</div></div></div>
+          <div id="ccEdadChart" class="ec-chart" style="height:300px;"></div>
         </div>
       </div>
-      <div class="filter-group"><label>Desde:</label><input type="month" id="filterDesde"></div>
-      <div class="filter-group"><label>Hasta:</label><input type="month" id="filterHasta"></div>
-      <button class="filter-btn" id="applyFilter">Aplicar</button>
-      <button class="filter-btn reset" id="resetFilter">Reset</button>
-      <span class="filter-active-indicator" id="filterIndicator">Filtro activo</span>
-    </div>
 
-    <div class="reports-bar" id="reportsBar" style="display:none;">
-      <span>📄 Exportar:</span>
-      <button class="report-btn" data-format="docx" title="Informe Word">📝 Word</button>
-      <button class="report-btn" data-format="xlsx" title="Informe Excel">📊 Excel</button>
-      <button class="report-btn" data-format="pptx" title="Presentación PowerPoint">📑 PowerPoint</button>
-      <button class="report-btn" data-format="pdf" title="Informe PDF">📋 PDF</button>
-    </div>
-
-    <div class="tabs">
-      <button class="tab-btn active" data-tab="overview">Resumen General</button>
-      <button class="tab-btn" data-tab="evolution">Evolucion Financiera</button>
-      <button class="tab-btn" data-tab="analisis">Analisis Detallado</button>
-      <button class="tab-btn" data-tab="sellers">Equipo de Ventas</button>
-      <button class="tab-btn" data-tab="products">Productos e Inventario</button>
-      <button class="tab-btn" data-tab="tablas">Tablas</button>
-      <button class="tab-btn" data-tab="sync">Sincronizacion</button>
-    </div>
-
-    <div class="tab-content active" id="tab-overview">
-      <div class="kpi-grid" id="kpiGrid"></div>
-      <div class="insights-grid" id="insightsGrid"></div>
-      <div class="charts-grid">
-        <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Composicion de la Cartera</div><div class="chart-subtitle">Por rango de vencimiento</div></div></div><div class="chart-container"><canvas id="agingChart"></canvas></div></div>
-        <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Distribucion por Tipo Documento</div><div class="chart-subtitle">Top tipos con mayor saldo</div></div></div><div class="chart-container"><canvas id="tipoDocChart"></canvas></div></div>
-        <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Top 10 Clientes Deudores</div><div class="chart-subtitle">Mayor saldo en cartera</div></div></div><div class="chart-container"><canvas id="topClientesChart"></canvas></div></div>
-        <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Cartera por Vendedor</div><div class="chart-subtitle">Top 10 con mayor cartera</div></div></div><div class="chart-container"><canvas id="vendedorChart"></canvas></div></div>
+      <!-- Análisis por usuario -->
+      <div class="chart-card" style="margin-bottom:20px;">
+        <div class="chart-header"><div><div class="chart-title">Análisis por usuario</div><div class="chart-subtitle">Saldo en cartera y % saldo en mora por vendedor</div></div></div>
+        <div id="ccVendedorBarChart" class="ec-chart" style="height:420px;"></div>
       </div>
-    </div>
 
-    <div class="tab-content" id="tab-evolution">
-      <div class="charts-grid">
-        <div class="chart-card full"><div class="chart-header"><div><div class="chart-title">Evolucion de Facturacion vs Recaudo</div><div class="chart-subtitle">Comparativo mensual historico</div></div></div><div class="chart-container tall"><canvas id="factVsRecaudoChart"></canvas></div></div>
-        <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Evolucion de Cartera Acumulada</div><div class="chart-subtitle">Saldo pendiente por mes</div></div></div><div class="chart-container"><canvas id="carteraEvolChart"></canvas></div></div>
-        <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Eficiencia de Recaudo Anual</div><div class="chart-subtitle">% recaudado vs facturado</div></div></div><div class="chart-container"><canvas id="eficienciaChart"></canvas></div></div>
-        <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Volumen de Pedidos vs Facturacion</div><div class="chart-subtitle">Tendencia mensual</div></div></div><div class="chart-container"><canvas id="pedidosChart"></canvas></div></div>
-        <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Recaudo Mensual</div><div class="chart-subtitle">Total recaudado por mes</div></div></div><div class="chart-container"><canvas id="recaudoChart"></canvas></div></div>
-      </div>
-    </div>
-
-    <div class="tab-content" id="tab-analisis">
-      <div class="chart-card" style="margin-bottom: 20px;"><div class="chart-header"><div><div class="chart-title">Curva de Pareto - Concentracion de Cartera</div><div class="chart-subtitle">% de clientes vs % del saldo total</div></div></div><div id="paretoContainer" style="padding: 10px 0;"></div></div>
-      <div class="insights-grid" id="analisisInsights"></div>
-      <div class="charts-grid">
-        <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Correlacion Ventas vs Recaudo</div><div class="chart-subtitle">Analisis mensual cruzado</div></div></div><div class="chart-container"><canvas id="correlacionChart"></canvas></div></div>
-        <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Cartera Vencida vs Corriente por Vendedor</div><div class="chart-subtitle">Top 15 vendedores</div></div></div><div class="chart-container"><canvas id="vendedorStackedChart"></canvas></div></div>
-      </div>
-    </div>
-
-    <div class="tab-content" id="tab-sellers">
-      <div class="kpi-grid" id="sellersKpiGrid"></div>
-      <div class="charts-grid">
-        <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Cartera por Vendedor</div><div class="chart-subtitle">Comparativo de saldo total</div></div></div><div class="chart-container"><canvas id="sellersChart"></canvas></div></div>
-        <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Vencido vs Corriente</div><div class="chart-subtitle">Por vendedor</div></div></div><div class="chart-container"><canvas id="sellersStackedChart"></canvas></div></div>
-        <div class="chart-card full"><div class="chart-header"><div><div class="chart-title">Rendimiento del Equipo</div><div class="chart-subtitle">Documentos, cartera y pedidos</div></div></div><div class="chart-container tall"><canvas id="sellersPerformanceChart"></canvas></div></div>
-      </div>
-      <div class="chart-card" style="margin-top: 20px;"><div class="chart-header"><div><div class="chart-title">Detalle de Vendedores</div><div class="chart-subtitle">Datos completos del equipo de ventas</div></div></div><div class="table-wrapper"><table class="data-table" id="sellersTable"><thead><tr><th>Codigo</th><th>Nombre</th><th>Email</th><th>Telefono</th><th>Documentos</th><th>Cartera</th><th>Vencido</th><th>Pedidos</th><th>Ventas</th></tr></thead><tbody id="sellersBody"></tbody></table></div></div>
-    </div>
-
-    <div class="tab-content" id="tab-products">
-      <div class="kpi-grid" id="productsKpiGrid"></div>
-      <div class="charts-grid">
-        <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Top Productos por Stock</div><div class="chart-subtitle">Mayor cantidad en inventario</div></div></div><div class="chart-container"><canvas id="productsStockChart"></canvas></div></div>
-        <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Valor de Inventario</div><div class="chart-subtitle">Stock x Precio unitario</div></div></div><div class="chart-container"><canvas id="inventoryValueChart"></canvas></div></div>
-      </div>
-      <div class="chart-card" style="margin-top: 20px;"><div class="chart-header"><div><div class="chart-title">Inventario Detallado</div><div class="chart-subtitle">Productos con stock disponible</div></div></div><div class="table-wrapper"><table class="data-table" id="inventoryTable"><thead><tr><th>Codigo</th><th>Producto</th><th>Bodega</th><th>Cantidad</th><th>Disponible</th><th>Valor</th></tr></thead><tbody id="inventoryBody"></tbody></table></div></div>
-    </div>
-
-    <div class="tab-content" id="tab-tablas">
-      <div class="filters">
-        <span class="filter-label">Buscar:</span>
-        <input type="text" class="search-input" id="searchInput" placeholder="Cliente, vendedor, documento...">
-        <span class="filter-label">Vendedor:</span>
-        <select id="filterVendedor"><option value="">Todos</option></select>
-      </div>
-      <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Top Clientes Deudores</div><div class="chart-subtitle">Ordenable por columnas</div></div></div><div class="table-wrapper"><table class="data-table" id="clientesTable"><thead><tr><th data-col="codigo">Codigo</th><th data-col="nombre">Cliente</th><th data-col="nit">NIT</th><th data-col="ciudad">Ciudad</th><th data-col="documentos">Docs</th><th data-col="saldo">Saldo Total</th><th data-col="saldo_vencido">Saldo Vencido</th><th data-col="saldo_base">Saldo Original</th><th data-col="pct_vencido">% Vencido</th></tr></thead><tbody id="clientesBody"></tbody></table></div></div>
-      <div class="chart-card" style="margin-top: 20px;"><div class="chart-header"><div><div class="chart-title">Cartera por Vendedor</div><div class="chart-subtitle">Detalle completo</div></div></div><div class="table-wrapper"><table class="data-table" id="vendedoresTable"><thead><tr><th data-col="codigo">Codigo</th><th data-col="nombre">Vendedor</th><th data-col="documentos">Docs</th><th data-col="saldo_total">Saldo Total</th><th data-col="saldo_vencido">Vencido</th><th data-col="saldo_corriente">Corriente</th><th data-col="dias_mora_promedio">Dias Mora Prom.</th></tr></thead><tbody id="vendedoresBody"></tbody></table></div></div>
-    </div>
-
-    <div class="tab-content" id="tab-sync">
-      <div class="chart-card" style="margin-bottom: 20px;">
-        <div class="chart-header"><div><div class="chart-title">Estado de Sincronizacion</div><div class="chart-subtitle">Conexion con RSales API</div></div></div>
-        <div id="syncStatusContainer" style="padding: 20px;">
-          <div id="syncStatusText" style="font-size: 14px; color: var(--text-secondary); line-height: 2;">
-            Cargando estado...
-          </div>
+      <!-- Table: Saldo por usuario -->
+      <div class="chart-card" style="margin-bottom:20px;">
+        <div class="chart-header"><div><div class="chart-title">Saldo en cartera y % en mora por usuario</div></div></div>
+        <div class="table-wrapper" style="max-height:400px;">
+          <table class="data-table" id="ccVendedorTable">
+            <thead><tr>
+              <th>Usuario</th><th>Saldo total en cartera</th><th>Saldo en mora</th>
+              <th>Saldo corriente</th><th>% Saldo en mora</th><th>Cant. facturas</th>
+            </tr></thead>
+            <tbody id="ccVendedorBody"></tbody>
+          </table>
         </div>
       </div>
-      <div class="chart-card">
-        <div class="chart-header"><div><div class="chart-title">Endpoints Sincronizados</div><div class="chart-subtitle">Registros por modulo</div></div></div>
-        <div id="syncEndpointsContainer" style="padding: 20px;">
-          <div style="font-size: 14px; color: var(--text-secondary);">Ejecuta una sincronizacion para ver los detalles.</div>
+
+      <!-- Table: Detalle edad cartera -->
+      <div class="chart-card" style="margin-bottom:20px;">
+        <div class="chart-header"><div><div class="chart-title">Detalle edad cartera</div></div></div>
+        <div class="table-wrapper" style="max-height:380px;">
+          <table class="data-table" id="ccAgingTable">
+            <thead><tr>
+              <th>Usuario</th><th>0) Sin vencer</th><th>1) 0-30 días</th><th>2) 31-60 días</th>
+              <th>3) 61-90 días</th><th>4) 91-120 días</th><th>5) 120+ días</th><th>Total</th>
+            </tr></thead>
+            <tbody id="ccAgingBody"></tbody>
+          </table>
         </div>
+      </div>
+
+      <!-- Saldo por cobrador -->
+      <div class="chart-card" style="margin-bottom:20px;">
+        <div class="chart-header"><div><div class="chart-title">Saldo en cartera por cobrador</div></div></div>
+        <div id="ccCobradorChart" class="ec-chart" style="height:360px;"></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════ TAB: CARTERA CLIENTE ═══════════════════════ -->
+    <div class="bi-tab-content" id="bitab-cliente">
+      <div class="bi-data-source">📊 Fuente: Excel SQL Server · 2,854 clientes únicos con cartera pendiente</div>
+      <div class="bi-filters">
+        <div class="bi-filter-group"><label>Estado cartera</label><select id="cc-estado-cl"><option value="">Todas</option><option value="mora">Vencida</option><option value="corriente">Al Día</option></select></div>
+        <div class="bi-filter-group"><label>Tipo de cliente</label><select id="cc-tipo-cl"><option value="">Todos</option><option>Persona Natural</option><option>Empresa</option></select></div>
+        <div class="bi-filter-group"><label>Buscar cliente</label><input type="text" id="cc-cliente-search" placeholder="Nombre o NIT…"></div>
+      </div>
+
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Saldo en cartera y cantidad de facturas por estado</div></div></div>
+          <div id="ccClienteEstadoChart" class="ec-chart" style="height:300px;"></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Estado de cartera por edad</div></div></div>
+          <div id="ccClienteEdadChart" class="ec-chart" style="height:300px;"></div>
+        </div>
+      </div>
+
+      <!-- Saldo por tipo de documento -->
+      <div class="chart-card" style="margin-bottom:20px;">
+        <div class="chart-header"><div><div class="chart-title">Saldo en cartera y % en mora por Tipo de documento</div></div></div>
+        <div id="ccTipoDocChart" class="ec-chart" style="height:340px;"></div>
+      </div>
+
+      <!-- Table: Análisis por cliente -->
+      <div class="chart-card" style="margin-bottom:20px;">
+        <div class="chart-header"><div><div class="chart-title">Análisis por cliente</div><div class="chart-subtitle">Saldo en cartera, % mora, saldo mora y cantidad de facturas</div></div></div>
+        <div class="filters" style="margin-bottom:12px;">
+          <span class="filter-label">Buscar:</span>
+          <input type="text" class="search-input" id="cc-cliente-table-search" placeholder="Nombre, NIT, ciudad…" style="width:220px;">
+        </div>
+        <div class="table-wrapper" style="max-height:420px;">
+          <table class="data-table" id="ccClienteTable">
+            <thead><tr>
+              <th>Cliente</th><th>Ciudad</th><th>Saldo corriente</th><th>Saldo en mora</th>
+              <th>Saldo en cartera</th><th>% Mora</th><th>Cant. facturas</th>
+            </tr></thead>
+            <tbody id="ccClienteBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Table: Detalle edad cartera por cliente -->
+      <div class="chart-card" style="margin-bottom:20px;">
+        <div class="chart-header"><div><div class="chart-title">Detalle edad cartera por cliente</div></div></div>
+        <div class="table-wrapper" style="max-height:360px;">
+          <table class="data-table" id="ccClienteAgingTable">
+            <thead><tr>
+              <th>Cliente</th><th>0) Sin vencer</th><th>1) 0-30 días</th><th>2) 31-60 días</th>
+              <th>3) 61-90 días</th><th>4) 91-120 días</th><th>5) 120+ días</th><th>Total</th>
+            </tr></thead>
+            <tbody id="ccClienteAgingBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Evolución mensual cartera -->
+      <div class="chart-card" style="margin-bottom:20px;">
+        <div class="chart-header"><div><div class="chart-title">Evolución mensual de la cartera</div><div class="chart-subtitle">Saldo total y clientes con deuda pendiente por mes</div></div></div>
+        <div id="ccTimelineChart" class="ec-chart" style="height:340px;"></div>
       </div>
     </div>
   </div>
@@ -540,6 +626,8 @@
     let chartInstances = {};
     const renderedTabs = new Set();
     let authToken = localStorage.getItem('authToken');
+    let CARTERA_BI_DATA = null;
+    let ecInstances = {}; // ECharts instances tracker
 
     // ─── Section Navigation ────────────────────────────────
     let currentSection = 'control-cartera';
@@ -574,7 +662,15 @@
           requestAnimationFrame(() => requestAnimationFrame(() => renderInicioSection()));
         } else if (sectionId === 'resumen-gestion') {
           requestAnimationFrame(() => requestAnimationFrame(() => renderResumenGestion()));
+        } else if (sectionId === 'control-cartera') {
+          requestAnimationFrame(() => requestAnimationFrame(() => {
+            if (!CARTERA_BI_DATA) loadCarteraData();
+            else renderCarteraBI();
+          }));
         }
+      } else if (sectionId === 'control-cartera') {
+        // Re-render charts on every revisit (resize fix)
+        requestAnimationFrame(() => requestAnimationFrame(() => resizeEChartsAll()));
       }
     }
 
@@ -1442,11 +1538,6 @@
       });
     });
 
-    document.getElementById('searchInput').addEventListener('input', (e) => {
-      const q = e.target.value.toLowerCase();
-      document.querySelectorAll('#clientesBody tr').forEach(row => { row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none'; });
-    });
-
     async function loadDashboardData(forceRefresh = false) {
       const resp = await fetch('/api/data' + (forceRefresh ? '?refresh=true' : ''), {
         headers: { 'Authorization': 'Bearer ' + authToken }
@@ -1530,6 +1621,416 @@
         btn.textContent = '🔄 Sincronizar';
       }
     });
+
+    // ─── CONTROL DE CARTERA — ECharts BI ──────────────────
+    function fmtBil(n) {
+      if (!n && n !== 0) return '—';
+      const abs = Math.abs(n);
+      if (abs >= 1e12) return '$' + (n/1e12).toFixed(2) + 'T';
+      if (abs >= 1e9)  return '$' + (n/1e9).toFixed(2) + 'B';
+      if (abs >= 1e6)  return '$' + (n/1e6).toFixed(1) + 'M';
+      if (abs >= 1e3)  return '$' + (n/1e3).toFixed(0) + 'K';
+      return '$' + n.toLocaleString('es-CO');
+    }
+    function fmtBilAxis(n) {
+      const abs = Math.abs(n);
+      if (abs >= 1e12) return (n/1e12).toFixed(1)+'T';
+      if (abs >= 1e9)  return (n/1e9).toFixed(1)+'B';
+      if (abs >= 1e6)  return (n/1e6).toFixed(0)+'M';
+      return n.toLocaleString('es-CO');
+    }
+    function resizeEChartsAll() {
+      Object.values(ecInstances).forEach(ec => { try { ec.resize(); } catch(e){} });
+    }
+    window.addEventListener('resize', resizeEChartsAll);
+
+    function ecInit(id, opts) {
+      if (ecInstances[id]) { try { ecInstances[id].dispose(); } catch(e){} }
+      const el = document.getElementById(id);
+      if (!el) return null;
+      const ec = echarts.init(el, 'dark', { renderer: 'canvas' });
+      ec.setOption(opts);
+      ecInstances[id] = ec;
+      return ec;
+    }
+
+    const EC_BG = 'transparent';
+    const EC_TEXT = '#94a3b8';
+    const EC_GRID = 'rgba(51,65,85,0.4)';
+    const EC_BLUE = '#3b82f6';
+    const EC_RED = '#ef4444';
+    const EC_GREEN = '#10b981';
+    const EC_YELLOW = '#f59e0b';
+    const EC_AGING_COLORS = ['#10b981','#f59e0b','#fb923c','#f87171','#ef4444','#dc2626'];
+
+    async function loadCarteraData() {
+      document.getElementById('ccLoading').style.display = 'flex';
+      document.getElementById('ccKpiBar').style.display = 'none';
+      document.getElementById('ccBiTabs').style.display = 'none';
+      try {
+        const resp = await fetch('/api/cartera-data', {
+          headers: authToken ? { 'Authorization': 'Bearer ' + authToken } : {}
+        });
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        const json = await resp.json();
+        CARTERA_BI_DATA = json.data;
+        renderCarteraBI();
+      } catch(err) {
+        document.getElementById('ccLoading').innerHTML = '<span style="color:var(--accent-red)">Error cargando datos: ' + err.message + '</span>';
+        console.error('loadCarteraData:', err);
+      }
+    }
+
+    function renderCarteraBI() {
+      if (!CARTERA_BI_DATA) return;
+      const d = CARTERA_BI_DATA;
+      document.getElementById('ccLoading').style.display = 'none';
+      document.getElementById('ccKpiBar').style.display = 'flex';
+      document.getElementById('ccBiTabs').style.display = 'flex';
+
+      // KPIs
+      const k = d.kpis || {};
+      document.getElementById('cc-saldo-total').textContent = fmtBil(k.saldo_total);
+      document.getElementById('cc-total-docs').textContent = (k.total_docs || '—') + ' documentos';
+      document.getElementById('cc-saldo-mora').textContent = fmtBil(k.cartera_vencida);
+      document.getElementById('cc-pct-mora').textContent = (k.pct_vencida || 0).toFixed(1) + '%';
+      document.getElementById('cc-saldo-corriente').textContent = fmtBil((k.saldo_total||0) - (k.cartera_vencida||0));
+      document.getElementById('cc-total-vendedores').textContent = k.total_vendedores || '—';
+      document.getElementById('cc-vend-con-saldo').textContent = (d.vendors || []).filter(v=>v.saldo>0).length + ' con saldo';
+      document.getElementById('cc-total-clientes').textContent = k.total_clientes || '—';
+      document.getElementById('cc-clientes-mora').textContent = (d.customers||[]).filter(c=>c.saldo_vencido>0).length + ' en mora (top 200)';
+
+      // Populate vendor select
+      const vendSel = document.getElementById('cc-vend-sel');
+      if (vendSel.options.length <= 1) {
+        (d.vendors || []).forEach(v => {
+          const opt = document.createElement('option'); opt.value = v.cod_vendedor; opt.textContent = v.vendedor;
+          vendSel.appendChild(opt);
+        });
+      }
+
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        renderCCEstadoChart();
+        renderCCEdadChart();
+        renderCCVendedorBarChart();
+        renderCCVendedorTable();
+        renderCCAgingTable();
+        renderCCCobradorChart();
+        renderCCClienteEstadoChart();
+        renderCCClienteEdadChart();
+        renderCCTipoDocChart();
+        renderCCClienteTable();
+        renderCCClienteAgingTable();
+        renderCCTimelineChart();
+      }));
+    }
+
+    // Tab switching for BI tabs
+    document.querySelectorAll('.bi-tab').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const tab = this.dataset.bitab;
+        document.querySelectorAll('.bi-tab').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.bi-tab-content').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+        const tc = document.getElementById('bitab-' + tab);
+        if (tc) tc.classList.add('active');
+        requestAnimationFrame(() => requestAnimationFrame(() => resizeEChartsAll()));
+      });
+    });
+
+    function renderCCEstadoChart() {
+      const d = CARTERA_BI_DATA;
+      if (!d || !d.estado) return;
+      const ven = d.estado.vencido || {};
+      const cor = d.estado.corriente || {};
+      ecInit('ccEstadoChart', {
+        backgroundColor: EC_BG,
+        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: params => {
+          let s = params[0].name + '<br/>';
+          params.forEach(p => { s += p.marker + ' ' + p.seriesName + ': ' + (p.seriesIndex===0 ? fmtBil(p.value) : Number(p.value).toLocaleString('es-CO')) + '<br/>'; });
+          return s;
+        }},
+        legend: { data: ['Saldo en cartera','Cant. facturas'], textStyle:{ color: EC_TEXT }, bottom: 0 },
+        grid: { left: '10%', right: '12%', top: '8%', bottom: '12%' },
+        xAxis: { type: 'category', data: ['Vencido','Al Día'], axisLabel: { color: EC_TEXT } },
+        yAxis: [
+          { type: 'value', name: 'Saldo', axisLabel: { color: EC_TEXT, formatter: fmtBilAxis }, splitLine: { lineStyle:{ color: EC_GRID } } },
+          { type: 'value', name: 'Facturas', position: 'right', axisLabel: { color: EC_TEXT }, splitLine: { show: false } }
+        ],
+        series: [
+          { name: 'Saldo en cartera', type: 'bar', barMaxWidth: 80,
+            data: [
+              { value: Math.max(0, ven.saldo||0), itemStyle:{ color: EC_RED } },
+              { value: Math.max(0, cor.saldo||0), itemStyle:{ color: EC_GREEN } }
+            ]
+          },
+          { name: 'Cant. facturas', type: 'line', yAxisIndex: 1, symbol: 'circle', symbolSize: 8,
+            itemStyle:{ color: EC_BLUE }, lineStyle:{ width: 2 },
+            data: [ven.docs||0, cor.docs||0]
+          }
+        ]
+      });
+    }
+
+    function renderCCEdadChart() {
+      const d = CARTERA_BI_DATA;
+      if (!d || !d.aging_bi) return;
+      ecInit('ccEdadChart', {
+        backgroundColor: EC_BG,
+        tooltip: { trigger: 'item', formatter: p => p.name + '<br/>' + fmtBil(p.value) + ' (' + p.percent + '%)' },
+        legend: { orient: 'vertical', right: '5%', top: 'center', textStyle:{ color: EC_TEXT, fontSize: 11 } },
+        series: [{
+          name: 'Edad cartera', type: 'pie', radius: ['38%','65%'], center: ['40%','50%'],
+          avoidLabelOverlap: true,
+          label: { show: false },
+          data: d.aging_bi.map((b,i) => ({
+            value: Math.max(0, b.saldo||0), name: b.label,
+            itemStyle:{ color: EC_AGING_COLORS[i] }
+          }))
+        }]
+      });
+    }
+
+    function renderCCVendedorBarChart() {
+      const d = CARTERA_BI_DATA;
+      if (!d || !d.vendors) return;
+      const vendors = d.vendors.slice(0, 20);
+      ecInit('ccVendedorBarChart', {
+        backgroundColor: EC_BG,
+        tooltip: { trigger: 'axis', axisPointer:{ type:'shadow' },
+          formatter: params => {
+            let s = params[0].axisValueLabel + '<br/>';
+            params.forEach(p => { s += p.marker + ' ' + p.seriesName + ': ' + (p.seriesIndex < 2 ? fmtBil(p.value) : p.value?.toFixed(1)+'%') + '<br/>'; });
+            return s;
+          }
+        },
+        legend: { data: ['Saldo corriente','Saldo mora','% Mora'], textStyle:{ color: EC_TEXT }, bottom: 0 },
+        grid: { left: '12%', right: '10%', top: '8%', bottom: '14%' },
+        xAxis: [{ type: 'category', data: vendors.map(v => v.vendedor.substring(0,18)), axisLabel: { color: EC_TEXT, rotate: 35, fontSize: 10 } }],
+        yAxis: [
+          { type: 'value', name: 'Saldo', axisLabel: { color: EC_TEXT, formatter: fmtBilAxis }, splitLine: { lineStyle:{ color: EC_GRID } } },
+          { type: 'value', name: '% Mora', max: 100, min: 0, position: 'right', axisLabel: { color: EC_TEXT, formatter: v => v+'%' }, splitLine: { show: false } }
+        ],
+        series: [
+          { name: 'Saldo corriente', type: 'bar', stack: 'saldo', itemStyle:{ color: EC_GREEN },
+            data: vendors.map(v => Math.max(0, v.saldo_corriente||0)) },
+          { name: 'Saldo mora', type: 'bar', stack: 'saldo', itemStyle:{ color: EC_RED },
+            data: vendors.map(v => Math.max(0, v.saldo_vencido||0)) },
+          { name: '% Mora', type: 'line', yAxisIndex: 1, symbol: 'circle', symbolSize: 6,
+            itemStyle:{ color: EC_YELLOW }, lineStyle:{ width: 2 },
+            data: vendors.map(v => v.pct_vencido||0) }
+        ]
+      });
+    }
+
+    function renderCCVendedorTable() {
+      const d = CARTERA_BI_DATA;
+      if (!d || !d.vendors) return;
+      const tbody = document.getElementById('ccVendedorBody');
+      const rows = d.vendors.map(v => {
+        const pct = v.pct_vencido || 0;
+        const badge = pct > 70 ? 'high' : pct > 30 ? 'mid' : 'low';
+        return `<tr>
+          <td>${v.vendedor}</td>
+          <td style="text-align:right;">${fmtBil(v.saldo)}</td>
+          <td style="text-align:right;color:var(--accent-red);">${fmtBil(v.saldo_vencido)}</td>
+          <td style="text-align:right;color:var(--accent-green);">${fmtBil(v.saldo_corriente)}</td>
+          <td style="text-align:center;"><span class="mora-badge ${badge}">${pct.toFixed(1)}%</span></td>
+          <td style="text-align:right;">${(v.docs||0).toLocaleString('es-CO')}</td>
+        </tr>`;
+      });
+      tbody.innerHTML = rows.join('');
+    }
+
+    function renderCCAgingTable() {
+      const d = CARTERA_BI_DATA;
+      if (!d || !d.vendors) return;
+      const tbody = document.getElementById('ccAgingBody');
+      const rows = d.vendors.map(v => {
+        const ag = v.aging || {};
+        const corriente = ag.corriente || 0;
+        const d30 = ag['1_30'] || ag['_30'] || 0;
+        const d60 = ag['31_60'] || 0;
+        const d90 = ag['61_90'] || 0;
+        const d120 = ag['91_180'] || 0;
+        const dmas = (ag['181_360']||0) + (ag['mas_360']||0);
+        const total = v.saldo || 0;
+        return `<tr>
+          <td>${v.vendedor}</td>
+          <td style="text-align:right;color:${EC_GREEN};">${fmtBil(corriente)}</td>
+          <td style="text-align:right;">${fmtBil(d30)}</td>
+          <td style="text-align:right;">${fmtBil(d60)}</td>
+          <td style="text-align:right;">${fmtBil(d90)}</td>
+          <td style="text-align:right;color:var(--accent-yellow);">${fmtBil(d120)}</td>
+          <td style="text-align:right;color:var(--accent-red);">${fmtBil(dmas)}</td>
+          <td style="text-align:right;font-weight:700;">${fmtBil(total)}</td>
+        </tr>`;
+      });
+      tbody.innerHTML = rows.join('');
+    }
+
+    function renderCCCobradorChart() {
+      const d = CARTERA_BI_DATA;
+      if (!d || !d.cobrador) return;
+      const cobs = d.cobrador.filter(c => c.cod !== '101').slice(0, 15);
+      ecInit('ccCobradorChart', {
+        backgroundColor: EC_BG,
+        tooltip: { trigger: 'axis', axisPointer:{ type:'shadow' },
+          formatter: params => params[0].name + '<br/>' + params.map(p => p.marker + ' ' + p.seriesName + ': ' + fmtBil(p.value)).join('<br/>') },
+        legend: { data: ['Saldo corriente','Saldo mora'], textStyle:{ color: EC_TEXT }, bottom: 0 },
+        grid: { left: '14%', right: '5%', top: '5%', bottom: '12%' },
+        xAxis: { type: 'value', axisLabel:{ color: EC_TEXT, formatter: fmtBilAxis }, splitLine:{ lineStyle:{ color: EC_GRID } } },
+        yAxis: { type: 'category', data: cobs.map(c => 'Cobrador ' + c.cod).reverse(), axisLabel:{ color: EC_TEXT, fontSize: 11 } },
+        series: [
+          { name: 'Saldo corriente', type: 'bar', stack: 'saldo', itemStyle:{ color: EC_GREEN },
+            data: cobs.map(c => Math.max(0,(c.saldo||0)-(c.saldo_vencido||0))).reverse() },
+          { name: 'Saldo mora', type: 'bar', stack: 'saldo', itemStyle:{ color: EC_RED },
+            data: cobs.map(c => Math.max(0, c.saldo_vencido||0)).reverse() }
+        ]
+      });
+    }
+
+    // ── Cliente tab charts ──
+    function renderCCClienteEstadoChart() {
+      const d = CARTERA_BI_DATA;
+      if (!d || !d.estado) return;
+      const ven = d.estado.vencido || {};
+      const cor = d.estado.corriente || {};
+      ecInit('ccClienteEstadoChart', {
+        backgroundColor: EC_BG,
+        tooltip: { trigger: 'axis', axisPointer:{ type:'shadow' } },
+        legend: { data: ['Saldo en cartera','Cant. clientes'], textStyle:{ color: EC_TEXT }, bottom: 0 },
+        grid: { left: '10%', right: '12%', top: '8%', bottom: '12%' },
+        xAxis: { type: 'category', data: ['Vencido','Al Día'], axisLabel:{ color: EC_TEXT } },
+        yAxis: [
+          { type: 'value', name: 'Saldo', axisLabel:{ color: EC_TEXT, formatter: fmtBilAxis }, splitLine:{ lineStyle:{ color: EC_GRID } } },
+          { type: 'value', name: 'Clientes', position: 'right', axisLabel:{ color: EC_TEXT }, splitLine:{ show: false } }
+        ],
+        series: [
+          { name: 'Saldo en cartera', type: 'bar', barMaxWidth: 80,
+            data: [{ value: Math.max(0,ven.saldo||0), itemStyle:{ color: EC_RED } }, { value: Math.max(0,cor.saldo||0), itemStyle:{ color: EC_GREEN } }] },
+          { name: 'Cant. clientes', type: 'line', yAxisIndex: 1, symbol: 'circle', symbolSize: 8,
+            itemStyle:{ color: EC_BLUE }, lineStyle:{ width: 2 },
+            data: [d.kpis?.total_clientes||0, 0] }
+        ]
+      });
+    }
+
+    function renderCCClienteEdadChart() {
+      const d = CARTERA_BI_DATA;
+      if (!d || !d.aging_bi) return;
+      ecInit('ccClienteEdadChart', {
+        backgroundColor: EC_BG,
+        tooltip: { trigger: 'item', formatter: p => p.name + '<br/>' + fmtBil(p.value) + ' (' + p.percent + '%)' },
+        legend: { orient: 'vertical', right: '5%', top: 'center', textStyle:{ color: EC_TEXT, fontSize: 11 } },
+        series: [{
+          name: 'Edad cartera', type: 'pie', radius: ['38%','65%'], center: ['40%','50%'],
+          label: { show: false },
+          data: d.aging_bi.map((b,i) => ({ value: Math.max(0,b.saldo||0), name: b.label, itemStyle:{ color: EC_AGING_COLORS[i] } }))
+        }]
+      });
+    }
+
+    function renderCCTipoDocChart() {
+      const d = CARTERA_BI_DATA;
+      if (!d || !d.tipo_doc_grouped) return;
+      const items = d.tipo_doc_grouped;
+      ecInit('ccTipoDocChart', {
+        backgroundColor: EC_BG,
+        tooltip: { trigger: 'axis', axisPointer:{ type:'shadow' },
+          formatter: params => params[0].axisValueLabel + '<br/>' + params.map(p => p.marker + ' ' + p.seriesName + ': ' + (p.seriesIndex===0 ? fmtBil(p.value) : p.value?.toFixed(1)+'%')).join('<br/>') },
+        legend: { data: ['Saldo en cartera','% Mora'], textStyle:{ color: EC_TEXT }, bottom: 0 },
+        grid: { left: '10%', right: '10%', top: '8%', bottom: '12%' },
+        xAxis: { type: 'category', data: items.map(i => i.label), axisLabel:{ color: EC_TEXT } },
+        yAxis: [
+          { type: 'value', name: 'Saldo', axisLabel:{ color: EC_TEXT, formatter: fmtBilAxis }, splitLine:{ lineStyle:{ color: EC_GRID } } },
+          { type: 'value', name: '% Mora', max: 100, position: 'right', axisLabel:{ color: EC_TEXT, formatter: v => v+'%' }, splitLine:{ show: false } }
+        ],
+        series: [
+          { name: 'Saldo en cartera', type: 'bar', barMaxWidth: 90,
+            data: items.map((i,idx) => ({ value: Math.max(0,i.saldo||0), itemStyle:{ color: [EC_BLUE,EC_GREEN,'#a78bfa','#f97316'][idx] || EC_BLUE } })) },
+          { name: '% Mora', type: 'line', yAxisIndex: 1, symbol: 'circle', symbolSize: 7,
+            itemStyle:{ color: EC_RED }, lineStyle:{ width: 2 },
+            data: items.map(i => i.pct_vencido||0) }
+        ]
+      });
+    }
+
+    function renderCCClienteTable(filter) {
+      const d = CARTERA_BI_DATA;
+      if (!d || !d.customers) return;
+      const q = (filter || '').toLowerCase();
+      const rows = d.customers.filter(c => !q || c.nombre_cliente?.toLowerCase().includes(q) || c.nit?.toLowerCase().includes(q) || c.ciudad?.toLowerCase().includes(q)).map(c => {
+        const pct = c.pct_vencido || 0;
+        const badge = pct > 70 ? 'high' : pct > 30 ? 'mid' : 'low';
+        return `<tr>
+          <td>${c.nombre_cliente||'—'}</td>
+          <td>${c.ciudad||'—'}</td>
+          <td style="text-align:right;color:var(--accent-green);">${fmtBil(c.saldo_corriente)}</td>
+          <td style="text-align:right;color:var(--accent-red);">${fmtBil(c.saldo_vencido)}</td>
+          <td style="text-align:right;font-weight:700;">${fmtBil(c.saldo)}</td>
+          <td style="text-align:center;"><span class="mora-badge ${badge}">${pct.toFixed(1)}%</span></td>
+          <td style="text-align:right;">${(c.docs||0).toLocaleString('es-CO')}</td>
+        </tr>`;
+      });
+      document.getElementById('ccClienteBody').innerHTML = rows.join('');
+    }
+
+    document.getElementById('cc-cliente-table-search').addEventListener('input', e => {
+      renderCCClienteTable(e.target.value);
+    });
+
+    function renderCCClienteAgingTable() {
+      const d = CARTERA_BI_DATA;
+      if (!d || !d.customers) return;
+      const tbody = document.getElementById('ccClienteAgingBody');
+      const rows = d.customers.map(c => {
+        const ag = c.aging || {};
+        const corriente = ag.corriente || 0;
+        const d30 = ag['1_30'] || 0;
+        const d60 = ag['31_60'] || 0;
+        const d90 = ag['61_90'] || 0;
+        const d120 = ag['91_180'] || 0;
+        const dmas = (ag['181_360']||0) + (ag['mas_360']||0);
+        return `<tr>
+          <td>${c.nombre_cliente||'—'}</td>
+          <td style="text-align:right;color:${EC_GREEN};">${fmtBil(corriente)}</td>
+          <td style="text-align:right;">${fmtBil(d30)}</td>
+          <td style="text-align:right;">${fmtBil(d60)}</td>
+          <td style="text-align:right;">${fmtBil(d90)}</td>
+          <td style="text-align:right;color:var(--accent-yellow);">${fmtBil(d120)}</td>
+          <td style="text-align:right;color:var(--accent-red);">${fmtBil(dmas)}</td>
+          <td style="text-align:right;font-weight:700;">${fmtBil(c.saldo)}</td>
+        </tr>`;
+      });
+      tbody.innerHTML = rows.join('');
+    }
+
+    function renderCCTimelineChart() {
+      const d = CARTERA_BI_DATA;
+      if (!d || !d.period) return;
+      const periods = d.period.slice(-18);
+      ecInit('ccTimelineChart', {
+        backgroundColor: EC_BG,
+        tooltip: { trigger: 'axis', axisPointer:{ type:'cross' },
+          formatter: params => params[0].name + '<br/>' + params.map(p => p.marker + ' ' + p.seriesName + ': ' + (p.seriesIndex === 0 ? fmtBil(p.value) : p.value?.toLocaleString('es-CO'))).join('<br/>') },
+        legend: { data: ['Saldo total','Clientes'], textStyle:{ color: EC_TEXT }, bottom: 0 },
+        grid: { left: '10%', right: '10%', top: '8%', bottom: '12%' },
+        xAxis: { type: 'category', data: periods.map(p => p.mes), axisLabel:{ color: EC_TEXT, rotate: 30, fontSize: 10 } },
+        yAxis: [
+          { type: 'value', name: 'Saldo', axisLabel:{ color: EC_TEXT, formatter: fmtBilAxis }, splitLine:{ lineStyle:{ color: EC_GRID } } },
+          { type: 'value', name: 'Clientes', position: 'right', axisLabel:{ color: EC_TEXT }, splitLine:{ show: false } }
+        ],
+        series: [
+          { name: 'Saldo total', type: 'bar', itemStyle:{ color: EC_BLUE, opacity: 0.8 }, data: periods.map(p => Math.max(0,p.saldo||0)) },
+          { name: 'Clientes', type: 'line', yAxisIndex: 1, symbol: 'circle', symbolSize: 5,
+            itemStyle:{ color: EC_GREEN }, lineStyle:{ width: 2 }, data: periods.map(p => p.clientes||0) }
+        ]
+      });
+    }
+
+    // Init CC on page load (since control-cartera is first/active section)
+    requestAnimationFrame(() => requestAnimationFrame(() => loadCarteraData()));
 
     init();
   </script>

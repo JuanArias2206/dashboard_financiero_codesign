@@ -312,6 +312,16 @@ app.get('/api/rsales-indicators', async (req, res) => {
   }
 });
 
+// ─── RUTA: Cartera Data (Excel-based BI) ──────
+app.get('/api/cartera-data', requireSession, (req, res) => {
+  try {
+    require('./api/cartera-data')(req, res);
+  } catch (err) {
+    console.error('[/api/cartera-data]', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ─── SPA fallback ─────────────────────────────
 app.get('*', (req, res) => {
   if (req.path.startsWith('/api')) {

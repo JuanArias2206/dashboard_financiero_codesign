@@ -1,0 +1,1745 @@
+[
+  {
+    "mes": "2015-12",
+    "cat": "Factura",
+    "docs": 28,
+    "saldo": 256425500,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2016-03",
+    "cat": "Factura",
+    "docs": 18,
+    "saldo": 6564263,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2016-06",
+    "cat": "Factura",
+    "docs": 1,
+    "saldo": 827206.96,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2016-12",
+    "cat": "Factura",
+    "docs": 6,
+    "saldo": 5314339.1899999995,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2017-01",
+    "cat": "Factura",
+    "docs": 1,
+    "saldo": 828827.33,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2017-02",
+    "cat": "Factura",
+    "docs": 3,
+    "saldo": 2835899,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2017-03",
+    "cat": "Factura",
+    "docs": 9,
+    "saldo": 26799262.44,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2017-04",
+    "cat": "Factura",
+    "docs": 3,
+    "saldo": 1555083,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2017-05",
+    "cat": "Factura",
+    "docs": 5,
+    "saldo": 232081,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2017-06",
+    "cat": "Factura",
+    "docs": 2,
+    "saldo": 441565,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2017-07",
+    "cat": "Factura",
+    "docs": 10,
+    "saldo": 43082711.769999996,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2017-08",
+    "cat": "Factura",
+    "docs": 6,
+    "saldo": 22593923.94,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2017-09",
+    "cat": "Factura",
+    "docs": 13,
+    "saldo": 35067443.31,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2017-10",
+    "cat": "Factura",
+    "docs": 19,
+    "saldo": 126616551.55999999,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2017-11",
+    "cat": "Factura",
+    "docs": 67,
+    "saldo": 148972066.43,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2017-12",
+    "cat": "Factura",
+    "docs": 132,
+    "saldo": 357989591.82,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2018-01",
+    "cat": "Factura",
+    "docs": 62,
+    "saldo": 174153867.23,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2018-02",
+    "cat": "Factura",
+    "docs": 143,
+    "saldo": 188775176.5,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2018-02",
+    "cat": "Recibo",
+    "docs": 1,
+    "saldo": 32003,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2018-03",
+    "cat": "Factura",
+    "docs": 162,
+    "saldo": 1363726916.54,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2018-03",
+    "cat": "Recibo",
+    "docs": 2,
+    "saldo": 73559,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2018-04",
+    "cat": "Factura",
+    "docs": 199,
+    "saldo": 516762022.21,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2018-04",
+    "cat": "Recibo",
+    "docs": 3,
+    "saldo": 109038,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2018-05",
+    "cat": "Factura",
+    "docs": 378,
+    "saldo": 508229665.36999995,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2018-05",
+    "cat": "Recibo",
+    "docs": 12,
+    "saldo": 326019,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2018-06",
+    "cat": "Factura",
+    "docs": 269,
+    "saldo": 369256918.56,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2018-06",
+    "cat": "Recibo",
+    "docs": 10,
+    "saldo": 8365100.48,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2018-07",
+    "cat": "Factura",
+    "docs": 409,
+    "saldo": 516494578.18,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2018-07",
+    "cat": "Recibo",
+    "docs": 3,
+    "saldo": 242382,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2018-08",
+    "cat": "Factura",
+    "docs": 296,
+    "saldo": 481541197.48999995,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2018-08",
+    "cat": "Recibo",
+    "docs": 5,
+    "saldo": 243910,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2018-09",
+    "cat": "Factura",
+    "docs": 286,
+    "saldo": 560566486.41,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2018-09",
+    "cat": "Recibo",
+    "docs": 2,
+    "saldo": 77360,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2018-10",
+    "cat": "Factura",
+    "docs": 321,
+    "saldo": 841444959.08,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2018-10",
+    "cat": "Recibo",
+    "docs": 3,
+    "saldo": 193307,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2018-11",
+    "cat": "Factura",
+    "docs": 358,
+    "saldo": 951120453.44,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2018-11",
+    "cat": "Recibo",
+    "docs": 4,
+    "saldo": 92214,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2018-12",
+    "cat": "Factura",
+    "docs": 228,
+    "saldo": 642598403.23,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2018-12",
+    "cat": "Recibo",
+    "docs": 1,
+    "saldo": 625993,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2019-01",
+    "cat": "Factura",
+    "docs": 122,
+    "saldo": 189291350.47999996,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2019-01",
+    "cat": "Recibo",
+    "docs": 1,
+    "saldo": 76816,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2019-02",
+    "cat": "Factura",
+    "docs": 268,
+    "saldo": 480430948.71000004,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2019-02",
+    "cat": "Recibo",
+    "docs": 7,
+    "saldo": 258789,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2019-03",
+    "cat": "Factura",
+    "docs": 282,
+    "saldo": 533731174.81,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2019-03",
+    "cat": "Recibo",
+    "docs": 3,
+    "saldo": 86168,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2019-04",
+    "cat": "Factura",
+    "docs": 301,
+    "saldo": 513634244.57000005,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2019-05",
+    "cat": "Factura",
+    "docs": 242,
+    "saldo": 475123598.86,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2019-05",
+    "cat": "Recibo",
+    "docs": 4,
+    "saldo": 113204,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2019-06",
+    "cat": "Factura",
+    "docs": 270,
+    "saldo": 491501158.55,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2019-06",
+    "cat": "Recibo",
+    "docs": 6,
+    "saldo": 190320,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2019-07",
+    "cat": "Factura",
+    "docs": 364,
+    "saldo": 595588805.99,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2019-07",
+    "cat": "Recibo",
+    "docs": 8,
+    "saldo": 398546,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2019-08",
+    "cat": "Factura",
+    "docs": 297,
+    "saldo": 482360753.22,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2019-08",
+    "cat": "Recibo",
+    "docs": 1,
+    "saldo": 27538,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2019-09",
+    "cat": "Factura",
+    "docs": 341,
+    "saldo": 1773700195.8299997,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2019-09",
+    "cat": "Recibo",
+    "docs": 2,
+    "saldo": 407728.8,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2019-10",
+    "cat": "Factura",
+    "docs": 492,
+    "saldo": 596209227.4799999,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2019-10",
+    "cat": "Recibo",
+    "docs": 1,
+    "saldo": 13579.17,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2019-11",
+    "cat": "Factura",
+    "docs": 325,
+    "saldo": 840782142.6299999,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2019-12",
+    "cat": "Factura",
+    "docs": 345,
+    "saldo": 749057525.270001,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2019-12",
+    "cat": "Recibo",
+    "docs": 2,
+    "saldo": 21168,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2020-01",
+    "cat": "Factura",
+    "docs": 236,
+    "saldo": 428517647.1800001,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2020-01",
+    "cat": "Recibo",
+    "docs": 1,
+    "saldo": 300000,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2020-02",
+    "cat": "Factura",
+    "docs": 313,
+    "saldo": 503935002.09000015,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2020-02",
+    "cat": "Recibo",
+    "docs": 2,
+    "saldo": 440001.68,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2020-03",
+    "cat": "Factura",
+    "docs": 209,
+    "saldo": 222895610.4,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2020-03",
+    "cat": "Recibo",
+    "docs": 2,
+    "saldo": 51650,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2020-04",
+    "cat": "Factura",
+    "docs": 52,
+    "saldo": 31535826.80999999,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2020-05",
+    "cat": "Factura",
+    "docs": 357,
+    "saldo": 345427110.1899999,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2020-05",
+    "cat": "Nota",
+    "docs": 3,
+    "saldo": 1.5,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2020-06",
+    "cat": "Factura",
+    "docs": 386,
+    "saldo": 400567198.7900002,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2020-07",
+    "cat": "Factura",
+    "docs": 411,
+    "saldo": 610166557.2900001,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2020-07",
+    "cat": "Recibo",
+    "docs": 2,
+    "saldo": 58448,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2020-08",
+    "cat": "Factura",
+    "docs": 450,
+    "saldo": 607244451.2799999,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2020-09",
+    "cat": "Factura",
+    "docs": 351,
+    "saldo": 592244606.1299998,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2020-09",
+    "cat": "Recibo",
+    "docs": 1,
+    "saldo": 65444,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2020-10",
+    "cat": "Factura",
+    "docs": 336,
+    "saldo": 638873308.4800003,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2020-10",
+    "cat": "Recibo",
+    "docs": 1,
+    "saldo": 13009.52,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2020-11",
+    "cat": "Factura",
+    "docs": 475,
+    "saldo": 1174143842.9299994,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2020-12",
+    "cat": "Factura",
+    "docs": 353,
+    "saldo": 739503382.5100001,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2021-01",
+    "cat": "Factura",
+    "docs": 205,
+    "saldo": 282837619.79999995,
+    "saldo_base": 53428090.07
+  },
+  {
+    "mes": "2021-02",
+    "cat": "Factura",
+    "docs": 317,
+    "saldo": 532240326.71,
+    "saldo_base": 168377496.98000002
+  },
+  {
+    "mes": "2021-02",
+    "cat": "Nota",
+    "docs": 1,
+    "saldo": 9392.23,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2021-03",
+    "cat": "Factura",
+    "docs": 436,
+    "saldo": 546224809.6799998,
+    "saldo_base": 4145866
+  },
+  {
+    "mes": "2021-04",
+    "cat": "Factura",
+    "docs": 324,
+    "saldo": 547054616.2499998,
+    "saldo_base": 81027915.22
+  },
+  {
+    "mes": "2021-05",
+    "cat": "Factura",
+    "docs": 320,
+    "saldo": 480869883.05999994,
+    "saldo_base": 76808910
+  },
+  {
+    "mes": "2021-06",
+    "cat": "Factura",
+    "docs": 857,
+    "saldo": 1896497316.1000018,
+    "saldo_base": 1042857385.98
+  },
+  {
+    "mes": "2021-06",
+    "cat": "Recibo",
+    "docs": 9,
+    "saldo": 780000,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2021-07",
+    "cat": "Factura",
+    "docs": 414,
+    "saldo": 622532404.9099997,
+    "saldo_base": 162377249
+  },
+  {
+    "mes": "2021-08",
+    "cat": "Factura",
+    "docs": 581,
+    "saldo": 1825793140.0300014,
+    "saldo_base": 930605228.74
+  },
+  {
+    "mes": "2021-08",
+    "cat": "Nota",
+    "docs": 2,
+    "saldo": -281914,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2021-09",
+    "cat": "Factura",
+    "docs": 1064,
+    "saldo": 1617090911.4400072,
+    "saldo_base": 1742529525.8600001
+  },
+  {
+    "mes": "2021-10",
+    "cat": "Factura",
+    "docs": 723,
+    "saldo": 1116767511.5799983,
+    "saldo_base": 1014362469.0600001
+  },
+  {
+    "mes": "2021-10",
+    "cat": "Nota",
+    "docs": 8,
+    "saldo": -1240667.8599999999,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2021-11",
+    "cat": "Factura",
+    "docs": 1159,
+    "saldo": 2838944976.040005,
+    "saldo_base": 1468279671.3000004
+  },
+  {
+    "mes": "2021-11",
+    "cat": "Nota",
+    "docs": 12,
+    "saldo": -4234334.579999999,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2021-12",
+    "cat": "Factura",
+    "docs": 935,
+    "saldo": 164537973387.10013,
+    "saldo_base": 137358590715.52
+  },
+  {
+    "mes": "2021-12",
+    "cat": "Nota",
+    "docs": 12,
+    "saldo": -7976091.08,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2022-01",
+    "cat": "Factura",
+    "docs": 447,
+    "saldo": 633427260.3699994,
+    "saldo_base": 535315049.76
+  },
+  {
+    "mes": "2022-01",
+    "cat": "Nota",
+    "docs": 12,
+    "saldo": -14014246,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2022-01",
+    "cat": "Recibo",
+    "docs": 2,
+    "saldo": 70067816.16,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2022-02",
+    "cat": "Factura",
+    "docs": 787,
+    "saldo": 1188798957.290001,
+    "saldo_base": 1078203356.32
+  },
+  {
+    "mes": "2022-02",
+    "cat": "Nota",
+    "docs": 4,
+    "saldo": -123917.1,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2022-03",
+    "cat": "Factura",
+    "docs": 944,
+    "saldo": 1587637965.3000016,
+    "saldo_base": 1624911593.26
+  },
+  {
+    "mes": "2022-04",
+    "cat": "Factura",
+    "docs": 656,
+    "saldo": 1093636419.7399979,
+    "saldo_base": 990478636
+  },
+  {
+    "mes": "2022-04",
+    "cat": "Nota",
+    "docs": 16,
+    "saldo": -14304334.379999999,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2022-05",
+    "cat": "Factura",
+    "docs": 893,
+    "saldo": 1331943468.0499988,
+    "saldo_base": 1436632605.3600001
+  },
+  {
+    "mes": "2022-05",
+    "cat": "Nota",
+    "docs": 13,
+    "saldo": -21093234,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2022-06",
+    "cat": "Factura",
+    "docs": 768,
+    "saldo": 1499805836.3399987,
+    "saldo_base": 1475585575.6599991
+  },
+  {
+    "mes": "2022-06",
+    "cat": "Nota",
+    "docs": 6,
+    "saldo": -5017974.539999999,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2022-07",
+    "cat": "Factura",
+    "docs": 896,
+    "saldo": 994529783.359999,
+    "saldo_base": 1391636470.8599997
+  },
+  {
+    "mes": "2022-07",
+    "cat": "Nota",
+    "docs": 39,
+    "saldo": -23211600.560000002,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2022-07",
+    "cat": "Recibo",
+    "docs": 2,
+    "saldo": 1996548.4,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2022-08",
+    "cat": "Factura",
+    "docs": 926,
+    "saldo": 1581585696.000002,
+    "saldo_base": 1633144359.28
+  },
+  {
+    "mes": "2022-08",
+    "cat": "Nota",
+    "docs": 10,
+    "saldo": -2074520.88,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2022-08",
+    "cat": "Recibo",
+    "docs": 1,
+    "saldo": 140000,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2022-09",
+    "cat": "Factura",
+    "docs": 912,
+    "saldo": 2153810863.839997,
+    "saldo_base": 2364858675.4499993
+  },
+  {
+    "mes": "2022-09",
+    "cat": "Nota",
+    "docs": 26,
+    "saldo": -11786158.399999999,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2022-10",
+    "cat": "Factura",
+    "docs": 857,
+    "saldo": 1031509774.6899986,
+    "saldo_base": 1266931230.7600005
+  },
+  {
+    "mes": "2022-10",
+    "cat": "Nota",
+    "docs": 36,
+    "saldo": -8103201.84,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2022-11",
+    "cat": "Factura",
+    "docs": 1110,
+    "saldo": 1909242759.469997,
+    "saldo_base": 2117241427.5400004
+  },
+  {
+    "mes": "2022-11",
+    "cat": "Nota",
+    "docs": 44,
+    "saldo": -4498244.689999999,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2022-11",
+    "cat": "Recibo",
+    "docs": 2,
+    "saldo": 107979.36,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2022-12",
+    "cat": "Factura",
+    "docs": 977,
+    "saldo": 1948105747.0299976,
+    "saldo_base": 2150355015.48
+  },
+  {
+    "mes": "2022-12",
+    "cat": "Nota",
+    "docs": 98,
+    "saldo": -25517168.87000001,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2022-12",
+    "cat": "Recibo",
+    "docs": 2,
+    "saldo": 4677434.2,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2023-01",
+    "cat": "Factura",
+    "docs": 965,
+    "saldo": 2207310802.5900006,
+    "saldo_base": 1911771319.0199997
+  },
+  {
+    "mes": "2023-01",
+    "cat": "Nota",
+    "docs": 35,
+    "saldo": -15041702.450000001,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2023-01",
+    "cat": "Recibo",
+    "docs": 29,
+    "saldo": 6564747.8999999985,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2023-02",
+    "cat": "Factura",
+    "docs": 776,
+    "saldo": 1358662482.4200015,
+    "saldo_base": 1590397195.4
+  },
+  {
+    "mes": "2023-02",
+    "cat": "Nota",
+    "docs": 530,
+    "saldo": -141356495.45,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2023-02",
+    "cat": "Recibo",
+    "docs": 293,
+    "saldo": 32269697.290000033,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2023-03",
+    "cat": "Factura",
+    "docs": 945,
+    "saldo": 1608162772.0999994,
+    "saldo_base": 1778890706.3999999
+  },
+  {
+    "mes": "2023-03",
+    "cat": "Nota",
+    "docs": 306,
+    "saldo": -60102537.44000001,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2023-03",
+    "cat": "Recibo",
+    "docs": 129,
+    "saldo": 8268827.729999998,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2023-04",
+    "cat": "Factura",
+    "docs": 935,
+    "saldo": 1817115765.5699987,
+    "saldo_base": 1557156374.8599992
+  },
+  {
+    "mes": "2023-04",
+    "cat": "Nota",
+    "docs": 400,
+    "saldo": -157627389.59999985,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2023-04",
+    "cat": "Recibo",
+    "docs": 315,
+    "saldo": 33551215.629999995,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2023-05",
+    "cat": "Factura",
+    "docs": 988,
+    "saldo": 1709582104.7900016,
+    "saldo_base": 1542211113.2299998
+  },
+  {
+    "mes": "2023-05",
+    "cat": "Nota",
+    "docs": 407,
+    "saldo": -69412005.12000003,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2023-05",
+    "cat": "Recibo",
+    "docs": 283,
+    "saldo": 25294770.890000038,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2023-06",
+    "cat": "Factura",
+    "docs": 900,
+    "saldo": 1998898823.6200013,
+    "saldo_base": 1893395135.8600001
+  },
+  {
+    "mes": "2023-06",
+    "cat": "Nota",
+    "docs": 345,
+    "saldo": -88181096.69999996,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2023-06",
+    "cat": "Recibo",
+    "docs": 301,
+    "saldo": 38574264.569999985,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2023-07",
+    "cat": "Factura",
+    "docs": 1098,
+    "saldo": 1871379582.2300038,
+    "saldo_base": 1721718215.18
+  },
+  {
+    "mes": "2023-07",
+    "cat": "Nota",
+    "docs": 496,
+    "saldo": -214082089.30000004,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2023-07",
+    "cat": "Recibo",
+    "docs": 286,
+    "saldo": 34855003.389999986,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2023-08",
+    "cat": "Factura",
+    "docs": 953,
+    "saldo": 2572207815.209998,
+    "saldo_base": 2724238141.0500007
+  },
+  {
+    "mes": "2023-08",
+    "cat": "Nota",
+    "docs": 525,
+    "saldo": -107859117.85000014,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2023-08",
+    "cat": "Recibo",
+    "docs": 333,
+    "saldo": 39843356.76000001,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2023-09",
+    "cat": "Factura",
+    "docs": 1155,
+    "saldo": 1635394341.6700037,
+    "saldo_base": 1566698453.8
+  },
+  {
+    "mes": "2023-09",
+    "cat": "Nota",
+    "docs": 355,
+    "saldo": -54202237.779999994,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2023-09",
+    "cat": "Recibo",
+    "docs": 344,
+    "saldo": 58747635.929999985,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2023-10",
+    "cat": "Factura",
+    "docs": 992,
+    "saldo": 1598228067.8699985,
+    "saldo_base": 1896570372.5499992
+  },
+  {
+    "mes": "2023-10",
+    "cat": "Nota",
+    "docs": 434,
+    "saldo": -1143304120.4200041,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2023-10",
+    "cat": "Recibo",
+    "docs": 260,
+    "saldo": 22045924.11000001,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2023-11",
+    "cat": "Factura",
+    "docs": 1379,
+    "saldo": 2712134803.9699926,
+    "saldo_base": 2513148251.470001
+  },
+  {
+    "mes": "2023-11",
+    "cat": "Nota",
+    "docs": 594,
+    "saldo": -143028645.0799998,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2023-11",
+    "cat": "Recibo",
+    "docs": 240,
+    "saldo": 57076847.43999998,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2023-12",
+    "cat": "Factura",
+    "docs": 986,
+    "saldo": 2549957760.539998,
+    "saldo_base": 2204189708.8
+  },
+  {
+    "mes": "2023-12",
+    "cat": "Nota",
+    "docs": 477,
+    "saldo": -294755314.5499998,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2023-12",
+    "cat": "Recibo",
+    "docs": 480,
+    "saldo": 86557003.6000001,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2024-01",
+    "cat": "Factura",
+    "docs": 961,
+    "saldo": 1377800343.3599985,
+    "saldo_base": 1385626782.1999998
+  },
+  {
+    "mes": "2024-01",
+    "cat": "Nota",
+    "docs": 311,
+    "saldo": -74410065.62999998,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2024-01",
+    "cat": "Recibo",
+    "docs": 296,
+    "saldo": 51560706.800000004,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2024-02",
+    "cat": "Factura",
+    "docs": 745,
+    "saldo": 1225260797.850002,
+    "saldo_base": 1371906537.610001
+  },
+  {
+    "mes": "2024-02",
+    "cat": "Nota",
+    "docs": 515,
+    "saldo": -134029185.04999995,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2024-02",
+    "cat": "Recibo",
+    "docs": 291,
+    "saldo": 20124672.360000007,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2024-03",
+    "cat": "Factura",
+    "docs": 671,
+    "saldo": 1039718953.0899998,
+    "saldo_base": 1095848019.06
+  },
+  {
+    "mes": "2024-03",
+    "cat": "Nota",
+    "docs": 205,
+    "saldo": -62631162.870000035,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2024-03",
+    "cat": "Recibo",
+    "docs": 153,
+    "saldo": 12002698.169999994,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2024-04",
+    "cat": "Factura",
+    "docs": 1032,
+    "saldo": 2144707829.790002,
+    "saldo_base": 2182908934.73
+  },
+  {
+    "mes": "2024-04",
+    "cat": "Nota",
+    "docs": 300,
+    "saldo": -44956743.23,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2024-04",
+    "cat": "Recibo",
+    "docs": 179,
+    "saldo": 14480898.120000003,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2024-05",
+    "cat": "Factura",
+    "docs": 774,
+    "saldo": 1614895694.0099976,
+    "saldo_base": 1519003748.93
+  },
+  {
+    "mes": "2024-05",
+    "cat": "Nota",
+    "docs": 167,
+    "saldo": -135828823.9500002,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2024-05",
+    "cat": "Recibo",
+    "docs": 269,
+    "saldo": 46883663.15999995,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2024-06",
+    "cat": "Factura",
+    "docs": 914,
+    "saldo": 2269648473.0100045,
+    "saldo_base": 2055681136.1199996
+  },
+  {
+    "mes": "2024-06",
+    "cat": "Nota",
+    "docs": 190,
+    "saldo": -245596531053.9,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2024-06",
+    "cat": "Recibo",
+    "docs": 66,
+    "saldo": 3661790.3800000018,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2024-07",
+    "cat": "Factura",
+    "docs": 947,
+    "saldo": 1248427412.5099993,
+    "saldo_base": 1290688432.29
+  },
+  {
+    "mes": "2024-07",
+    "cat": "Nota",
+    "docs": 327,
+    "saldo": -48332312.280000046,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2024-07",
+    "cat": "Recibo",
+    "docs": 221,
+    "saldo": 30507320.160000026,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2024-08",
+    "cat": "Factura",
+    "docs": 955,
+    "saldo": 2226033771.190002,
+    "saldo_base": 2221313858.5699997
+  },
+  {
+    "mes": "2024-08",
+    "cat": "Nota",
+    "docs": 251,
+    "saldo": -97687634.26999998,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2024-08",
+    "cat": "Recibo",
+    "docs": 185,
+    "saldo": 22068069.159999996,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2024-09",
+    "cat": "Factura",
+    "docs": 842,
+    "saldo": 2008980222.43,
+    "saldo_base": 2123049398.9599996
+  },
+  {
+    "mes": "2024-09",
+    "cat": "Nota",
+    "docs": 612,
+    "saldo": -188672478.35000008,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2024-09",
+    "cat": "Recibo",
+    "docs": 404,
+    "saldo": 129348354.51999998,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2024-10",
+    "cat": "Factura",
+    "docs": 853,
+    "saldo": 1256532106.4299977,
+    "saldo_base": 1256531525.0599992
+  },
+  {
+    "mes": "2024-10",
+    "cat": "Nota",
+    "docs": 335,
+    "saldo": -141178077.67999992,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2024-10",
+    "cat": "Recibo",
+    "docs": 151,
+    "saldo": 15441351.56999999,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2024-11",
+    "cat": "Factura",
+    "docs": 1153,
+    "saldo": 1735152661.2399988,
+    "saldo_base": 2034546622.7599971
+  },
+  {
+    "mes": "2024-11",
+    "cat": "Nota",
+    "docs": 201,
+    "saldo": -60433980.84000001,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2024-11",
+    "cat": "Recibo",
+    "docs": 243,
+    "saldo": 52025781.870000035,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2024-12",
+    "cat": "Factura",
+    "docs": 1228,
+    "saldo": 1758113662.6799998,
+    "saldo_base": 1962635996.3599992
+  },
+  {
+    "mes": "2024-12",
+    "cat": "Nota",
+    "docs": 610,
+    "saldo": -141999622.54999977,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2024-12",
+    "cat": "Recibo",
+    "docs": 484,
+    "saldo": 99496806.74999996,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2025-01",
+    "cat": "Factura",
+    "docs": 669,
+    "saldo": 989337277.4400007,
+    "saldo_base": 1033715426.8000004
+  },
+  {
+    "mes": "2025-01",
+    "cat": "Nota",
+    "docs": 496,
+    "saldo": -109178462.69999984,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2025-01",
+    "cat": "Recibo",
+    "docs": 578,
+    "saldo": 66207790.55999996,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2025-02",
+    "cat": "Factura",
+    "docs": 820,
+    "saldo": 1284654720.1599994,
+    "saldo_base": 1396781195.8000004
+  },
+  {
+    "mes": "2025-02",
+    "cat": "Nota",
+    "docs": 364,
+    "saldo": -97086835.21000002,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2025-02",
+    "cat": "Recibo",
+    "docs": 170,
+    "saldo": 16958279.080000013,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2025-03",
+    "cat": "Factura",
+    "docs": 793,
+    "saldo": 1562829042.1799982,
+    "saldo_base": 1463153594.1399977
+  },
+  {
+    "mes": "2025-03",
+    "cat": "Nota",
+    "docs": 403,
+    "saldo": -61971404.24999996,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2025-03",
+    "cat": "Recibo",
+    "docs": 281,
+    "saldo": 21206684.400000017,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2025-04",
+    "cat": "Factura",
+    "docs": 761,
+    "saldo": 1337456691.9100018,
+    "saldo_base": 1447921987.1999984
+  },
+  {
+    "mes": "2025-04",
+    "cat": "Nota",
+    "docs": 334,
+    "saldo": -107469765.50000006,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2025-04",
+    "cat": "Recibo",
+    "docs": 221,
+    "saldo": 26710280.14000001,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2025-05",
+    "cat": "Factura",
+    "docs": 906,
+    "saldo": 1742252550.8000028,
+    "saldo_base": 1925814375.7199981
+  },
+  {
+    "mes": "2025-05",
+    "cat": "Nota",
+    "docs": 442,
+    "saldo": -104839062.65000004,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2025-05",
+    "cat": "Recibo",
+    "docs": 206,
+    "saldo": 36139622.379999965,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2025-06",
+    "cat": "Factura",
+    "docs": 634,
+    "saldo": 951183840.7399998,
+    "saldo_base": 1088125890.5999997
+  },
+  {
+    "mes": "2025-06",
+    "cat": "Nota",
+    "docs": 379,
+    "saldo": -129361095.85000005,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2025-06",
+    "cat": "Recibo",
+    "docs": 376,
+    "saldo": 84892534.73999994,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2025-07",
+    "cat": "Factura",
+    "docs": 956,
+    "saldo": 1701905866.7800038,
+    "saldo_base": 1757324209.7799976
+  },
+  {
+    "mes": "2025-07",
+    "cat": "Nota",
+    "docs": 122,
+    "saldo": -29554993.510000005,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2025-07",
+    "cat": "Recibo",
+    "docs": 320,
+    "saldo": 32743777.799999956,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2025-08",
+    "cat": "Factura",
+    "docs": 821,
+    "saldo": 1994439137.6000004,
+    "saldo_base": 2091067272.939997
+  },
+  {
+    "mes": "2025-08",
+    "cat": "Nota",
+    "docs": 58,
+    "saldo": -19566266.660000008,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2025-08",
+    "cat": "Recibo",
+    "docs": 306,
+    "saldo": 68630227.03000006,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2025-09",
+    "cat": "Factura",
+    "docs": 766,
+    "saldo": 1293241235.4700048,
+    "saldo_base": 1391478250.269997
+  },
+  {
+    "mes": "2025-09",
+    "cat": "Nota",
+    "docs": 162,
+    "saldo": -130971228.56999992,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2025-09",
+    "cat": "Recibo",
+    "docs": 454,
+    "saldo": 112225938.36999995,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2025-10",
+    "cat": "Factura",
+    "docs": 810,
+    "saldo": 2052332547.3400016,
+    "saldo_base": 1997712640.159997
+  },
+  {
+    "mes": "2025-10",
+    "cat": "Nota",
+    "docs": 74,
+    "saldo": -23623127.680000007,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2025-10",
+    "cat": "Recibo",
+    "docs": 375,
+    "saldo": 63055630.740000024,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2025-11",
+    "cat": "Factura",
+    "docs": 893,
+    "saldo": 2312334853.069999,
+    "saldo_base": 2318696335.3199997
+  },
+  {
+    "mes": "2025-11",
+    "cat": "Nota",
+    "docs": 104,
+    "saldo": -67850231.53999996,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2025-11",
+    "cat": "Recibo",
+    "docs": 363,
+    "saldo": 67451731.32000002,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2025-12",
+    "cat": "Factura",
+    "docs": 926,
+    "saldo": 2123810291.1600022,
+    "saldo_base": 2161214984.7599974
+  },
+  {
+    "mes": "2025-12",
+    "cat": "Nota",
+    "docs": 185,
+    "saldo": -68551605.86999999,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2025-12",
+    "cat": "Recibo",
+    "docs": 488,
+    "saldo": 80020893.58000012,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2026-01",
+    "cat": "Factura",
+    "docs": 637,
+    "saldo": 2330578424.039996,
+    "saldo_base": 2248710655.289998
+  },
+  {
+    "mes": "2026-01",
+    "cat": "Nota",
+    "docs": 73,
+    "saldo": -8437215.240000002,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2026-01",
+    "cat": "Recibo",
+    "docs": 376,
+    "saldo": 51411221.52000008,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2026-02",
+    "cat": "Factura",
+    "docs": 713,
+    "saldo": 1172501183.9299998,
+    "saldo_base": 1601829459.799999
+  },
+  {
+    "mes": "2026-02",
+    "cat": "Nota",
+    "docs": 88,
+    "saldo": -82993112.30999999,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2026-02",
+    "cat": "Recibo",
+    "docs": 305,
+    "saldo": 23100262.210000005,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2026-03",
+    "cat": "Factura",
+    "docs": 720,
+    "saldo": 2150113769.9500003,
+    "saldo_base": 2072806965.8600001
+  },
+  {
+    "mes": "2026-03",
+    "cat": "Nota",
+    "docs": 90,
+    "saldo": -21193087.690000013,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2026-03",
+    "cat": "Recibo",
+    "docs": 385,
+    "saldo": 41160961.469999954,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2026-04",
+    "cat": "Factura",
+    "docs": 777,
+    "saldo": 2533755218.5199943,
+    "saldo_base": 2272115959.4199986
+  },
+  {
+    "mes": "2026-04",
+    "cat": "Nota",
+    "docs": 166,
+    "saldo": -182307821.52999997,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2026-04",
+    "cat": "Recibo",
+    "docs": 303,
+    "saldo": 23181926.02000002,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2026-05",
+    "cat": "Factura",
+    "docs": 79,
+    "saldo": 87092612.65999998,
+    "saldo_base": 74418613
+  },
+  {
+    "mes": "2026-05",
+    "cat": "Nota",
+    "docs": 25,
+    "saldo": -2799174.6699999995,
+    "saldo_base": 0
+  },
+  {
+    "mes": "2026-05",
+    "cat": "Recibo",
+    "docs": 31,
+    "saldo": 3737134.1999999997,
+    "saldo_base": 0
+  }
+]

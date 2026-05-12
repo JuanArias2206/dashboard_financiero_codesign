@@ -1,0 +1,212 @@
+[
+  {
+    "cod": "101",
+    "docs": 4994,
+    "saldo": 163119090582.25964,
+    "saldo_vencido": 163118371865.09964,
+    "pct_vencido": 100
+  },
+  {
+    "cod": "132",
+    "docs": 6375,
+    "saldo": 8561933557.310001,
+    "saldo_vencido": 8378655793.749993,
+    "pct_vencido": 97.9
+  },
+  {
+    "cod": "33",
+    "docs": 8781,
+    "saldo": 8036593105.749992,
+    "saldo_vencido": 7779337552.469987,
+    "pct_vencido": 96.8
+  },
+  {
+    "cod": "44",
+    "docs": 10115,
+    "saldo": 7297399740.960003,
+    "saldo_vencido": 7223948606.340012,
+    "pct_vencido": 99
+  },
+  {
+    "cod": "7",
+    "docs": 240,
+    "saldo": 6700865845.239999,
+    "saldo_vencido": 6691188874.719998,
+    "pct_vencido": 99.9
+  },
+  {
+    "cod": "47",
+    "docs": 6832,
+    "saldo": 6164028682.600008,
+    "saldo_vencido": 5980928391.250007,
+    "pct_vencido": 97
+  },
+  {
+    "cod": "157",
+    "docs": 236,
+    "saldo": 5100548494.740004,
+    "saldo_vencido": 5100548494.740004,
+    "pct_vencido": 100
+  },
+  {
+    "cod": "71",
+    "docs": 7894,
+    "saldo": 4901889255.530012,
+    "saldo_vencido": 4744239608.270019,
+    "pct_vencido": 96.8
+  },
+  {
+    "cod": "129",
+    "docs": 8143,
+    "saldo": 4629861334.009988,
+    "saldo_vencido": 4549107922.669983,
+    "pct_vencido": 98.3
+  },
+  {
+    "cod": "23",
+    "docs": 539,
+    "saldo": 3800668856.2700014,
+    "saldo_vencido": 3721557025.490001,
+    "pct_vencido": 97.9
+  },
+  {
+    "cod": "19",
+    "docs": 584,
+    "saldo": 3392481656.009999,
+    "saldo_vencido": 3235317796.349999,
+    "pct_vencido": 95.4
+  },
+  {
+    "cod": "9999",
+    "docs": 1322,
+    "saldo": 3190492526.3000035,
+    "saldo_vencido": 3179773801.8700037,
+    "pct_vencido": 99.7
+  },
+  {
+    "cod": "17",
+    "docs": 394,
+    "saldo": 2834301773.06,
+    "saldo_vencido": 2735401912.7,
+    "pct_vencido": 96.5
+  },
+  {
+    "cod": "1",
+    "docs": 1062,
+    "saldo": 2761558152.830001,
+    "saldo_vencido": 2761558152.830001,
+    "pct_vencido": 100
+  },
+  {
+    "cod": "135",
+    "docs": 5871,
+    "saldo": 2723694156.149993,
+    "saldo_vencido": 2631780360.1099977,
+    "pct_vencido": 96.6
+  },
+  {
+    "cod": "25",
+    "docs": 4713,
+    "saldo": 2542959464.9100003,
+    "saldo_vencido": 2492719617.15,
+    "pct_vencido": 98
+  },
+  {
+    "cod": "21",
+    "docs": 415,
+    "saldo": 2322134020.29,
+    "saldo_vencido": 2274318941.369999,
+    "pct_vencido": 97.9
+  },
+  {
+    "cod": "10",
+    "docs": 369,
+    "saldo": 1763871936.830001,
+    "saldo_vencido": 1741350289.4500012,
+    "pct_vencido": 98.7
+  },
+  {
+    "cod": "140",
+    "docs": 583,
+    "saldo": 1496430606.2700016,
+    "saldo_vencido": 1496282775.1100016,
+    "pct_vencido": 100
+  },
+  {
+    "cod": "141",
+    "docs": 5255,
+    "saldo": 1261567944.1799972,
+    "saldo_vencido": 1182590891.3000016,
+    "pct_vencido": 93.7
+  },
+  {
+    "cod": "102",
+    "docs": 150,
+    "saldo": 1132666441,
+    "saldo_vencido": 1132666441,
+    "pct_vencido": 100
+  },
+  {
+    "cod": "38",
+    "docs": 764,
+    "saldo": 1068581212.89,
+    "saldo_vencido": 1068581212.89,
+    "pct_vencido": 100
+  },
+  {
+    "cod": "43",
+    "docs": 1372,
+    "saldo": 934590423.6099999,
+    "saldo_vencido": 934590423.6099999,
+    "pct_vencido": 100
+  },
+  {
+    "cod": "73",
+    "docs": 114,
+    "saldo": 921862284.8199996,
+    "saldo_vencido": 921862284.8199996,
+    "pct_vencido": 100
+  },
+  {
+    "cod": "143",
+    "docs": 2788,
+    "saldo": 911085955.7500008,
+    "saldo_vencido": 882940236.1100019,
+    "pct_vencido": 96.9
+  },
+  {
+    "cod": "40",
+    "docs": 207,
+    "saldo": 773035144.4300001,
+    "saldo_vencido": 773035144.4300001,
+    "pct_vencido": 100
+  },
+  {
+    "cod": "144",
+    "docs": 1805,
+    "saldo": 707846377.1899987,
+    "saldo_vencido": 661256937.8299996,
+    "pct_vencido": 93.4
+  },
+  {
+    "cod": "142",
+    "docs": 195,
+    "saldo": 705416590.53,
+    "saldo_vencido": 674752767.6600001,
+    "pct_vencido": 95.7
+  },
+  {
+    "cod": "154",
+    "docs": 309,
+    "saldo": 622662523.73,
+    "saldo_vencido": 607232116.8899999,
+    "pct_vencido": 97.5
+  },
+  {
+    "cod": "31",
+    "docs": 225,
+    "saldo": 569401756.7299995,
+    "saldo_vencido": 530845906.66999966,
+    "pct_vencido": 93.2
+  }
+]
