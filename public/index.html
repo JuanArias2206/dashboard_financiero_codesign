@@ -346,19 +346,19 @@
         <!-- Saldo por estado + Cant. facturas -->
         <div class="chart-card">
           <div class="chart-header"><div><div class="chart-title">Saldo en cartera y cantidad de facturas por estado</div></div></div>
-          <div style="height:300px;position:relative;"><canvas id="ccEstadoChart"></canvas></div>
+          <div style="height:300px;position:relative;width:100%;"><canvas id="ccEstadoChart"></canvas></div>
         </div>
         <!-- Estado de cartera por edad (donut) -->
         <div class="chart-card">
           <div class="chart-header"><div><div class="chart-title">Estado de cartera por edad</div></div></div>
-          <div style="height:300px;position:relative;"><canvas id="ccEdadChart"></canvas></div>
+          <div style="height:300px;position:relative;width:100%;"><canvas id="ccEdadChart"></canvas></div>
         </div>
       </div>
 
       <!-- Análisis por usuario -->
       <div class="chart-card" style="margin-bottom:20px;">
         <div class="chart-header"><div><div class="chart-title">Análisis por usuario</div><div class="chart-subtitle">Saldo en cartera y % saldo en mora por vendedor</div></div></div>
-        <div style="height:420px;position:relative;"><canvas id="ccVendedorBarChart"></canvas></div>
+        <div style="height:420px;position:relative;width:100%;"><canvas id="ccVendedorBarChart"></canvas></div>
       </div>
 
       <!-- Table: Saldo por usuario -->
@@ -392,7 +392,7 @@
       <!-- Saldo por cobrador -->
       <div class="chart-card" style="margin-bottom:20px;">
         <div class="chart-header"><div><div class="chart-title">Saldo en cartera por cobrador</div></div></div>
-        <div style="height:360px;position:relative;"><canvas id="ccCobradorChart"></canvas></div>
+        <div style="height:360px;position:relative;width:100%;"><canvas id="ccCobradorChart"></canvas></div>
       </div>
     </div>
 
@@ -410,18 +410,18 @@
       <div class="charts-grid">
         <div class="chart-card">
           <div class="chart-header"><div><div class="chart-title">Saldo en cartera y cantidad de facturas por estado</div></div></div>
-          <div style="height:300px;position:relative;"><canvas id="ccClienteEstadoChart"></canvas></div>
+          <div style="height:300px;position:relative;width:100%;"><canvas id="ccClienteEstadoChart"></canvas></div>
         </div>
         <div class="chart-card">
           <div class="chart-header"><div><div class="chart-title">Estado de cartera por edad</div></div></div>
-          <div style="height:300px;position:relative;"><canvas id="ccClienteEdadChart"></canvas></div>
+          <div style="height:300px;position:relative;width:100%;"><canvas id="ccClienteEdadChart"></canvas></div>
         </div>
       </div>
 
       <!-- Saldo por tipo de documento -->
       <div class="chart-card" style="margin-bottom:20px;">
         <div class="chart-header"><div><div class="chart-title">Saldo en cartera y % en mora por Tipo de documento</div></div></div>
-        <div style="height:340px;position:relative;"><canvas id="ccTipoDocChart"></canvas></div>
+        <div style="height:340px;position:relative;width:100%;"><canvas id="ccTipoDocChart"></canvas></div>
       </div>
 
       <!-- Table: Análisis por cliente -->
@@ -466,7 +466,7 @@
             <button class="rgc-period-btn" data-ccperiod="0">Todo</button>
           </div>
         </div>
-        <div style="height:340px;position:relative;"><canvas id="ccTimelineChart"></canvas></div>
+        <div style="height:340px;position:relative;width:100%;"><canvas id="ccTimelineChart"></canvas></div>
       </div>
     </div>
   </div>
@@ -626,7 +626,7 @@
       <div class="chart-card full"><div class="chart-header"><div><div class="chart-title">Gestiones acumuladas</div><div class="chart-subtitle">Evolución acumulada en el período · Fuente: RSales API</div></div></div><div class="chart-container tall"><canvas id="rgcAcumuladoChart"></canvas></div></div>
       <div class="chart-card full">
         <div class="chart-header"><div><div class="chart-title">Evolución mensual de cartera</div><div class="chart-subtitle">Saldo vencido y corriente por mes · Fuente: Excel SQL Server</div></div></div>
-        <div style="height:300px;position:relative;"><canvas id="rgcEvolucionMensualChart"></canvas></div>
+        <div style="height:300px;position:relative;width:100%;"><canvas id="rgcEvolucionMensualChart"></canvas></div>
       </div>
     </div>
   </div>
@@ -667,24 +667,24 @@
       <div class="charts-grid">
         <div class="chart-card">
           <div class="chart-header"><div><div class="chart-title">Documentos de recaudo por tipo</div><div class="chart-subtitle">Facturas, Recibos y Notas del período · Excel</div></div></div>
-          <div style="height:300px;position:relative;"><canvas id="rrTipoChart"></canvas></div>
+          <div style="height:300px;position:relative;width:100%;"><canvas id="rrTipoChart"></canvas></div>
         </div>
         <div class="chart-card">
           <div class="chart-header"><div><div class="chart-title">Estado de cartera (mora vs al día)</div><div class="chart-subtitle">Distribución actual · Excel</div></div></div>
-          <div style="height:300px;position:relative;"><canvas id="rrEstadoChart"></canvas></div>
+          <div style="height:300px;position:relative;width:100%;"><canvas id="rrEstadoChart"></canvas></div>
         </div>
       </div>
 
       <!-- Evolución mensual recibos -->
       <div class="chart-card" style="margin-bottom:20px;">
         <div class="chart-header"><div><div class="chart-title">Evolución mensual — Recibos y Facturas</div><div class="chart-subtitle">Historial de documentos por mes · Excel</div></div></div>
-        <div style="height:340px;position:relative;"><canvas id="rrEvolucionChart"></canvas></div>
+        <div style="height:340px;position:relative;width:100%;"><canvas id="rrEvolucionChart"></canvas></div>
       </div>
 
       <!-- Análisis por vendedor -->
       <div class="chart-card" style="margin-bottom:20px;">
         <div class="chart-header"><div><div class="chart-title">Análisis por vendedor</div><div class="chart-subtitle">Saldo en cartera y % mora · Excel</div></div></div>
-        <div style="height:380px;position:relative;"><canvas id="rrVendedorChart"></canvas></div>
+        <div style="height:380px;position:relative;width:100%;"><canvas id="rrVendedorChart"></canvas></div>
       </div>
 
       <!-- Tabla vendedores -->
@@ -702,11 +702,11 @@
       <div class="charts-grid">
         <div class="chart-card">
           <div class="chart-header"><div><div class="chart-title">Cartera por edad (distribución)</div><div class="chart-subtitle">Saldo en cada bucket de mora · Excel</div></div></div>
-          <div style="height:300px;position:relative;"><canvas id="rrEdadChart"></canvas></div>
+          <div style="height:300px;position:relative;width:100%;"><canvas id="rrEdadChart"></canvas></div>
         </div>
         <div class="chart-card">
           <div class="chart-header"><div><div class="chart-title">Top clientes con mayor cartera</div><div class="chart-subtitle">Saldo total pendiente · Excel</div></div></div>
-          <div style="height:300px;position:relative;"><canvas id="rrTopClientesChart"></canvas></div>
+          <div style="height:300px;position:relative;width:100%;"><canvas id="rrTopClientesChart"></canvas></div>
         </div>
       </div>
 
@@ -781,7 +781,7 @@
           }));
         }
       } else if (sectionId === 'control-cartera') {
-        requestAnimationFrame(() => requestAnimationFrame(() => resizeEChartsAll()));
+        setTimeout(() => { if (CARTERA_BI_DATA) renderCarteraBI(); }, 100);
       } else if (sectionId === 'resumen-gestion') {
         setTimeout(() => { resizeEChartsAll(); if (CARTERA_BI_DATA) renderRGCExcelCharts(); }, 150);
       } else if (sectionId === 'reporte-recaudos') {
@@ -1209,7 +1209,23 @@
     function fmtFull(n) { if (n === null || n === undefined) return '-'; return '$' + Number(n).toLocaleString('es-CO', { maximumFractionDigits: 0 }); }
     function fmtPct(n) { return Number(n).toFixed(1) + '%'; }
     function fmtDate(isoStr) { if (!isoStr) return ''; const d = new Date(isoStr); return d.toLocaleDateString('es-CO', { month: 'short', year: 'numeric' }); }
-    function loadChart(id, config) { if (chartInstances[id]) chartInstances[id].destroy(); const ctx = document.getElementById(id); if (!ctx) return; chartInstances[id] = new Chart(ctx, config); }
+    function loadChart(id, config) {
+      if (chartInstances[id]) { try { chartInstances[id].destroy(); } catch(e){} delete chartInstances[id]; }
+      const ctx = document.getElementById(id);
+      if (!ctx) { console.warn('[loadChart] canvas not found:', id); return; }
+      // Reset canvas attributes so Chart.js re-reads container dimensions
+      ctx.removeAttribute('width'); ctx.removeAttribute('height');
+      ctx.style.width = '100%'; ctx.style.height = '100%';
+      // Ensure the parent has non-zero width before rendering
+      const parent = ctx.parentElement;
+      if (parent && parent.offsetWidth === 0) {
+        console.warn('[loadChart] parent has 0 width, retrying in 300ms:', id);
+        setTimeout(() => loadChart(id, config), 300);
+        return;
+      }
+      try { chartInstances[id] = new Chart(ctx, config); }
+      catch(e) { console.error('[loadChart] Chart.js error for', id, ':', e.message); }
+    }
     const chartDefaults = { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#94a3b8', font: { size: 12 }, padding: 16 } } }, scales: { x: { ticks: { color: '#64748b', font: { size: 11 } }, grid: { color: '#33415530' } }, y: { ticks: { color: '#64748b', font: { size: 11 } }, grid: { color: '#33415550' } } } };
     function getActiveData() { return CURRENT_DATA || ALL_DATA; }
 
@@ -1979,7 +1995,8 @@
         });
       }
 
-      requestAnimationFrame(() => requestAnimationFrame(() => {
+      // Use setTimeout so browser has time to paint and compute layout
+      setTimeout(() => {
         renderCCEstadoChart();
         renderCCEdadChart();
         renderCCVendedorBarChart();
@@ -1992,17 +2009,12 @@
         renderCCClienteTable();
         renderCCClienteAgingTable();
         renderCCTimelineChart();
-        // Extra resize pass after DOM paints
-        setTimeout(resizeEChartsAll, 250);
-        setTimeout(resizeEChartsAll, 800);
-        // Populate RGC year filter and update charts if section is visible
         populateRGCFilters();
         if (renderedSections.has('resumen-gestion')) setTimeout(renderRGCExcelCharts, 400);
-        // Force chart resize after DOM fully painted
-        setTimeout(resizeEChartsAll, 300);
-        setTimeout(resizeEChartsAll, 800);
-        setTimeout(resizeEChartsAll, 2000);
-      }));
+        // Resize Chart.js instances after DOM settles
+        setTimeout(() => { Object.values(chartInstances).forEach(c => { try { c.resize(); } catch(e){} }); }, 300);
+        setTimeout(() => { Object.values(chartInstances).forEach(c => { try { c.resize(); } catch(e){} }); }, 1000);
+      }, 200);
     }
 
     // Tab switching for BI tabs
@@ -2401,9 +2413,11 @@
         (d.vendors||[]).forEach(v => { const o=document.createElement('option');o.value=v.cod_vendedor;o.textContent=v.vendedor;vSel.appendChild(o); });
       }
 
-      renderRecaudosCharts();
-      setTimeout(resizeEChartsAll, 400);
-      setTimeout(resizeEChartsAll, 1000);
+      // Delay chart render so browser computes layout after display:block
+      setTimeout(() => {
+        renderRecaudosCharts();
+        setTimeout(() => { Object.values(chartInstances).forEach(c => { try { c.resize(); } catch(e){} }); }, 300);
+      }, 200);
     }
 
     function getRRFilters() {
