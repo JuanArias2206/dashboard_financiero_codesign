@@ -301,6 +301,17 @@ app.post('/api/reports/conversation', requireSession, async (req, res) => {
   }
 });
 
+// ─── RUTA: RSales Indicators ──────────────────
+app.get('/api/rsales-indicators', async (req, res) => {
+  try {
+    const handler = require('./api/rsales-indicators');
+    await handler(req, res);
+  } catch (err) {
+    console.error('[/api/rsales-indicators]', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ─── SPA fallback ─────────────────────────────
 app.get('*', (req, res) => {
   if (req.path.startsWith('/api')) {

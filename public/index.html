@@ -177,6 +177,27 @@
     .tx-legend-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
     .tx-legend-label { font-size: 14px; font-weight: 600; color: var(--text-primary); }
     .tx-legend-sub { font-size: 12px; color: var(--text-muted); }
+    /* ─── Custom date range picker ───────────────────── */
+    .rsales-custom-range { display: none; align-items: center; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+    .rsales-custom-range.visible { display: flex; }
+    .rsales-custom-range input[type="date"] { background: var(--bg-primary); border: 1px solid var(--border); color: var(--text-primary); padding: 6px 10px; border-radius: 6px; font-size: 13px; outline: none; }
+    .rsales-custom-range input[type="date"]:focus { border-color: var(--accent-blue); }
+    .rsales-apply-btn { padding: 6px 14px; background: var(--accent-blue); color: white; border: none; border-radius: 6px; font-size: 13px; cursor: pointer; }
+    .rsales-apply-btn:hover { opacity: 0.85; }
+    /* ─── Section loading ───────────────────────────── */
+    .section-loading { display: none; align-items: center; justify-content: center; gap: 10px; padding: 40px; color: var(--text-muted); font-size: 14px; }
+    .section-loading.visible { display: flex; }
+    .section-loading::before { content: ''; display: inline-block; width: 20px; height: 20px; border: 3px solid var(--border); border-top-color: var(--accent-blue); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    .api-note { font-size: 11px; color: var(--text-muted); padding: 8px 12px; background: rgba(59,130,246,0.08); border-radius: 6px; border-left: 3px solid var(--accent-blue); margin-bottom: 12px; }
+    /* ─── RGC period buttons ─────────────────────────── */
+    .rgc-period-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+    .rgc-period-btn { padding: 5px 12px; background: var(--bg-primary); border: 1px solid var(--border); color: var(--text-secondary); border-radius: 6px; font-size: 12px; cursor: pointer; transition: all 0.2s; }
+    .rgc-period-btn:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+    .rgc-period-btn.active { background: var(--accent-blue); border-color: var(--accent-blue); color: white; }
+    .rgc-custom-range { display: none; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .rgc-custom-range.visible { display: flex; }
+    .rgc-custom-range input[type="date"] { background: var(--bg-primary); border: 1px solid var(--border); color: var(--text-primary); padding: 5px 10px; border-radius: 6px; font-size: 12px; outline: none; }
+    .rgc-periodo-label { font-size: 12px; color: var(--accent-blue); font-weight: 600; margin-left: 4px; }
   </style>
 </head>
 <body>
@@ -361,8 +382,18 @@
       <button class="rsales-period-btn active" data-periodo="mes">Este mes</button>
       <button class="rsales-period-btn" data-periodo="mes-pasado">Mes pasado</button>
       <button class="rsales-period-btn" data-periodo="custom">Personalizado</button>
-      <span class="rsales-periodo-label" id="rsalesPeriodoLabel">Mayo 2026</span>
+      <span class="rsales-periodo-label" id="rsalesPeriodoLabel"></span>
+      <!-- Custom date range (hidden until "Personalizado" clicked) -->
+      <div class="rsales-custom-range" id="rsalesCustomRange">
+        <span style="font-size:12px;color:var(--text-muted);">Desde:</span>
+        <input type="date" id="rsalesDateFrom">
+        <span style="font-size:12px;color:var(--text-muted);">Hasta:</span>
+        <input type="date" id="rsalesDateTo">
+        <button class="rsales-apply-btn" id="rsalesApplyCustom">Aplicar</button>
+      </div>
     </div>
+    <!-- Loading state -->
+    <div class="section-loading" id="inicioLoading">Cargando datos RSales…</div>
     <!-- Row 1: Estado Agendas + Usuarios KPIs -->
     <div class="indicadores-grid">
       <div class="chart-card">
@@ -434,7 +465,25 @@
        ══════════════════════════════════════════════════════════ -->
   <div class="section-content" id="section-resumen-gestion">
   <div class="container">
-    <div class="rgc-updated" id="rgcUpdated">Datos actualizados al: 11/05/2026 12:45:29</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+      <div class="rgc-period-row">
+        <span style="font-size:12px;color:var(--text-muted);font-weight:600;margin-right:4px;">Período:</span>
+        <button class="rgc-period-btn" data-periodo="ayer">Ayer</button>
+        <button class="rgc-period-btn" data-periodo="hoy">Hoy</button>
+        <button class="rgc-period-btn" data-periodo="semana">Esta semana</button>
+        <button class="rgc-period-btn active" data-periodo="mes">Este mes</button>
+        <button class="rgc-period-btn" data-periodo="mes-pasado">Mes pasado</button>
+        <button class="rgc-period-btn" data-periodo="custom">Personalizado</button>
+        <span class="rgc-periodo-label" id="rgcPeriodoLabel"></span>
+        <div class="rgc-custom-range" id="rgcCustomRange">
+          <input type="date" id="rgcDateFrom">
+          <span style="font-size:12px;color:var(--text-muted);">→</span>
+          <input type="date" id="rgcDateTo">
+          <button class="rsales-apply-btn" id="rgcApplyCustom">Aplicar</button>
+        </div>
+      </div>
+      <div class="rgc-updated" id="rgcUpdated" style="margin-bottom:0;"></div>
+    </div>
     <!-- Filters -->
     <div class="rgc-filters">
       <div class="rgc-filter-set"><div class="rgc-filter-lbl">Supervisor</div><select id="rgcSupervisor"><option>Todos</option></select></div>
@@ -468,8 +517,8 @@
       <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Agendas por etapa y categoría</div></div></div><div class="chart-container"><canvas id="rgcAgendasEtapaChart"></canvas></div></div>
       <div class="chart-card full">
         <div class="chart-header"><div><div class="chart-title">Transacciones por tipo de módulo</div><div class="chart-subtitle">Total y distribución del período</div></div></div>
-        <div style="display:grid;grid-template-columns:280px 1fr;gap:24px;align-items:center;">
-          <div class="chart-container"><canvas id="rgcTransaccionesTipoChart"></canvas></div>
+        <div style="display:flex;justify-content:center;align-items:center;gap:40px;flex-wrap:wrap;">
+          <div style="width:260px;height:260px;position:relative;"><canvas id="rgcTransaccionesTipoChart"></canvas></div>
           <div id="rgcTransaccionesLegend" class="tx-legend"></div>
         </div>
       </div>
@@ -520,8 +569,12 @@
       document.getElementById('navMenuBtn').classList.remove('open');
       if (!renderedSections.has(sectionId)) {
         renderedSections.add(sectionId);
-        if (sectionId === 'inicio') renderInicioSection();
-        else if (sectionId === 'resumen-gestion') renderResumenGestion();
+        // Use double rAF so section is laid out (display:block) before Chart.js reads dimensions
+        if (sectionId === 'inicio') {
+          requestAnimationFrame(() => requestAnimationFrame(() => renderInicioSection()));
+        } else if (sectionId === 'resumen-gestion') {
+          requestAnimationFrame(() => requestAnimationFrame(() => renderResumenGestion()));
+        }
       }
     }
 
@@ -540,174 +593,323 @@
       item.addEventListener('click', function() { switchSection(item.dataset.section); });
     });
 
-    // RSales period buttons (Inicio section)
+    // ─── Helpers: date range calculation ──────────────────
+    function getDateRange(period) {
+      const now = new Date();
+      const today = now.toISOString().split('T')[0];
+      switch (period) {
+        case 'hoy': return { from: today, to: today };
+        case 'ayer': { const d = new Date(now); d.setDate(d.getDate()-1); const s=d.toISOString().split('T')[0]; return {from:s,to:s}; }
+        case 'semana': { const dow=now.getDay(); const mon=new Date(now); mon.setDate(mon.getDate()-(dow===0?6:dow-1)); return {from:mon.toISOString().split('T')[0],to:today}; }
+        case 'mes-pasado': { const fc=new Date(now.getFullYear(),now.getMonth(),1); const lp=new Date(fc); lp.setDate(0); const fp=new Date(lp.getFullYear(),lp.getMonth(),1); return {from:fp.toISOString().split('T')[0],to:lp.toISOString().split('T')[0]}; }
+        default: { const f=new Date(now.getFullYear(),now.getMonth(),1); return {from:f.toISOString().split('T')[0],to:today}; }
+      }
+    }
+
+    // ─── Inicio Section: RSales period buttons ─────────────
     document.querySelectorAll('.rsales-period-btn').forEach(function(btn) {
       btn.addEventListener('click', function() {
         document.querySelectorAll('.rsales-period-btn').forEach(function(b) { b.classList.remove('active'); });
         btn.classList.add('active');
-        const periodos = { ayer: 'Ayer', hoy: 'Hoy', semana: 'Esta semana', mes: 'Mayo 2026', 'mes-pasado': 'Abril 2026', custom: 'Personalizado' };
-        const lbl = document.getElementById('rsalesPeriodoLabel');
-        if (lbl) lbl.textContent = periodos[btn.dataset.periodo] || '';
+        const customRange = document.getElementById('rsalesCustomRange');
+        if (btn.dataset.periodo === 'custom') {
+          customRange.classList.add('visible');
+          return; // Wait for user to pick dates and click Apply
+        }
+        customRange.classList.remove('visible');
+        fetchInicioData(btn.dataset.periodo);
       });
     });
 
-    // ─── RSales Demo Data ──────────────────────────────────
-    const RSALES_DEMO = {
-      indicadores: {
-        agendas: { cumplidas: 193, vencidas: 86, pendientes: 24, extraruta: 260 },
-        usuarios: { sin_reportar: 126, sin_agenda: 138, sin_ubicacion: 16, reportando: 20 },
-        tiempos: { inicio: '10:59', fin: '15:27' },
-        clientes: { activos: 4326, gestionados: 330, sin_gestion: 3996 },
-        usuarios_labor: [
-          { nombre: 'CARLOS A. VARGAS', gestiones: 24 }, { nombre: 'DIANA M. RIOS', gestiones: 20 },
-          { nombre: 'JORGE HERNANDEZ', gestiones: 18 }, { nombre: 'LAURA P. GOMEZ', gestiones: 16 },
-          { nombre: 'MIGUEL A. TORRES', gestiones: 15 }, { nombre: 'ANA C. PEREZ', gestiones: 14 },
-          { nombre: 'PEDRO J. MARTINEZ', gestiones: 13 }, { nombre: 'LUCIA F. SUAREZ', gestiones: 12 },
-          { nombre: 'OSCAR D. REYES', gestiones: 11 }, { nombre: 'CAMILA A. MORA', gestiones: 10 }
-        ],
-        gestiones_dia: [
-          { dia: '01', planeadas: 45, realizadas: 38 }, { dia: '05', planeadas: 48, realizadas: 42 },
-          { dia: '06', planeadas: 50, realizadas: 47 }, { dia: '07', planeadas: 44, realizadas: 41 },
-          { dia: '08', planeadas: 46, realizadas: 43 }, { dia: '09', planeadas: 40, realizadas: 37 },
-          { dia: '11', planeadas: 43, realizadas: 38 }
-        ],
-        transacciones: [
-          { tipo: 'Visita', cantidad: 171, pct: 47, color: '#3b82f6' },
-          { tipo: 'Pedido', cantidad: 100, pct: 27, color: '#10b981' },
-          { tipo: 'Recibo de Caja', cantidad: 73, pct: 20, color: '#f59e0b' },
-          { tipo: 'Formulario', cantidad: 20, pct: 5, color: '#8b5cf6' }
-        ]
-      },
-      gestion: {
-        updated: '11/05/2026 12:45:29',
-        kpis: {
-          total_ventas: 96326276, tx_ventas: 100, prom_venta: 963263,
-          total_recaudos: 174584516, tx_recaudos: 73, prom_recaudo: 2391569,
-          usuarios: 25, clientes: 71
-        },
-        ventas_tipo: [{ tipo: 'Pedido', valor: 96326276, pct: 100, color: '#3b82f6' }],
-        recaudos_estado: [
-          { estado: 'Aprobado', valor: 150442932, color: '#10b981' },
-          { estado: 'Rechazado', valor: 21230570, color: '#ef4444' },
-          { estado: 'Pendiente', valor: 2819215, color: '#f59e0b' },
-          { estado: 'Retenido', valor: 91800, color: '#8b5cf6' }
-        ],
-        cumplimiento: [
-          { tipo: 'Cumplidas', pct: 69.1, color: '#10b981' },
-          { tipo: 'Canceladas / Vencidas', pct: 30.9, color: '#ef4444' }
-        ],
-        agendas_etapa: [
-          { etapa: 'Planeadas', cantidad: 278 }, { etapa: 'Canceladas', cantidad: 86 },
-          { etapa: 'Programadas', cantidad: 278 }, { etapa: 'Vencidas', cantidad: 86 },
-          { etapa: 'Cumplidas', cantidad: 192 }, { etapa: 'Extraruta', cantidad: 259 }
-        ],
-        transacciones_tipo: [
-          { tipo: 'Visita', cantidad: 171, pct: 47, color: '#3b82f6' },
-          { tipo: 'Pedido', cantidad: 100, pct: 27, color: '#10b981' },
-          { tipo: 'Recibo de Caja', cantidad: 73, pct: 20, color: '#f59e0b' },
-          { tipo: 'Formulario', cantidad: 20, pct: 5, color: '#8b5cf6' }
-        ],
-        usuarios_tabla: [
-          { usuario: 'JUAN GARCIA', ventas: 18000000, tx_v: 19, recaudos: 32000000, tx_r: 14, visitas: 32 },
-          { usuario: 'MARIA LOPEZ', ventas: 15000000, tx_v: 16, recaudos: 28000000, tx_r: 12, visitas: 28 },
-          { usuario: 'CARLOS RODRIGUEZ', ventas: 12000000, tx_v: 14, recaudos: 22000000, tx_r: 10, visitas: 24 },
-          { usuario: 'DIANA PEREZ', ventas: 10000000, tx_v: 11, recaudos: 18000000, tx_r: 8, visitas: 20 },
-          { usuario: 'PEDRO MARTINEZ', ventas: 9000000, tx_v: 10, recaudos: 15000000, tx_r: 7, visitas: 18 },
-          { usuario: 'LUCIA SUAREZ', ventas: 8000000, tx_v: 8, recaudos: 12000000, tx_r: 6, visitas: 16 },
-          { usuario: 'OSCAR REYES', ventas: 7000000, tx_v: 7, recaudos: 10000000, tx_r: 5, visitas: 14 }
-        ],
-        causales_visita: [
-          { causal: 'SEGUIMIENTO A CLIENTE', pct: 68.4 }, { causal: 'TIENE MERCADERÍA', pct: 8.2 },
-          { causal: 'CARTERA', pct: 7.0 }, { causal: 'NO SE ENCUENTRA EL CLIENTE', pct: 6.4 },
-          { causal: 'CAMBIO DE RUTA', pct: 5.8 }, { causal: 'LOCAL CERRADO', pct: 2.3 },
-          { causal: 'RECAUDO', pct: 1.2 }, { causal: 'CLIENTE CANCELA CITA', pct: 0.6 }
-        ],
-        formulario: [
-          { tipo: 'ANTICIPOS CLIENTES', pct: 55, cantidad: 11 },
-          { tipo: 'CLIENTES PROSPECTOS', pct: 15, cantidad: 3 },
-          { tipo: 'INACTIVACIÓN-ACTIVACIÓN', pct: 15, cantidad: 3 },
-          { tipo: 'REQUERIMIENTOS MERCADEO', pct: 15, cantidad: 3 }
-        ],
-        ventas_recaudos_dia: [
-          { dia: '01', ventas: 0, recaudos: 0 }, { dia: '02', ventas: 0, recaudos: 0 },
-          { dia: '05', ventas: 12500000, recaudos: 18000000 }, { dia: '06', ventas: 15200000, recaudos: 22000000 },
-          { dia: '07', ventas: 8900000, recaudos: 14000000 }, { dia: '08', ventas: 18000000, recaudos: 25000000 },
-          { dia: '09', ventas: 0, recaudos: 0 }, { dia: '11', ventas: 41726276, recaudos: 95584516 }
-        ]
-      }
-    };
+    // Custom date range apply
+    document.getElementById('rsalesApplyCustom').addEventListener('click', function() {
+      const from = document.getElementById('rsalesDateFrom').value;
+      const to   = document.getElementById('rsalesDateTo').value;
+      if (!from || !to) { alert('Selecciona las fechas'); return; }
+      if (from > to) { alert('La fecha de inicio debe ser anterior a la fecha fin'); return; }
+      fetchInicioData('custom', from, to);
+    });
 
-    // ─── Inicio Section Renderers ──────────────────────────
+    // ─── RGC period buttons ────────────────────────────────
+    document.querySelectorAll('.rgc-period-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.rgc-period-btn').forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        const customRange = document.getElementById('rgcCustomRange');
+        if (btn.dataset.periodo === 'custom') {
+          customRange.classList.add('visible');
+          return;
+        }
+        customRange.classList.remove('visible');
+        const range = getDateRange(btn.dataset.periodo);
+        fetchGestionData(range.from, range.to);
+      });
+    });
+    document.getElementById('rgcApplyCustom').addEventListener('click', function() {
+      const from = document.getElementById('rgcDateFrom').value;
+      const to   = document.getElementById('rgcDateTo').value;
+      if (!from || !to) { alert('Selecciona las fechas'); return; }
+      if (from > to) { alert('La fecha de inicio debe ser anterior a la fecha fin'); return; }
+      fetchGestionData(from, to);
+    });
+
+    // ─── Inicio: fetch real data from backend ──────────────
     function renderInicioSection() {
-      const d = RSALES_DEMO.indicadores;
-      document.getElementById('ind-sin-reportar').textContent = d.usuarios.sin_reportar;
-      document.getElementById('ind-sin-agenda').textContent = d.usuarios.sin_agenda;
-      document.getElementById('ind-sin-ubicacion').textContent = d.usuarios.sin_ubicacion;
-      document.getElementById('ind-reportando').textContent = d.usuarios.reportando;
-      document.getElementById('ind-hora-inicio').textContent = d.tiempos.inicio;
-      document.getElementById('ind-hora-fin').textContent = d.tiempos.fin;
-      document.getElementById('ind-clientes-activos').textContent = d.clientes.activos.toLocaleString('es-CO');
-      document.getElementById('ind-clientes-gestionados').textContent = d.clientes.gestionados.toLocaleString('es-CO');
-      document.getElementById('ind-pct-gestionados').textContent = Math.round(d.clientes.gestionados / d.clientes.activos * 100) + '%';
-      document.getElementById('ind-sin-gestion').textContent = d.clientes.sin_gestion.toLocaleString('es-CO');
-      document.getElementById('ind-extraruta').textContent = d.agendas.extraruta;
-      document.getElementById('ind-ag-cumplidas').textContent = d.agendas.cumplidas;
-      document.getElementById('ind-ag-vencidas').textContent = d.agendas.vencidas;
-      document.getElementById('ind-ag-pendientes').textContent = d.agendas.pendientes;
-      document.getElementById('ind-ag-extraruta').textContent = d.agendas.extraruta;
-      // Labor grid
-      document.getElementById('laborGrid').innerHTML = d.usuarios_labor.map(function(u) {
-        var initials = u.nombre.split(' ').slice(0, 2).map(function(w) { return w[0]; }).join('');
-        return '<div class="labor-card"><div class="labor-avatar">' + initials + '</div><div class="labor-info"><div class="labor-name">' + u.nombre + '</div><div class="labor-gestiones">' + u.gestiones + ' gestiones</div></div></div>';
-      }).join('');
-      // Charts
-      var totalAg = d.agendas.cumplidas + d.agendas.vencidas + d.agendas.pendientes;
-      loadChart('agendaEstadoChart', { type: 'doughnut', data: { labels: ['Cumplidas', 'Vencidas', 'Pendientes'], datasets: [{ data: [d.agendas.cumplidas, d.agendas.vencidas, d.agendas.pendientes], backgroundColor: ['#10b981', '#ef4444', '#f59e0b'], borderWidth: 0, hoverOffset: 6 }] }, options: { ...chartDefaults, cutout: '60%', plugins: { ...chartDefaults.plugins, legend: { ...chartDefaults.plugins.legend, position: 'bottom' }, tooltip: { callbacks: { label: function(ctx) { return ctx.label + ': ' + ctx.raw + ' (' + (ctx.raw / totalAg * 100).toFixed(1) + '%)'; } } } } } });
-      loadChart('transaccionesTipoIndChart', { type: 'doughnut', data: { labels: d.transacciones.map(function(t) { return t.tipo; }), datasets: [{ data: d.transacciones.map(function(t) { return t.cantidad; }), backgroundColor: d.transacciones.map(function(t) { return t.color; }), borderWidth: 0, hoverOffset: 6 }] }, options: { ...chartDefaults, cutout: '60%', plugins: { ...chartDefaults.plugins, legend: { ...chartDefaults.plugins.legend, position: 'bottom' }, tooltip: { callbacks: { label: function(ctx) { return ctx.label + ': ' + ctx.raw + ' (' + d.transacciones[ctx.dataIndex].pct + '%)'; } } } } } });
-      loadChart('gestionesDiaChart', { type: 'bar', data: { labels: d.gestiones_dia.map(function(g) { return 'Día ' + g.dia; }), datasets: [{ label: 'Planeadas', data: d.gestiones_dia.map(function(g) { return g.planeadas; }), backgroundColor: 'rgba(59,130,246,0.6)', borderRadius: 4 }, { label: 'Realizadas', data: d.gestiones_dia.map(function(g) { return g.realizadas; }), backgroundColor: '#10b981', borderRadius: 4 }] }, options: { ...chartDefaults } });
+      fetchInicioData('mes');
     }
 
-    // ─── Resumen Gestión Comercial Renderers ───────────────
+    async function fetchInicioData(period, customFrom, customTo) {
+      const loading = document.getElementById('inicioLoading');
+      if (loading) loading.classList.add('visible');
+      try {
+        let url = '/api/rsales-indicators';
+        if (period === 'custom' && customFrom && customTo) {
+          url += '?date_from=' + customFrom + '&date_to=' + customTo;
+          document.getElementById('rsalesPeriodoLabel').textContent = customFrom + ' → ' + customTo;
+        } else {
+          url += '?period=' + period;
+        }
+        const resp = await fetch(url, { headers: authToken ? {'Authorization':'Bearer '+authToken} : {} });
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        if (period !== 'custom') {
+          document.getElementById('rsalesPeriodoLabel').textContent = data.period?.label || '';
+        }
+        renderInicioData(data);
+      } catch (err) {
+        console.error('fetchInicioData error:', err);
+        document.getElementById('rsalesPeriodoLabel').textContent = '⚠ Error al cargar';
+      } finally {
+        if (loading) loading.classList.remove('visible');
+      }
+    }
+
+    function renderInicioData(d) {
+      // KPIs disponibles desde la API de agendas
+      document.getElementById('ind-hora-inicio').textContent = d.tiempos?.inicio || '—';
+      document.getElementById('ind-hora-fin').textContent    = d.tiempos?.fin    || '—';
+      document.getElementById('ind-clientes-activos').textContent     = (d.clientes?.activos    || 0).toLocaleString('es-CO');
+      document.getElementById('ind-clientes-gestionados').textContent = (d.clientes?.gestionados || 0).toLocaleString('es-CO');
+      document.getElementById('ind-pct-gestionados').textContent  = (d.clientes?.pct || 0) + '%';
+      document.getElementById('ind-sin-gestion').textContent   = (d.clientes?.sin_gestion || 0).toLocaleString('es-CO');
+      document.getElementById('ind-extraruta').textContent     = d.agendas?.extraruta || 0;
+      document.getElementById('ind-ag-cumplidas').textContent  = d.agendas?.cumplidas  || 0;
+      document.getElementById('ind-ag-vencidas').textContent   = d.agendas?.vencidas   || 0;
+      document.getElementById('ind-ag-pendientes').textContent = d.agendas?.pendientes || 0;
+      document.getElementById('ind-ag-extraruta').textContent  = d.agendas?.extraruta  || 0;
+      // Métricas de usuario en tiempo real no disponibles por API
+      document.getElementById('ind-sin-reportar').textContent  = '—';
+      document.getElementById('ind-sin-agenda').textContent    = '—';
+      document.getElementById('ind-sin-ubicacion').textContent = '—';
+      document.getElementById('ind-reportando').textContent    = '—';
+
+      // Labor grid
+      const labor = d.labor || [];
+      document.getElementById('laborGrid').innerHTML = labor.length
+        ? labor.map(function(u) {
+            var initials = u.nombre.split(' ').slice(0,2).map(function(w){return w[0];}).join('');
+            return '<div class="labor-card"><div class="labor-avatar">'+initials+'</div><div class="labor-info"><div class="labor-name">'+u.nombre+'</div><div class="labor-gestiones">'+u.gestiones+' gestiones</div></div></div>';
+          }).join('')
+        : '<p style="color:var(--text-muted);padding:16px;text-align:center;">Sin actividad en el período seleccionado</p>';
+
+      // Chart: Estado de Agendas (doughnut)
+      var ag = d.agendas || {};
+      var totalAg = (ag.cumplidas||0) + (ag.vencidas||0) + (ag.pendientes||0);
+      loadChart('agendaEstadoChart', {
+        type: 'doughnut',
+        data: {
+          labels: ['Cumplidas','Vencidas','Pendientes'],
+          datasets: [{ data: [ag.cumplidas||0, ag.vencidas||0, ag.pendientes||0],
+            backgroundColor: ['#10b981','#ef4444','#f59e0b'], borderWidth:0, hoverOffset:6 }]
+        },
+        options: {
+          responsive:true, maintainAspectRatio:false, cutout:'60%',
+          plugins: { legend:{ position:'bottom', labels:{ color:'#94a3b8', font:{size:12}, padding:16 } },
+            tooltip:{ callbacks:{ label: function(ctx){ return ctx.label+': '+ctx.raw+(totalAg?' ('+((ctx.raw/totalAg)*100).toFixed(1)+'%)':''); } } } },
+          scales: { x:{ display:false }, y:{ display:false } }
+        }
+      });
+
+      // Chart: Gestiones por día (bar)
+      var dias = d.gestiones_dia || [];
+      loadChart('gestionesDiaChart', {
+        type:'bar',
+        data: { labels: dias.map(function(g){ return g.label; }),
+          datasets: [
+            { label:'Planeadas', data:dias.map(function(g){return g.planeadas;}), backgroundColor:'rgba(59,130,246,0.6)', borderRadius:4 },
+            { label:'Realizadas', data:dias.map(function(g){return g.realizadas;}), backgroundColor:'#10b981', borderRadius:4 }
+          ]},
+        options: { responsive:true, maintainAspectRatio:false,
+          plugins:{ legend:{ labels:{ color:'#94a3b8', font:{size:12}, padding:16 } } },
+          scales:{ x:{ ticks:{color:'#64748b',font:{size:11}}, grid:{color:'#33415530'} }, y:{ ticks:{color:'#64748b',font:{size:11}}, grid:{color:'#33415550'} } }
+        }
+      });
+
+      // Chart: Transacciones por tipo - solo agendas disponibles vía API
+      var totalApts = d.total_appointments || 0;
+      loadChart('transaccionesTipoIndChart', {
+        type:'doughnut',
+        data: { labels:['Agendas/Visitas'], datasets:[{ data:[totalApts], backgroundColor:['#3b82f6'], borderWidth:0, hoverOffset:6 }] },
+        options: { responsive:true, maintainAspectRatio:false, cutout:'60%',
+          plugins:{ legend:{ position:'bottom', labels:{ color:'#94a3b8', font:{size:12}, padding:16 } },
+            tooltip:{ callbacks:{ label:function(ctx){ return ctx.label+': '+ctx.raw; } } } },
+          scales: { x:{display:false}, y:{display:false} }
+        }
+      });
+    }
+
+    // ─── Resumen Gestión Comercial: fetch real data ────────
     function renderResumenGestion() {
-      var d = RSALES_DEMO.gestion;
-      document.getElementById('rgcUpdated').textContent = 'Datos actualizados al: ' + d.updated;
-      document.getElementById('rgc-total-ventas').textContent = fmtFull(d.kpis.total_ventas);
-      document.getElementById('rgc-tx-ventas').textContent = d.kpis.tx_ventas;
-      document.getElementById('rgc-prom-venta').textContent = fmtFull(d.kpis.prom_venta);
-      document.getElementById('rgc-total-recaudos').textContent = fmtFull(d.kpis.total_recaudos);
-      document.getElementById('rgc-tx-recaudos').textContent = d.kpis.tx_recaudos;
-      document.getElementById('rgc-prom-recaudo').textContent = fmtFull(d.kpis.prom_recaudo);
-      document.getElementById('rgc-usuarios').textContent = d.kpis.usuarios;
-      document.getElementById('rgc-clientes').textContent = d.kpis.clientes;
-      // Ventas por tipo (pie)
-      loadChart('rgcVentasTipoChart', { type: 'pie', data: { labels: d.ventas_tipo.map(function(v) { return v.tipo; }), datasets: [{ data: d.ventas_tipo.map(function(v) { return v.valor; }), backgroundColor: d.ventas_tipo.map(function(v) { return v.color; }), borderWidth: 0, hoverOffset: 6 }] }, options: { ...chartDefaults, plugins: { ...chartDefaults.plugins, legend: { ...chartDefaults.plugins.legend, position: 'bottom' }, tooltip: { callbacks: { label: function(ctx) { return ctx.label + ': ' + fmtFull(ctx.raw) + ' (' + d.ventas_tipo[ctx.dataIndex].pct + '%)'; } } } } } });
-      // Recaudos por estado (bar)
-      loadChart('rgcRecaudosEstadoChart', { type: 'bar', data: { labels: d.recaudos_estado.map(function(r) { return r.estado; }), datasets: [{ data: d.recaudos_estado.map(function(r) { return r.valor; }), backgroundColor: d.recaudos_estado.map(function(r) { return r.color; }), borderRadius: 6, borderSkipped: false }] }, options: { ...chartDefaults, plugins: { ...chartDefaults.plugins, legend: { display: false }, tooltip: { callbacks: { label: function(ctx) { return fmtFull(ctx.raw); } } } }, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, ticks: { ...chartDefaults.scales.y.ticks, callback: function(v) { return fmt(v); } } } } } });
-      // Cumplimiento agendas (pie)
-      loadChart('rgcCumplimientoChart', { type: 'pie', data: { labels: d.cumplimiento.map(function(c) { return c.tipo; }), datasets: [{ data: d.cumplimiento.map(function(c) { return c.pct; }), backgroundColor: d.cumplimiento.map(function(c) { return c.color; }), borderWidth: 0, hoverOffset: 6 }] }, options: { ...chartDefaults, plugins: { ...chartDefaults.plugins, legend: { ...chartDefaults.plugins.legend, position: 'bottom' }, tooltip: { callbacks: { label: function(ctx) { return ctx.label + ': ' + ctx.raw + '%'; } } } } } });
-      // Agendas por etapa (bar)
-      loadChart('rgcAgendasEtapaChart', { type: 'bar', data: { labels: d.agendas_etapa.map(function(a) { return a.etapa; }), datasets: [{ data: d.agendas_etapa.map(function(a) { return a.cantidad; }), backgroundColor: ['#3b82f6', '#ef4444', '#06b6d4', '#f59e0b', '#10b981', '#f97316'], borderRadius: 6, borderSkipped: false }] }, options: { ...chartDefaults, plugins: { ...chartDefaults.plugins, legend: { display: false } } } });
-      // Transacciones por tipo (doughnut)
-      loadChart('rgcTransaccionesTipoChart', { type: 'doughnut', data: { labels: d.transacciones_tipo.map(function(t) { return t.tipo; }), datasets: [{ data: d.transacciones_tipo.map(function(t) { return t.cantidad; }), backgroundColor: d.transacciones_tipo.map(function(t) { return t.color; }), borderWidth: 0, hoverOffset: 6 }] }, options: { ...chartDefaults, cutout: '60%', plugins: { ...chartDefaults.plugins, legend: { display: false }, tooltip: { callbacks: { label: function(ctx) { return ctx.label + ': ' + ctx.raw + ' (' + d.transacciones_tipo[ctx.dataIndex].pct + '%)'; } } } } } });
-      // Transacciones legend
-      document.getElementById('rgcTransaccionesLegend').innerHTML = d.transacciones_tipo.map(function(t) {
-        return '<div class="tx-legend-item"><div class="tx-legend-dot" style="background:' + t.color + '"></div><div><div class="tx-legend-label">' + t.tipo + '</div><div class="tx-legend-sub">' + t.cantidad + ' registros (' + t.pct + '%)</div></div></div>';
+      const range = getDateRange('mes');
+      fetchGestionData(range.from, range.to);
+    }
+
+    async function fetchGestionData(dateFrom, dateTo) {
+      const loadEl = document.getElementById('rgcUpdated');
+      if (loadEl) loadEl.textContent = 'Cargando…';
+      document.getElementById('rgcPeriodoLabel').textContent = dateFrom + ' → ' + dateTo;
+      try {
+        // Sync: fetch appointment indicators for the RGC period
+        const url = '/api/rsales-indicators?date_from=' + dateFrom + '&date_to=' + dateTo;
+        const resp = await fetch(url, { headers: authToken ? {'Authorization':'Bearer '+authToken} : {} });
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        const d = await resp.json();
+        if (d.error) throw new Error(d.error);
+        document.getElementById('rgcPeriodoLabel').textContent = d.period?.label || (dateFrom + ' → ' + dateTo);
+        renderGestionData(d);
+        if (loadEl) loadEl.textContent = 'Actualizado: ' + new Date(d.updated).toLocaleString('es-CO');
+      } catch (err) {
+        console.error('fetchGestionData error:', err);
+        if (loadEl) loadEl.textContent = '⚠ Error al cargar datos';
+      }
+    }
+
+    function renderGestionData(d) {
+      var ag = d.agendas || {};
+      var totalAg = (ag.cumplidas||0) + (ag.vencidas||0) + (ag.pendientes||0);
+      var labor = d.labor || [];
+
+      // KPI bar: datos reales de agendas; monetarios no disponibles desde esta API
+      document.getElementById('rgc-total-ventas').textContent = '—';
+      document.getElementById('rgc-tx-ventas').textContent = d.total_appointments || 0;
+      document.getElementById('rgc-prom-venta').textContent = '—';
+      document.getElementById('rgc-total-recaudos').textContent = '—';
+      document.getElementById('rgc-tx-recaudos').textContent = '—';
+      document.getElementById('rgc-prom-recaudo').textContent = '—';
+      document.getElementById('rgc-usuarios').textContent = labor.length;
+      document.getElementById('rgc-clientes').textContent = d.clientes?.gestionados || 0;
+
+      // Chart: Ventas por tipo — no disponible, muestra placeholder
+      loadChart('rgcVentasTipoChart', {
+        type:'doughnut',
+        data:{ labels:['Sin datos'], datasets:[{ data:[1], backgroundColor:['#334155'], borderWidth:0 }] },
+        options:{ responsive:true, maintainAspectRatio:false, cutout:'50%',
+          plugins:{ legend:{ position:'bottom', labels:{ color:'#64748b', font:{size:12} } },
+            tooltip:{ callbacks:{ label:function(){ return 'Datos monetarios no disponibles'; } } } },
+          scales:{ x:{display:false}, y:{display:false} } }
+      });
+
+      // Chart: Recaudos por estado — no disponible
+      loadChart('rgcRecaudosEstadoChart', {
+        type:'bar',
+        data:{ labels:['Sin datos'], datasets:[{ data:[0], backgroundColor:['#334155'], borderRadius:6 }] },
+        options:{ responsive:true, maintainAspectRatio:false,
+          plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:function(){ return 'Datos monetarios no disponibles'; } } } },
+          scales:{ x:{ ticks:{color:'#64748b',font:{size:11}}, grid:{color:'#33415530'} }, y:{ ticks:{color:'#64748b',font:{size:11}}, grid:{color:'#33415550'} } } }
+      });
+
+      // Chart: % Cumplimiento agendas (real)
+      var pctCumplidas = totalAg > 0 ? +((ag.cumplidas/totalAg)*100).toFixed(1) : 0;
+      var pctVencidas  = totalAg > 0 ? +(((ag.vencidas)  /totalAg)*100).toFixed(1) : 0;
+      loadChart('rgcCumplimientoChart', {
+        type:'pie',
+        data:{ labels:['Cumplidas','Vencidas / Canceladas'], datasets:[{ data:[pctCumplidas, pctVencidas+(100-pctCumplidas-pctVencidas)], backgroundColor:['#10b981','#ef4444'], borderWidth:0, hoverOffset:6 }] },
+        options:{ responsive:true, maintainAspectRatio:false,
+          plugins:{ legend:{ position:'bottom', labels:{ color:'#94a3b8', font:{size:12}, padding:16 } },
+            tooltip:{ callbacks:{ label:function(ctx){ return ctx.label+': '+ctx.raw+'%'; } } } },
+          scales:{ x:{display:false}, y:{display:false} } }
+      });
+
+      // Chart: Agendas por etapa (real)
+      loadChart('rgcAgendasEtapaChart', {
+        type:'bar',
+        data:{ labels:['Planeadas','Vencidas','Cumplidas','Extraruta','Pendientes'],
+          datasets:[{ data:[totalAg, ag.vencidas||0, ag.cumplidas||0, ag.extraruta||0, ag.pendientes||0],
+            backgroundColor:['#3b82f6','#ef4444','#10b981','#f97316','#f59e0b'], borderRadius:6, borderSkipped:false }] },
+        options:{ responsive:true, maintainAspectRatio:false,
+          plugins:{ legend:{display:false} },
+          scales:{ x:{ ticks:{color:'#64748b',font:{size:11}}, grid:{color:'#33415530'} }, y:{ ticks:{color:'#64748b',font:{size:11}}, grid:{color:'#33415550'} } } }
+      });
+
+      // Chart: Transacciones por tipo (appointments = Visitas only from this API)
+      var txTipo = [
+        { tipo:'Visitas/Agendas', cantidad: d.total_appointments||0, pct:100, color:'#3b82f6' }
+      ];
+      loadChart('rgcTransaccionesTipoChart', {
+        type:'doughnut',
+        data:{ labels:txTipo.map(function(t){return t.tipo;}), datasets:[{ data:txTipo.map(function(t){return t.cantidad;}), backgroundColor:txTipo.map(function(t){return t.color;}), borderWidth:0, hoverOffset:6 }] },
+        options:{ responsive:true, maintainAspectRatio:false, cutout:'60%',
+          plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:function(ctx){ return ctx.label+': '+ctx.raw; } } } },
+          scales:{ x:{display:false}, y:{display:false} } }
+      });
+      document.getElementById('rgcTransaccionesLegend').innerHTML = txTipo.map(function(t){
+        return '<div class="tx-legend-item"><div class="tx-legend-dot" style="background:'+t.color+'"></div><div><div class="tx-legend-label">'+t.tipo+'</div><div class="tx-legend-sub">'+t.cantidad+' registros ('+t.pct+'%)</div></div></div>';
       }).join('');
-      // Usuarios tabla
-      document.getElementById('rgcUsuariosBody').innerHTML = d.usuarios_tabla.map(function(u) {
-        return '<tr><td><strong>' + u.usuario + '</strong></td><td>' + fmtFull(u.ventas) + '</td><td>' + u.tx_v + '</td><td>' + fmtFull(u.recaudos) + '</td><td>' + u.tx_r + '</td><td>' + u.visitas + '</td></tr>';
-      }).join('');
-      // Causales de visita (horizontal bar)
-      loadChart('rgcCausalesChart', { type: 'bar', data: { labels: d.causales_visita.map(function(c) { return c.causal.length > 28 ? c.causal.substring(0, 28) + '…' : c.causal; }), datasets: [{ data: d.causales_visita.map(function(c) { return c.pct; }), backgroundColor: '#3b82f6', borderRadius: 4, borderSkipped: false }] }, options: { ...chartDefaults, indexAxis: 'y', plugins: { ...chartDefaults.plugins, legend: { display: false }, tooltip: { callbacks: { label: function(ctx) { return d.causales_visita[ctx.dataIndex].causal + ': ' + ctx.raw + '%'; } } } }, scales: { ...chartDefaults.scales, x: { ...chartDefaults.scales.x, max: 80, ticks: { ...chartDefaults.scales.x.ticks, callback: function(v) { return v + '%'; } } } } } });
-      // Formulario (horizontal bar)
-      loadChart('rgcFormularioChart', { type: 'bar', data: { labels: d.formulario.map(function(f) { return f.tipo; }), datasets: [{ data: d.formulario.map(function(f) { return f.pct; }), backgroundColor: '#8b5cf6', borderRadius: 4, borderSkipped: false }] }, options: { ...chartDefaults, indexAxis: 'y', plugins: { ...chartDefaults.plugins, legend: { display: false }, tooltip: { callbacks: { label: function(ctx) { return ctx.raw + '% (' + d.formulario[ctx.dataIndex].cantidad + ' registros)'; } } } }, scales: { ...chartDefaults.scales, x: { ...chartDefaults.scales.x, max: 80, ticks: { ...chartDefaults.scales.x.ticks, callback: function(v) { return v + '%'; } } } } } });
-      // Ventas y Recaudos por día (bar grouped)
-      var dias = d.ventas_recaudos_dia;
-      loadChart('rgcVentasDiaChart', { type: 'bar', data: { labels: dias.map(function(d) { return 'Día ' + d.dia; }), datasets: [{ label: 'Ventas', data: dias.map(function(d) { return d.ventas; }), backgroundColor: 'rgba(59,130,246,0.75)', borderRadius: 4, borderSkipped: false }, { label: 'Recaudos', data: dias.map(function(d) { return d.recaudos; }), backgroundColor: 'rgba(16,185,129,0.75)', borderRadius: 4, borderSkipped: false }] }, options: { ...chartDefaults, plugins: { ...chartDefaults.plugins, tooltip: { callbacks: { label: function(ctx) { return ctx.dataset.label + ': ' + fmtFull(ctx.raw); } } } }, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, ticks: { ...chartDefaults.scales.y.ticks, callback: function(v) { return fmt(v); } } } } } });
-      // Acumulado por día (line)
-      var cumV = 0, cumR = 0;
-      var acum = dias.map(function(d) { cumV += d.ventas; cumR += d.recaudos; return { dia: d.dia, ventas: cumV, recaudos: cumR }; });
-      loadChart('rgcAcumuladoChart', { type: 'line', data: { labels: acum.map(function(d) { return 'Día ' + d.dia; }), datasets: [{ label: 'Ventas Acum.', data: acum.map(function(d) { return d.ventas; }), borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', fill: true, tension: 0.3, pointRadius: 3, borderWidth: 2 }, { label: 'Recaudos Acum.', data: acum.map(function(d) { return d.recaudos; }), borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.1)', fill: true, tension: 0.3, pointRadius: 3, borderWidth: 2 }] }, options: { ...chartDefaults, plugins: { ...chartDefaults.plugins, tooltip: { callbacks: { label: function(ctx) { return ctx.dataset.label + ': ' + fmtFull(ctx.raw); } } } }, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, ticks: { ...chartDefaults.scales.y.ticks, callback: function(v) { return fmt(v); } } } } } });
+
+      // Table: análisis por usuarios (real appointment data)
+      document.getElementById('rgcUsuariosBody').innerHTML = labor.length
+        ? labor.slice(0,15).map(function(u){
+            return '<tr><td><strong>'+u.nombre+'</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td>'+u.gestiones+'</td></tr>';
+          }).join('')
+        : '<tr><td colspan="6" style="text-align:center;color:var(--text-muted)">Sin actividad en el período</td></tr>';
+
+      // Chart: Causales de visita — no disponible
+      loadChart('rgcCausalesChart', {
+        type:'bar',
+        data:{ labels:['Sin datos API'], datasets:[{ data:[0], backgroundColor:'#334155', borderRadius:4 }] },
+        options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y',
+          plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:function(){ return 'Causales no disponibles en esta API'; } } } },
+          scales:{ x:{ ticks:{color:'#64748b',font:{size:11}}, grid:{color:'#33415530'} }, y:{ ticks:{color:'#64748b',font:{size:11}} } } }
+      });
+
+      // Chart: Formulario — no disponible
+      loadChart('rgcFormularioChart', {
+        type:'bar',
+        data:{ labels:['Sin datos API'], datasets:[{ data:[0], backgroundColor:'#334155', borderRadius:4 }] },
+        options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y',
+          plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:function(){ return 'Formularios no disponibles en esta API'; } } } },
+          scales:{ x:{ ticks:{color:'#64748b',font:{size:11}}, grid:{color:'#33415530'} }, y:{ ticks:{color:'#64748b',font:{size:11}} } } }
+      });
+
+      // Chart: Gestiones por día — real
+      var dias = d.gestiones_dia || [];
+      loadChart('rgcVentasDiaChart', {
+        type:'bar',
+        data:{ labels:dias.map(function(g){return g.label;}),
+          datasets:[
+            { label:'Planeadas', data:dias.map(function(g){return g.planeadas;}), backgroundColor:'rgba(59,130,246,0.75)', borderRadius:4, borderSkipped:false },
+            { label:'Realizadas', data:dias.map(function(g){return g.realizadas;}), backgroundColor:'rgba(16,185,129,0.75)', borderRadius:4, borderSkipped:false }
+          ]},
+        options:{ responsive:true, maintainAspectRatio:false,
+          plugins:{ legend:{ labels:{ color:'#94a3b8', font:{size:12}, padding:16 } } },
+          scales:{ x:{ ticks:{color:'#64748b',font:{size:11}}, grid:{color:'#33415530'} }, y:{ ticks:{color:'#64748b',font:{size:11}}, grid:{color:'#33415550'} } } }
+      });
+
+      // Chart: Acumulado por día — real (gestiones acumuladas)
+      var cumPlaneadas=0, cumRealizadas=0;
+      var acum = dias.map(function(g){ cumPlaneadas+=g.planeadas; cumRealizadas+=g.realizadas; return {label:g.label, planeadas:cumPlaneadas, realizadas:cumRealizadas}; });
+      loadChart('rgcAcumuladoChart', {
+        type:'line',
+        data:{ labels:acum.map(function(g){return g.label;}),
+          datasets:[
+            { label:'Planeadas Acum.', data:acum.map(function(g){return g.planeadas;}), borderColor:'#3b82f6', backgroundColor:'rgba(59,130,246,0.1)', fill:true, tension:0.3, pointRadius:3, borderWidth:2 },
+            { label:'Realizadas Acum.', data:acum.map(function(g){return g.realizadas;}), borderColor:'#10b981', backgroundColor:'rgba(16,185,129,0.1)', fill:true, tension:0.3, pointRadius:3, borderWidth:2 }
+          ]},
+        options:{ responsive:true, maintainAspectRatio:false,
+          plugins:{ legend:{ labels:{ color:'#94a3b8', font:{size:12}, padding:16 } } },
+          scales:{ x:{ ticks:{color:'#64748b',font:{size:11}}, grid:{color:'#33415530'} }, y:{ ticks:{color:'#64748b',font:{size:11}}, grid:{color:'#33415550'} } } }
+      });
     }
 
     // ─── Theme ────────────────────────────────────
