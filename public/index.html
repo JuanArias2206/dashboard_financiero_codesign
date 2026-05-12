@@ -2019,16 +2019,6 @@
     });
 
     // ── Chart.js wrapper for EC-chart divs (no ECharts dependency) ────────────
-    function loadChart(id, config) {
-      if (chartInstances[id]) { try { chartInstances[id].destroy(); } catch(e){} delete chartInstances[id]; }
-      const div = document.getElementById(id);
-      if (!div) return null;
-      div.innerHTML = '';
-      const canvas = document.createElement('canvas');
-      div.appendChild(canvas);
-      chartInstances[id] = new Chart(canvas, config);
-      return chartInstances[id];
-    }
     const CJ = { // Chart.js common options
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { labels: { color: '#94a3b8', font: { size: 12 }, padding: 14 } } },
@@ -2041,10 +2031,11 @@
       const est = getFilteredEstadoSummary();
       const ven = est.vencido, cor = est.corriente;
       loadChart('ccEstadoChart', {
+        type:'bar',
         data: { labels:['Vencido','Al Día'],
           datasets:[
-            { label:'Saldo en cartera', type:'bar', data:[Math.max(0,ven.saldo||0),Math.max(0,cor.saldo||0)], backgroundColor:[EC_RED,EC_GREEN], borderRadius:4, yAxisID:'y' },
-            { label:'Cant. facturas', type:'line', data:[ven.docs||0,cor.docs||0], borderColor:EC_BLUE, backgroundColor:'transparent', pointRadius:6, yAxisID:'y2' }
+            { label:'Saldo en cartera', data:[Math.max(0,ven.saldo||0),Math.max(0,cor.saldo||0)], backgroundColor:[EC_RED,EC_GREEN], borderRadius:4, yAxisID:'y', order:2 },
+            { label:'Cant. facturas', type:'line', data:[ven.docs||0,cor.docs||0], borderColor:EC_BLUE, backgroundColor:'transparent', pointRadius:6, yAxisID:'y2', order:1 }
           ]
         },
         options:{ ...CJ, scales:{ y:{ ticks:{color:'#64748b',callback:v=>fmtBilAxis(v)}, grid:{color:'#33415550'} }, y2:{position:'right',ticks:{color:'#64748b'},grid:{display:false}} } }
@@ -2154,10 +2145,11 @@
       if (!d || !d.estado) return;
       const ven = d.estado.vencido || {}, cor = d.estado.corriente || {};
       loadChart('ccClienteEstadoChart', {
+        type:'bar',
         data:{ labels:['Vencido','Al Día'],
           datasets:[
-            { label:'Saldo en cartera', type:'bar', data:[Math.max(0,ven.saldo||0),Math.max(0,cor.saldo||0)], backgroundColor:[EC_RED,EC_GREEN], borderRadius:4, yAxisID:'y' },
-            { label:'Cant. clientes', type:'line', data:[d.kpis?.total_clientes||0,0], borderColor:EC_BLUE, backgroundColor:'transparent', pointRadius:6, yAxisID:'y2' }
+            { label:'Saldo en cartera', data:[Math.max(0,ven.saldo||0),Math.max(0,cor.saldo||0)], backgroundColor:[EC_RED,EC_GREEN], borderRadius:4, yAxisID:'y', order:2 },
+            { label:'Cant. clientes', type:'line', data:[d.kpis?.total_clientes||0,0], borderColor:EC_BLUE, backgroundColor:'transparent', pointRadius:6, yAxisID:'y2', order:1 }
           ]
         },
         options:{ ...CJ, scales:{ y:{ticks:{color:'#64748b',callback:v=>fmtBilAxis(v)},grid:{color:'#33415550'}}, y2:{position:'right',ticks:{color:'#64748b'},grid:{display:false}} } }
@@ -2179,10 +2171,11 @@
       if (!d || !d.tipo_doc_grouped) return;
       const items = d.tipo_doc_grouped;
       loadChart('ccTipoDocChart', {
+        type:'bar',
         data:{ labels:items.map(i=>i.label),
           datasets:[
-            { label:'Saldo en cartera', type:'bar', data:items.map(i=>Math.max(0,i.saldo||0)), backgroundColor:['#3b82f6','#10b981','#a78bfa','#f97316'], borderRadius:4, yAxisID:'y' },
-            { label:'% Mora', type:'line', data:items.map(i=>i.pct_vencido||0), borderColor:EC_RED, backgroundColor:'transparent', pointRadius:5, yAxisID:'y2' }
+            { label:'Saldo en cartera', data:items.map(i=>Math.max(0,i.saldo||0)), backgroundColor:['#3b82f6','#10b981','#a78bfa','#f97316'], borderRadius:4, yAxisID:'y', order:2 },
+            { label:'% Mora', type:'line', data:items.map(i=>i.pct_vencido||0), borderColor:EC_RED, backgroundColor:'transparent', pointRadius:5, yAxisID:'y2', order:1 }
           ]
         },
         options:{ ...CJ, scales:{ y:{ticks:{color:'#64748b',callback:v=>fmtBilAxis(v)},grid:{color:'#33415550'}}, y2:{position:'right',max:100,ticks:{color:'#64748b',callback:v=>v+'%'},grid:{display:false}} } }
@@ -2463,9 +2456,10 @@
 
       // Chart: tipo documentos
       loadChart('rrTipoChart', {
+        type:'bar',
         data:{ labels:tipoData.map(t=>t.cat), datasets:[
-          { label:'Saldo', type:'bar', data:tipoData.map(t=>Math.max(0,t.saldo)), backgroundColor:['#3b82f6','#10b981','#a78bfa'], borderRadius:4, yAxisID:'y' },
-          { label:'Documentos', type:'line', data:tipoData.map(t=>t.docs), borderColor:EC_YELLOW, backgroundColor:'transparent', pointRadius:6, yAxisID:'y2' }
+          { label:'Saldo', data:tipoData.map(t=>Math.max(0,t.saldo)), backgroundColor:['#3b82f6','#10b981','#a78bfa'], borderRadius:4, yAxisID:'y', order:2 },
+          { label:'Documentos', type:'line', data:tipoData.map(t=>t.docs), borderColor:EC_YELLOW, backgroundColor:'transparent', pointRadius:6, yAxisID:'y2', order:1 }
         ]},
         options:{ ...CJ, scales:{ y:{ticks:{color:'#64748b',callback:v=>fmtBilAxis(v)},grid:{color:'#33415550'}}, y2:{position:'right',ticks:{color:'#64748b'},grid:{display:false}} } }
       });
@@ -2485,9 +2479,10 @@
         if(r.cat==='Recibo')  recByMes[r.mes] =(recByMes[r.mes]||0)+(r.saldo||0);
       });
       loadChart('rrEvolucionChart', {
+        type:'bar',
         data:{ labels:allMonths, datasets:[
-          { label:'Facturas (ventas)', type:'bar', data:allMonths.map(m=>Math.max(0,factByMes[m]||0)), backgroundColor:EC_BLUE+'bb', borderRadius:2 },
-          { label:'Recibos (cobros)',  type:'line', data:allMonths.map(m=>Math.max(0,recByMes[m]||0)),  borderColor:EC_GREEN, backgroundColor:'transparent', pointRadius:3, tension:0.3 }
+          { label:'Facturas (ventas)', data:allMonths.map(m=>Math.max(0,factByMes[m]||0)), backgroundColor:EC_BLUE+'bb', borderRadius:2, order:2 },
+          { label:'Recibos (cobros)',  type:'line', data:allMonths.map(m=>Math.max(0,recByMes[m]||0)),  borderColor:EC_GREEN, backgroundColor:'transparent', pointRadius:3, tension:0.3, order:1 }
         ]},
         options:{ ...CJ, scales:{ x:{ticks:{color:'#64748b',font:{size:10},maxRotation:40},grid:{color:'#33415530'}}, y:{ticks:{color:'#64748b',callback:v=>fmtBilAxis(v)},grid:{color:'#33415550'}} } }
       });
