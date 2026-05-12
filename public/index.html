@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Cartera - ADATEC</title>
+  <title>ADATEC Analytics</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
   <style>
@@ -115,6 +115,68 @@
     .filter-active-indicator.visible { display: inline-block; }
     @media (max-width: 1200px) { .charts-grid { grid-template-columns: 1fr; } .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
     @media (max-width: 768px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } .container { padding: 16px; } .header { padding: 12px 16px; } }
+    /* ─── Section Navigation Dropdown ───────────── */
+    .nav-dropdown-container { position: relative; }
+    .nav-menu-btn { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-primary); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; transition: all 0.2s; white-space: nowrap; max-width: 340px; }
+    .nav-menu-btn:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+    .nav-menu-btn.open { border-color: var(--accent-blue); background: var(--bg-card-hover); }
+    .nav-dropdown-menu { display: none; position: absolute; top: calc(100% + 8px); left: 0; min-width: 290px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 10px 30px -5px rgba(0,0,0,0.5); z-index: 300; padding: 6px; }
+    .nav-dropdown-menu.open { display: block; }
+    .nav-dropdown-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 7px; cursor: pointer; font-size: 13px; color: var(--text-secondary); transition: all 0.15s; border: none; background: transparent; width: 100%; text-align: left; }
+    .nav-dropdown-item:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+    .nav-dropdown-item.active { background: rgba(59,130,246,0.15); color: var(--accent-blue); font-weight: 600; }
+    .nav-dropdown-item.soon { opacity: 0.45; cursor: default; pointer-events: none; }
+    .nav-dropdown-divider { height: 1px; background: var(--border); margin: 4px 6px; }
+    .nav-section-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; padding: 6px 12px 2px; font-weight: 600; }
+    /* ─── Section content wrappers ────────────────── */
+    .section-content { display: none; }
+    .section-content.active { display: block; }
+    /* ─── Inicio / Indicadores ────────────────────── */
+    .rsales-filters { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; background: var(--bg-secondary); padding: 10px 16px; border-radius: var(--radius); border: 1px solid var(--border); }
+    .rsales-period-btn { padding: 6px 14px; background: var(--bg-primary); border: 1px solid var(--border); color: var(--text-secondary); border-radius: 6px; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+    .rsales-period-btn:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+    .rsales-period-btn.active { background: var(--accent-blue); border-color: var(--accent-blue); color: white; }
+    .rsales-periodo-label { font-size: 12px; color: var(--accent-blue); font-weight: 600; margin-left: 8px; }
+    .indicadores-grid { display: grid; grid-template-columns: 320px 1fr; gap: 20px; margin-bottom: 20px; }
+    @media (max-width: 900px) { .indicadores-grid { grid-template-columns: 1fr; } }
+    .kpi-small-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .kpi-small { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
+    .kpi-small .kpi-sm-number { font-size: 32px; font-weight: 800; margin-bottom: 4px; }
+    .kpi-small .kpi-sm-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; line-height: 1.3; }
+    .kpi-small.danger .kpi-sm-number { color: var(--accent-red); } .kpi-small.warning .kpi-sm-number { color: var(--accent-yellow); }
+    .kpi-small.success .kpi-sm-number { color: var(--accent-green); } .kpi-small.info .kpi-sm-number { color: var(--accent-cyan); }
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .stat-tile { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .stat-tile .st-value { font-size: 22px; font-weight: 800; color: var(--text-primary); }
+    .stat-tile .st-sub { font-size: 11px; color: var(--text-muted); text-align: center; line-height: 1.3; }
+    .labor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; padding: 4px 0; }
+    .labor-card { background: var(--bg-primary); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; }
+    .labor-avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan)); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: white; flex-shrink: 0; }
+    .labor-info .labor-name { font-size: 12px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; line-height: 1.3; }
+    .labor-info .labor-gestiones { font-size: 11px; color: var(--accent-cyan); font-weight: 600; }
+    /* ─── Resumen Gestión Comercial ──────────────── */
+    .rgc-filters { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: flex-end; background: var(--bg-secondary); padding: 12px 16px; border-radius: var(--radius); border: 1px solid var(--border); }
+    .rgc-filters select { background: var(--bg-primary); border: 1px solid var(--border); color: var(--text-primary); padding: 7px 12px; border-radius: 7px; font-size: 13px; outline: none; min-width: 140px; }
+    .rgc-filters select:focus { border-color: var(--accent-blue); }
+    .rgc-filter-lbl { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 4px; }
+    .rgc-filter-set { display: flex; flex-direction: column; gap: 0; }
+    .rgc-kpi-bar { display: grid; grid-template-columns: repeat(8, 1fr); margin-bottom: 20px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    @media (max-width: 1400px) { .rgc-kpi-bar { grid-template-columns: repeat(4, 1fr); } }
+    @media (max-width: 768px) { .rgc-kpi-bar { grid-template-columns: repeat(2, 1fr); } }
+    .rgc-kpi-item { padding: 14px 10px; text-align: center; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .rgc-kpi-item:last-child { border-right: none; }
+    .rgc-kpi-val { font-size: 15px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
+    .rgc-kpi-lbl { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; line-height: 1.3; }
+    .rgc-updated { font-size: 11px; color: var(--text-muted); text-align: right; margin-bottom: 12px; }
+    .rgc-users-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .rgc-users-table th { background: var(--bg-primary); color: var(--text-muted); padding: 10px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px; border-bottom: 1px solid var(--border); }
+    .rgc-users-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+    .rgc-users-table tr:hover td { background: var(--bg-card-hover); color: var(--text-primary); }
+    .tx-legend { display: flex; flex-direction: column; gap: 10px; }
+    .tx-legend-item { display: flex; align-items: center; gap: 10px; }
+    .tx-legend-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+    .tx-legend-label { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+    .tx-legend-sub { font-size: 12px; color: var(--text-muted); }
   </style>
 </head>
 <body>
@@ -132,7 +194,29 @@
   </div>
 
     <div class="header">
-      <h1>Dashboard de Cartera</h1>
+      <div style="display:flex;align-items:center;gap:0;">
+        <div class="nav-dropdown-container">
+          <button class="nav-menu-btn" id="navMenuBtn">
+            ☰&nbsp;<span id="sectionTitle">Control de Cartera</span>&nbsp;<span style="font-size:10px;opacity:0.5;">▾</span>
+          </button>
+          <div class="nav-dropdown-menu" id="navDropdownMenu">
+            <div class="nav-section-label">RSales Analytics</div>
+            <button class="nav-dropdown-item" data-section="inicio">🏠 Inicio — Indicadores</button>
+            <button class="nav-dropdown-item" data-section="resumen-gestion">📈 Resumen Gestión Comercial</button>
+            <div class="nav-dropdown-divider"></div>
+            <div class="nav-section-label">Cartera</div>
+            <button class="nav-dropdown-item active" data-section="control-cartera">📋 Control de Cartera</button>
+            <div class="nav-dropdown-divider"></div>
+            <div class="nav-section-label">Próximamente</div>
+            <button class="nav-dropdown-item soon">💰 Reporte Recaudos</button>
+            <button class="nav-dropdown-item soon">📦 Análisis de Inventario</button>
+            <button class="nav-dropdown-item soon">⏱️ Control de Tiempos</button>
+            <button class="nav-dropdown-item soon">🛒 Pedido / Factura / Cotización</button>
+            <button class="nav-dropdown-item soon">📅 Agenda</button>
+            <button class="nav-dropdown-item soon">👥 Clientes Gestionados</button>
+          </div>
+        </div>
+      </div>
       <div class="header-info">
         <span id="genDate"></span>
         <span id="dataSource" class="badge" style="background: var(--accent-purple); display: none;">RSales</span>
@@ -146,6 +230,7 @@
       </div>
     </div>
 
+  <div class="section-content active" id="section-control-cartera">
   <div class="container">
     <div class="temporal-filters">
       <div class="filter-group">
@@ -260,6 +345,145 @@
       </div>
     </div>
   </div>
+  </div><!-- /section-control-cartera -->
+
+  <!-- ══════════════════════════════════════════════════════════
+       SECTION: INICIO — INDICADORES RSales
+       ══════════════════════════════════════════════════════════ -->
+  <div class="section-content" id="section-inicio">
+  <div class="container">
+    <!-- Temporal filters RSales-style -->
+    <div class="rsales-filters">
+      <span style="font-size:12px;color:var(--text-muted);font-weight:600;margin-right:4px;">Período:</span>
+      <button class="rsales-period-btn" data-periodo="ayer">Ayer</button>
+      <button class="rsales-period-btn" data-periodo="hoy">Hoy</button>
+      <button class="rsales-period-btn" data-periodo="semana">Esta semana</button>
+      <button class="rsales-period-btn active" data-periodo="mes">Este mes</button>
+      <button class="rsales-period-btn" data-periodo="mes-pasado">Mes pasado</button>
+      <button class="rsales-period-btn" data-periodo="custom">Personalizado</button>
+      <span class="rsales-periodo-label" id="rsalesPeriodoLabel">Mayo 2026</span>
+    </div>
+    <!-- Row 1: Estado Agendas + Usuarios KPIs -->
+    <div class="indicadores-grid">
+      <div class="chart-card">
+        <div class="chart-header"><div><div class="chart-title">Estado de Agendas</div><div class="chart-subtitle">Distribución por estado</div></div></div>
+        <div class="chart-container"><canvas id="agendaEstadoChart"></canvas></div>
+      </div>
+      <div>
+        <div class="kpi-small-grid">
+          <div class="kpi-small danger">
+            <div class="kpi-sm-number" id="ind-sin-reportar">126</div>
+            <div class="kpi-sm-label">Usuarios sin Reportar</div>
+          </div>
+          <div class="kpi-small warning">
+            <div class="kpi-sm-number" id="ind-sin-agenda">138</div>
+            <div class="kpi-sm-label">Usuarios sin Agenda</div>
+          </div>
+          <div class="kpi-small info">
+            <div class="kpi-sm-number" id="ind-sin-ubicacion">16</div>
+            <div class="kpi-sm-label">Usuarios sin Ubicación</div>
+          </div>
+          <div class="kpi-small success">
+            <div class="kpi-sm-number" id="ind-reportando">20</div>
+            <div class="kpi-sm-label">Usuarios Reportando</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Row 2: Stats tiles -->
+    <div class="stats-row">
+      <div class="stat-tile"><div class="st-value" style="color:var(--accent-cyan);" id="ind-hora-inicio">10:59</div><div class="st-sub">Hora inicio promedio</div></div>
+      <div class="stat-tile"><div class="st-value" style="color:var(--accent-cyan);" id="ind-hora-fin">15:27</div><div class="st-sub">Hora fin promedio</div></div>
+      <div class="stat-tile"><div class="st-value" style="color:var(--accent-blue);" id="ind-clientes-activos">4,326</div><div class="st-sub">Clientes Activos</div></div>
+      <div class="stat-tile"><div class="st-value" style="color:var(--accent-green);" id="ind-clientes-gestionados">330</div><div class="st-sub">Clientes Gestionados</div></div>
+      <div class="stat-tile"><div class="st-value" style="color:var(--accent-green);" id="ind-pct-gestionados">8%</div><div class="st-sub">% Gestionados</div></div>
+      <div class="stat-tile"><div class="st-value" style="color:var(--accent-red);" id="ind-sin-gestion">3,996</div><div class="st-sub">Clientes sin Gestión (92%)</div></div>
+      <div class="stat-tile"><div class="st-value" style="color:var(--accent-orange);" id="ind-extraruta">260</div><div class="st-sub">Gestiones Extraruta</div></div>
+    </div>
+    <!-- Row 3: Usuarios con Labor -->
+    <div class="chart-card" style="margin-bottom:20px;">
+      <div class="chart-header"><div><div class="chart-title">Usuarios con Labor</div><div class="chart-subtitle">Gestiones realizadas en el período</div></div></div>
+      <div class="labor-grid" id="laborGrid"></div>
+    </div>
+    <!-- Row 4: Charts -->
+    <div class="charts-grid">
+      <div class="chart-card full"><div class="chart-header"><div><div class="chart-title">Gestiones de Visitas</div><div class="chart-subtitle">Planeadas vs Realizadas por día</div></div></div><div class="chart-container tall"><canvas id="gestionesDiaChart"></canvas></div></div>
+      <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Transacciones por Tipo de Módulo</div><div class="chart-subtitle">Distribución del período</div></div></div><div class="chart-container"><canvas id="transaccionesTipoIndChart"></canvas></div></div>
+      <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Resumen Agendas</div><div class="chart-subtitle">Totales del período</div></div></div>
+        <div style="padding:20px;display:flex;flex-direction:column;gap:12px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:rgba(16,185,129,0.1);border-radius:8px;border-left:3px solid var(--accent-green);">
+            <span style="color:var(--text-secondary);">✓ Cumplidas</span><span style="font-size:22px;font-weight:800;color:var(--accent-green);" id="ind-ag-cumplidas">193</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:rgba(239,68,68,0.1);border-radius:8px;border-left:3px solid var(--accent-red);">
+            <span style="color:var(--text-secondary);">⏰ Vencidas</span><span style="font-size:22px;font-weight:800;color:var(--accent-red);" id="ind-ag-vencidas">86</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:rgba(245,158,11,0.1);border-radius:8px;border-left:3px solid var(--accent-yellow);">
+            <span style="color:var(--text-secondary);">⏳ Pendientes</span><span style="font-size:22px;font-weight:800;color:var(--accent-yellow);" id="ind-ag-pendientes">24</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:rgba(249,115,22,0.1);border-radius:8px;border-left:3px solid var(--accent-orange);">
+            <span style="color:var(--text-secondary);">📍 Extraruta</span><span style="font-size:22px;font-weight:800;color:var(--accent-orange);" id="ind-ag-extraruta">260</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div><!-- /section-inicio -->
+
+  <!-- ══════════════════════════════════════════════════════════
+       SECTION: RESUMEN GESTIÓN COMERCIAL
+       ══════════════════════════════════════════════════════════ -->
+  <div class="section-content" id="section-resumen-gestion">
+  <div class="container">
+    <div class="rgc-updated" id="rgcUpdated">Datos actualizados al: 11/05/2026 12:45:29</div>
+    <!-- Filters -->
+    <div class="rgc-filters">
+      <div class="rgc-filter-set"><div class="rgc-filter-lbl">Supervisor</div><select id="rgcSupervisor"><option>Todos</option></select></div>
+      <div class="rgc-filter-set"><div class="rgc-filter-lbl">Usuario</div><select id="rgcUsuario"><option>Todos</option></select></div>
+      <div class="rgc-filter-set"><div class="rgc-filter-lbl">Año</div><select id="rgcAnio"><option selected>2026</option><option>2025</option></select></div>
+      <div class="rgc-filter-set"><div class="rgc-filter-lbl">Mes</div>
+        <select id="rgcMes">
+          <option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option><option value="4">Abril</option>
+          <option value="5" selected>Mayo</option><option value="6">Junio</option><option value="7">Julio</option><option value="8">Agosto</option>
+          <option value="9">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
+        </select>
+      </div>
+      <div class="rgc-filter-set"><div class="rgc-filter-lbl">Estado Transacción</div><select id="rgcEstado"><option>Todos</option><option>Aprobado</option><option>Pendiente</option><option>Rechazado</option></select></div>
+    </div>
+    <!-- KPI Bar -->
+    <div class="rgc-kpi-bar">
+      <div class="rgc-kpi-item"><div class="rgc-kpi-val" id="rgc-total-ventas">$96,326,276</div><div class="rgc-kpi-lbl">Total ventas</div></div>
+      <div class="rgc-kpi-item"><div class="rgc-kpi-val" id="rgc-tx-ventas">100</div><div class="rgc-kpi-lbl"># transacciones ventas</div></div>
+      <div class="rgc-kpi-item"><div class="rgc-kpi-val" id="rgc-prom-venta">$963,263</div><div class="rgc-kpi-lbl">Promedio venta</div></div>
+      <div class="rgc-kpi-item"><div class="rgc-kpi-val" id="rgc-total-recaudos">$174,584,516</div><div class="rgc-kpi-lbl">Total recaudos</div></div>
+      <div class="rgc-kpi-item"><div class="rgc-kpi-val" id="rgc-tx-recaudos">73</div><div class="rgc-kpi-lbl"># trans. recaudo</div></div>
+      <div class="rgc-kpi-item"><div class="rgc-kpi-val" id="rgc-prom-recaudo">$2,391,569</div><div class="rgc-kpi-lbl">Promedio recaudo</div></div>
+      <div class="rgc-kpi-item"><div class="rgc-kpi-val" id="rgc-usuarios">25</div><div class="rgc-kpi-lbl">Usuarios</div></div>
+      <div class="rgc-kpi-item"><div class="rgc-kpi-val" id="rgc-clientes">71</div><div class="rgc-kpi-lbl">Clientes</div></div>
+    </div>
+    <!-- Charts grid -->
+    <div class="charts-grid">
+      <div class="chart-card"><div class="chart-header"><div><div class="chart-title">$ Ventas por tipo de transacción</div></div></div><div class="chart-container"><canvas id="rgcVentasTipoChart"></canvas></div></div>
+      <div class="chart-card"><div class="chart-header"><div><div class="chart-title">$ Recaudos por estado</div></div></div><div class="chart-container"><canvas id="rgcRecaudosEstadoChart"></canvas></div></div>
+      <div class="chart-card"><div class="chart-header"><div><div class="chart-title">% Canceladas / Vencidas / Cumplidas</div></div></div><div class="chart-container"><canvas id="rgcCumplimientoChart"></canvas></div></div>
+      <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Agendas por etapa y categoría</div></div></div><div class="chart-container"><canvas id="rgcAgendasEtapaChart"></canvas></div></div>
+      <div class="chart-card full">
+        <div class="chart-header"><div><div class="chart-title">Transacciones por tipo de módulo</div><div class="chart-subtitle">Total y distribución del período</div></div></div>
+        <div style="display:grid;grid-template-columns:280px 1fr;gap:24px;align-items:center;">
+          <div class="chart-container"><canvas id="rgcTransaccionesTipoChart"></canvas></div>
+          <div id="rgcTransaccionesLegend" class="tx-legend"></div>
+        </div>
+      </div>
+      <div class="chart-card full">
+        <div class="chart-header"><div><div class="chart-title">Análisis por usuarios</div><div class="chart-subtitle">Ventas, recaudos y gestiones por usuario</div></div></div>
+        <div class="table-wrapper"><table class="rgc-users-table"><thead><tr><th>Usuario</th><th>$ Ventas</th><th>Tx. Ventas</th><th>$ Recaudos</th><th>Tx. Recaudos</th><th>Visitas</th></tr></thead><tbody id="rgcUsuariosBody"></tbody></table></div>
+      </div>
+      <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Causales de visita</div><div class="chart-subtitle">% del total</div></div></div><div class="chart-container tall"><canvas id="rgcCausalesChart"></canvas></div></div>
+      <div class="chart-card"><div class="chart-header"><div><div class="chart-title">Formulario</div><div class="chart-subtitle">Distribución por tipo</div></div></div><div class="chart-container tall"><canvas id="rgcFormularioChart"></canvas></div></div>
+      <div class="chart-card full"><div class="chart-header"><div><div class="chart-title">Ventas y Recaudos por día</div><div class="chart-subtitle">Valores diarios del período</div></div></div><div class="chart-container tall"><canvas id="rgcVentasDiaChart"></canvas></div></div>
+      <div class="chart-card full"><div class="chart-header"><div><div class="chart-title">Ventas vs Recaudos — Acumulado por día</div><div class="chart-subtitle">Evolución acumulada en el período</div></div></div><div class="chart-container tall"><canvas id="rgcAcumuladoChart"></canvas></div></div>
+    </div>
+  </div>
+  </div><!-- /section-resumen-gestion -->
 
   <script>
     let ALL_DATA = null;
@@ -267,6 +491,224 @@
     let chartInstances = {};
     const renderedTabs = new Set();
     let authToken = localStorage.getItem('authToken');
+
+    // ─── Section Navigation ────────────────────────────────
+    let currentSection = 'control-cartera';
+    const renderedSections = new Set();
+    const SECTION_TITLES = {
+      'inicio': '🏠 Inicio — Indicadores',
+      'resumen-gestion': '📈 Resumen Gestión Comercial',
+      'control-cartera': '📋 Control de Cartera'
+    };
+
+    function switchSection(sectionId) {
+      if (currentSection === sectionId) {
+        document.getElementById('navDropdownMenu').classList.remove('open');
+        document.getElementById('navMenuBtn').classList.remove('open');
+        return;
+      }
+      const old = document.getElementById('section-' + currentSection);
+      if (old) old.classList.remove('active');
+      const newEl = document.getElementById('section-' + sectionId);
+      if (newEl) newEl.classList.add('active');
+      document.getElementById('sectionTitle').textContent = SECTION_TITLES[sectionId] || sectionId;
+      document.querySelectorAll('.nav-dropdown-item[data-section]').forEach(item => {
+        item.classList.toggle('active', item.dataset.section === sectionId);
+      });
+      currentSection = sectionId;
+      document.getElementById('navDropdownMenu').classList.remove('open');
+      document.getElementById('navMenuBtn').classList.remove('open');
+      if (!renderedSections.has(sectionId)) {
+        renderedSections.add(sectionId);
+        if (sectionId === 'inicio') renderInicioSection();
+        else if (sectionId === 'resumen-gestion') renderResumenGestion();
+      }
+    }
+
+    // Nav dropdown toggle
+    document.getElementById('navMenuBtn').addEventListener('click', function(e) {
+      e.stopPropagation();
+      document.getElementById('navDropdownMenu').classList.toggle('open');
+      document.getElementById('navMenuBtn').classList.toggle('open');
+    });
+    document.addEventListener('click', function() {
+      document.getElementById('navDropdownMenu').classList.remove('open');
+      document.getElementById('navMenuBtn').classList.remove('open');
+    });
+    document.getElementById('navDropdownMenu').addEventListener('click', function(e) { e.stopPropagation(); });
+    document.querySelectorAll('.nav-dropdown-item[data-section]').forEach(function(item) {
+      item.addEventListener('click', function() { switchSection(item.dataset.section); });
+    });
+
+    // RSales period buttons (Inicio section)
+    document.querySelectorAll('.rsales-period-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.rsales-period-btn').forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        const periodos = { ayer: 'Ayer', hoy: 'Hoy', semana: 'Esta semana', mes: 'Mayo 2026', 'mes-pasado': 'Abril 2026', custom: 'Personalizado' };
+        const lbl = document.getElementById('rsalesPeriodoLabel');
+        if (lbl) lbl.textContent = periodos[btn.dataset.periodo] || '';
+      });
+    });
+
+    // ─── RSales Demo Data ──────────────────────────────────
+    const RSALES_DEMO = {
+      indicadores: {
+        agendas: { cumplidas: 193, vencidas: 86, pendientes: 24, extraruta: 260 },
+        usuarios: { sin_reportar: 126, sin_agenda: 138, sin_ubicacion: 16, reportando: 20 },
+        tiempos: { inicio: '10:59', fin: '15:27' },
+        clientes: { activos: 4326, gestionados: 330, sin_gestion: 3996 },
+        usuarios_labor: [
+          { nombre: 'CARLOS A. VARGAS', gestiones: 24 }, { nombre: 'DIANA M. RIOS', gestiones: 20 },
+          { nombre: 'JORGE HERNANDEZ', gestiones: 18 }, { nombre: 'LAURA P. GOMEZ', gestiones: 16 },
+          { nombre: 'MIGUEL A. TORRES', gestiones: 15 }, { nombre: 'ANA C. PEREZ', gestiones: 14 },
+          { nombre: 'PEDRO J. MARTINEZ', gestiones: 13 }, { nombre: 'LUCIA F. SUAREZ', gestiones: 12 },
+          { nombre: 'OSCAR D. REYES', gestiones: 11 }, { nombre: 'CAMILA A. MORA', gestiones: 10 }
+        ],
+        gestiones_dia: [
+          { dia: '01', planeadas: 45, realizadas: 38 }, { dia: '05', planeadas: 48, realizadas: 42 },
+          { dia: '06', planeadas: 50, realizadas: 47 }, { dia: '07', planeadas: 44, realizadas: 41 },
+          { dia: '08', planeadas: 46, realizadas: 43 }, { dia: '09', planeadas: 40, realizadas: 37 },
+          { dia: '11', planeadas: 43, realizadas: 38 }
+        ],
+        transacciones: [
+          { tipo: 'Visita', cantidad: 171, pct: 47, color: '#3b82f6' },
+          { tipo: 'Pedido', cantidad: 100, pct: 27, color: '#10b981' },
+          { tipo: 'Recibo de Caja', cantidad: 73, pct: 20, color: '#f59e0b' },
+          { tipo: 'Formulario', cantidad: 20, pct: 5, color: '#8b5cf6' }
+        ]
+      },
+      gestion: {
+        updated: '11/05/2026 12:45:29',
+        kpis: {
+          total_ventas: 96326276, tx_ventas: 100, prom_venta: 963263,
+          total_recaudos: 174584516, tx_recaudos: 73, prom_recaudo: 2391569,
+          usuarios: 25, clientes: 71
+        },
+        ventas_tipo: [{ tipo: 'Pedido', valor: 96326276, pct: 100, color: '#3b82f6' }],
+        recaudos_estado: [
+          { estado: 'Aprobado', valor: 150442932, color: '#10b981' },
+          { estado: 'Rechazado', valor: 21230570, color: '#ef4444' },
+          { estado: 'Pendiente', valor: 2819215, color: '#f59e0b' },
+          { estado: 'Retenido', valor: 91800, color: '#8b5cf6' }
+        ],
+        cumplimiento: [
+          { tipo: 'Cumplidas', pct: 69.1, color: '#10b981' },
+          { tipo: 'Canceladas / Vencidas', pct: 30.9, color: '#ef4444' }
+        ],
+        agendas_etapa: [
+          { etapa: 'Planeadas', cantidad: 278 }, { etapa: 'Canceladas', cantidad: 86 },
+          { etapa: 'Programadas', cantidad: 278 }, { etapa: 'Vencidas', cantidad: 86 },
+          { etapa: 'Cumplidas', cantidad: 192 }, { etapa: 'Extraruta', cantidad: 259 }
+        ],
+        transacciones_tipo: [
+          { tipo: 'Visita', cantidad: 171, pct: 47, color: '#3b82f6' },
+          { tipo: 'Pedido', cantidad: 100, pct: 27, color: '#10b981' },
+          { tipo: 'Recibo de Caja', cantidad: 73, pct: 20, color: '#f59e0b' },
+          { tipo: 'Formulario', cantidad: 20, pct: 5, color: '#8b5cf6' }
+        ],
+        usuarios_tabla: [
+          { usuario: 'JUAN GARCIA', ventas: 18000000, tx_v: 19, recaudos: 32000000, tx_r: 14, visitas: 32 },
+          { usuario: 'MARIA LOPEZ', ventas: 15000000, tx_v: 16, recaudos: 28000000, tx_r: 12, visitas: 28 },
+          { usuario: 'CARLOS RODRIGUEZ', ventas: 12000000, tx_v: 14, recaudos: 22000000, tx_r: 10, visitas: 24 },
+          { usuario: 'DIANA PEREZ', ventas: 10000000, tx_v: 11, recaudos: 18000000, tx_r: 8, visitas: 20 },
+          { usuario: 'PEDRO MARTINEZ', ventas: 9000000, tx_v: 10, recaudos: 15000000, tx_r: 7, visitas: 18 },
+          { usuario: 'LUCIA SUAREZ', ventas: 8000000, tx_v: 8, recaudos: 12000000, tx_r: 6, visitas: 16 },
+          { usuario: 'OSCAR REYES', ventas: 7000000, tx_v: 7, recaudos: 10000000, tx_r: 5, visitas: 14 }
+        ],
+        causales_visita: [
+          { causal: 'SEGUIMIENTO A CLIENTE', pct: 68.4 }, { causal: 'TIENE MERCADERÍA', pct: 8.2 },
+          { causal: 'CARTERA', pct: 7.0 }, { causal: 'NO SE ENCUENTRA EL CLIENTE', pct: 6.4 },
+          { causal: 'CAMBIO DE RUTA', pct: 5.8 }, { causal: 'LOCAL CERRADO', pct: 2.3 },
+          { causal: 'RECAUDO', pct: 1.2 }, { causal: 'CLIENTE CANCELA CITA', pct: 0.6 }
+        ],
+        formulario: [
+          { tipo: 'ANTICIPOS CLIENTES', pct: 55, cantidad: 11 },
+          { tipo: 'CLIENTES PROSPECTOS', pct: 15, cantidad: 3 },
+          { tipo: 'INACTIVACIÓN-ACTIVACIÓN', pct: 15, cantidad: 3 },
+          { tipo: 'REQUERIMIENTOS MERCADEO', pct: 15, cantidad: 3 }
+        ],
+        ventas_recaudos_dia: [
+          { dia: '01', ventas: 0, recaudos: 0 }, { dia: '02', ventas: 0, recaudos: 0 },
+          { dia: '05', ventas: 12500000, recaudos: 18000000 }, { dia: '06', ventas: 15200000, recaudos: 22000000 },
+          { dia: '07', ventas: 8900000, recaudos: 14000000 }, { dia: '08', ventas: 18000000, recaudos: 25000000 },
+          { dia: '09', ventas: 0, recaudos: 0 }, { dia: '11', ventas: 41726276, recaudos: 95584516 }
+        ]
+      }
+    };
+
+    // ─── Inicio Section Renderers ──────────────────────────
+    function renderInicioSection() {
+      const d = RSALES_DEMO.indicadores;
+      document.getElementById('ind-sin-reportar').textContent = d.usuarios.sin_reportar;
+      document.getElementById('ind-sin-agenda').textContent = d.usuarios.sin_agenda;
+      document.getElementById('ind-sin-ubicacion').textContent = d.usuarios.sin_ubicacion;
+      document.getElementById('ind-reportando').textContent = d.usuarios.reportando;
+      document.getElementById('ind-hora-inicio').textContent = d.tiempos.inicio;
+      document.getElementById('ind-hora-fin').textContent = d.tiempos.fin;
+      document.getElementById('ind-clientes-activos').textContent = d.clientes.activos.toLocaleString('es-CO');
+      document.getElementById('ind-clientes-gestionados').textContent = d.clientes.gestionados.toLocaleString('es-CO');
+      document.getElementById('ind-pct-gestionados').textContent = Math.round(d.clientes.gestionados / d.clientes.activos * 100) + '%';
+      document.getElementById('ind-sin-gestion').textContent = d.clientes.sin_gestion.toLocaleString('es-CO');
+      document.getElementById('ind-extraruta').textContent = d.agendas.extraruta;
+      document.getElementById('ind-ag-cumplidas').textContent = d.agendas.cumplidas;
+      document.getElementById('ind-ag-vencidas').textContent = d.agendas.vencidas;
+      document.getElementById('ind-ag-pendientes').textContent = d.agendas.pendientes;
+      document.getElementById('ind-ag-extraruta').textContent = d.agendas.extraruta;
+      // Labor grid
+      document.getElementById('laborGrid').innerHTML = d.usuarios_labor.map(function(u) {
+        var initials = u.nombre.split(' ').slice(0, 2).map(function(w) { return w[0]; }).join('');
+        return '<div class="labor-card"><div class="labor-avatar">' + initials + '</div><div class="labor-info"><div class="labor-name">' + u.nombre + '</div><div class="labor-gestiones">' + u.gestiones + ' gestiones</div></div></div>';
+      }).join('');
+      // Charts
+      var totalAg = d.agendas.cumplidas + d.agendas.vencidas + d.agendas.pendientes;
+      loadChart('agendaEstadoChart', { type: 'doughnut', data: { labels: ['Cumplidas', 'Vencidas', 'Pendientes'], datasets: [{ data: [d.agendas.cumplidas, d.agendas.vencidas, d.agendas.pendientes], backgroundColor: ['#10b981', '#ef4444', '#f59e0b'], borderWidth: 0, hoverOffset: 6 }] }, options: { ...chartDefaults, cutout: '60%', plugins: { ...chartDefaults.plugins, legend: { ...chartDefaults.plugins.legend, position: 'bottom' }, tooltip: { callbacks: { label: function(ctx) { return ctx.label + ': ' + ctx.raw + ' (' + (ctx.raw / totalAg * 100).toFixed(1) + '%)'; } } } } } });
+      loadChart('transaccionesTipoIndChart', { type: 'doughnut', data: { labels: d.transacciones.map(function(t) { return t.tipo; }), datasets: [{ data: d.transacciones.map(function(t) { return t.cantidad; }), backgroundColor: d.transacciones.map(function(t) { return t.color; }), borderWidth: 0, hoverOffset: 6 }] }, options: { ...chartDefaults, cutout: '60%', plugins: { ...chartDefaults.plugins, legend: { ...chartDefaults.plugins.legend, position: 'bottom' }, tooltip: { callbacks: { label: function(ctx) { return ctx.label + ': ' + ctx.raw + ' (' + d.transacciones[ctx.dataIndex].pct + '%)'; } } } } } });
+      loadChart('gestionesDiaChart', { type: 'bar', data: { labels: d.gestiones_dia.map(function(g) { return 'Día ' + g.dia; }), datasets: [{ label: 'Planeadas', data: d.gestiones_dia.map(function(g) { return g.planeadas; }), backgroundColor: 'rgba(59,130,246,0.6)', borderRadius: 4 }, { label: 'Realizadas', data: d.gestiones_dia.map(function(g) { return g.realizadas; }), backgroundColor: '#10b981', borderRadius: 4 }] }, options: { ...chartDefaults } });
+    }
+
+    // ─── Resumen Gestión Comercial Renderers ───────────────
+    function renderResumenGestion() {
+      var d = RSALES_DEMO.gestion;
+      document.getElementById('rgcUpdated').textContent = 'Datos actualizados al: ' + d.updated;
+      document.getElementById('rgc-total-ventas').textContent = fmtFull(d.kpis.total_ventas);
+      document.getElementById('rgc-tx-ventas').textContent = d.kpis.tx_ventas;
+      document.getElementById('rgc-prom-venta').textContent = fmtFull(d.kpis.prom_venta);
+      document.getElementById('rgc-total-recaudos').textContent = fmtFull(d.kpis.total_recaudos);
+      document.getElementById('rgc-tx-recaudos').textContent = d.kpis.tx_recaudos;
+      document.getElementById('rgc-prom-recaudo').textContent = fmtFull(d.kpis.prom_recaudo);
+      document.getElementById('rgc-usuarios').textContent = d.kpis.usuarios;
+      document.getElementById('rgc-clientes').textContent = d.kpis.clientes;
+      // Ventas por tipo (pie)
+      loadChart('rgcVentasTipoChart', { type: 'pie', data: { labels: d.ventas_tipo.map(function(v) { return v.tipo; }), datasets: [{ data: d.ventas_tipo.map(function(v) { return v.valor; }), backgroundColor: d.ventas_tipo.map(function(v) { return v.color; }), borderWidth: 0, hoverOffset: 6 }] }, options: { ...chartDefaults, plugins: { ...chartDefaults.plugins, legend: { ...chartDefaults.plugins.legend, position: 'bottom' }, tooltip: { callbacks: { label: function(ctx) { return ctx.label + ': ' + fmtFull(ctx.raw) + ' (' + d.ventas_tipo[ctx.dataIndex].pct + '%)'; } } } } } });
+      // Recaudos por estado (bar)
+      loadChart('rgcRecaudosEstadoChart', { type: 'bar', data: { labels: d.recaudos_estado.map(function(r) { return r.estado; }), datasets: [{ data: d.recaudos_estado.map(function(r) { return r.valor; }), backgroundColor: d.recaudos_estado.map(function(r) { return r.color; }), borderRadius: 6, borderSkipped: false }] }, options: { ...chartDefaults, plugins: { ...chartDefaults.plugins, legend: { display: false }, tooltip: { callbacks: { label: function(ctx) { return fmtFull(ctx.raw); } } } }, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, ticks: { ...chartDefaults.scales.y.ticks, callback: function(v) { return fmt(v); } } } } } });
+      // Cumplimiento agendas (pie)
+      loadChart('rgcCumplimientoChart', { type: 'pie', data: { labels: d.cumplimiento.map(function(c) { return c.tipo; }), datasets: [{ data: d.cumplimiento.map(function(c) { return c.pct; }), backgroundColor: d.cumplimiento.map(function(c) { return c.color; }), borderWidth: 0, hoverOffset: 6 }] }, options: { ...chartDefaults, plugins: { ...chartDefaults.plugins, legend: { ...chartDefaults.plugins.legend, position: 'bottom' }, tooltip: { callbacks: { label: function(ctx) { return ctx.label + ': ' + ctx.raw + '%'; } } } } } });
+      // Agendas por etapa (bar)
+      loadChart('rgcAgendasEtapaChart', { type: 'bar', data: { labels: d.agendas_etapa.map(function(a) { return a.etapa; }), datasets: [{ data: d.agendas_etapa.map(function(a) { return a.cantidad; }), backgroundColor: ['#3b82f6', '#ef4444', '#06b6d4', '#f59e0b', '#10b981', '#f97316'], borderRadius: 6, borderSkipped: false }] }, options: { ...chartDefaults, plugins: { ...chartDefaults.plugins, legend: { display: false } } } });
+      // Transacciones por tipo (doughnut)
+      loadChart('rgcTransaccionesTipoChart', { type: 'doughnut', data: { labels: d.transacciones_tipo.map(function(t) { return t.tipo; }), datasets: [{ data: d.transacciones_tipo.map(function(t) { return t.cantidad; }), backgroundColor: d.transacciones_tipo.map(function(t) { return t.color; }), borderWidth: 0, hoverOffset: 6 }] }, options: { ...chartDefaults, cutout: '60%', plugins: { ...chartDefaults.plugins, legend: { display: false }, tooltip: { callbacks: { label: function(ctx) { return ctx.label + ': ' + ctx.raw + ' (' + d.transacciones_tipo[ctx.dataIndex].pct + '%)'; } } } } } });
+      // Transacciones legend
+      document.getElementById('rgcTransaccionesLegend').innerHTML = d.transacciones_tipo.map(function(t) {
+        return '<div class="tx-legend-item"><div class="tx-legend-dot" style="background:' + t.color + '"></div><div><div class="tx-legend-label">' + t.tipo + '</div><div class="tx-legend-sub">' + t.cantidad + ' registros (' + t.pct + '%)</div></div></div>';
+      }).join('');
+      // Usuarios tabla
+      document.getElementById('rgcUsuariosBody').innerHTML = d.usuarios_tabla.map(function(u) {
+        return '<tr><td><strong>' + u.usuario + '</strong></td><td>' + fmtFull(u.ventas) + '</td><td>' + u.tx_v + '</td><td>' + fmtFull(u.recaudos) + '</td><td>' + u.tx_r + '</td><td>' + u.visitas + '</td></tr>';
+      }).join('');
+      // Causales de visita (horizontal bar)
+      loadChart('rgcCausalesChart', { type: 'bar', data: { labels: d.causales_visita.map(function(c) { return c.causal.length > 28 ? c.causal.substring(0, 28) + '…' : c.causal; }), datasets: [{ data: d.causales_visita.map(function(c) { return c.pct; }), backgroundColor: '#3b82f6', borderRadius: 4, borderSkipped: false }] }, options: { ...chartDefaults, indexAxis: 'y', plugins: { ...chartDefaults.plugins, legend: { display: false }, tooltip: { callbacks: { label: function(ctx) { return d.causales_visita[ctx.dataIndex].causal + ': ' + ctx.raw + '%'; } } } }, scales: { ...chartDefaults.scales, x: { ...chartDefaults.scales.x, max: 80, ticks: { ...chartDefaults.scales.x.ticks, callback: function(v) { return v + '%'; } } } } } });
+      // Formulario (horizontal bar)
+      loadChart('rgcFormularioChart', { type: 'bar', data: { labels: d.formulario.map(function(f) { return f.tipo; }), datasets: [{ data: d.formulario.map(function(f) { return f.pct; }), backgroundColor: '#8b5cf6', borderRadius: 4, borderSkipped: false }] }, options: { ...chartDefaults, indexAxis: 'y', plugins: { ...chartDefaults.plugins, legend: { display: false }, tooltip: { callbacks: { label: function(ctx) { return ctx.raw + '% (' + d.formulario[ctx.dataIndex].cantidad + ' registros)'; } } } }, scales: { ...chartDefaults.scales, x: { ...chartDefaults.scales.x, max: 80, ticks: { ...chartDefaults.scales.x.ticks, callback: function(v) { return v + '%'; } } } } } });
+      // Ventas y Recaudos por día (bar grouped)
+      var dias = d.ventas_recaudos_dia;
+      loadChart('rgcVentasDiaChart', { type: 'bar', data: { labels: dias.map(function(d) { return 'Día ' + d.dia; }), datasets: [{ label: 'Ventas', data: dias.map(function(d) { return d.ventas; }), backgroundColor: 'rgba(59,130,246,0.75)', borderRadius: 4, borderSkipped: false }, { label: 'Recaudos', data: dias.map(function(d) { return d.recaudos; }), backgroundColor: 'rgba(16,185,129,0.75)', borderRadius: 4, borderSkipped: false }] }, options: { ...chartDefaults, plugins: { ...chartDefaults.plugins, tooltip: { callbacks: { label: function(ctx) { return ctx.dataset.label + ': ' + fmtFull(ctx.raw); } } } }, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, ticks: { ...chartDefaults.scales.y.ticks, callback: function(v) { return fmt(v); } } } } } });
+      // Acumulado por día (line)
+      var cumV = 0, cumR = 0;
+      var acum = dias.map(function(d) { cumV += d.ventas; cumR += d.recaudos; return { dia: d.dia, ventas: cumV, recaudos: cumR }; });
+      loadChart('rgcAcumuladoChart', { type: 'line', data: { labels: acum.map(function(d) { return 'Día ' + d.dia; }), datasets: [{ label: 'Ventas Acum.', data: acum.map(function(d) { return d.ventas; }), borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', fill: true, tension: 0.3, pointRadius: 3, borderWidth: 2 }, { label: 'Recaudos Acum.', data: acum.map(function(d) { return d.recaudos; }), borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.1)', fill: true, tension: 0.3, pointRadius: 3, borderWidth: 2 }] }, options: { ...chartDefaults, plugins: { ...chartDefaults.plugins, tooltip: { callbacks: { label: function(ctx) { return ctx.dataset.label + ': ' + fmtFull(ctx.raw); } } } }, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, ticks: { ...chartDefaults.scales.y.ticks, callback: function(v) { return fmt(v); } } } } } });
+    }
 
     // ─── Theme ────────────────────────────────────
     (function() {
