@@ -748,7 +748,15 @@
         }
         customRange.classList.remove('visible');
         const range = getDateRange(btn.dataset.periodo);
+        // Sync Año/Mes dropdowns so Excel KPIs reflect the same period
+        const rangeDate = new Date(range.from + 'T12:00:00');
+        const anioSel = document.getElementById('rgcAnio');
+        const mesSel  = document.getElementById('rgcMes');
+        if (anioSel) anioSel.value = String(rangeDate.getFullYear());
+        if (mesSel)  mesSel.value  = String(rangeDate.getMonth() + 1);
+        document.getElementById('rgcPeriodoLabel').textContent = '';
         fetchGestionData(range.from, range.to);
+        if (CARTERA_BI_DATA) updateRGCKPIsFromExcel();
       });
     });
     document.getElementById('rgcApplyCustom').addEventListener('click', function() {
@@ -757,6 +765,22 @@
       if (!from || !to) { alert('Selecciona las fechas'); return; }
       if (from > to) { alert('La fecha de inicio debe ser anterior a la fecha fin'); return; }
       fetchGestionData(from, to);
+    });
+    // ─── RGC Año/Mes dropdowns → update Excel KPIs ─────────
+    ['rgcAnio', 'rgcMes'].forEach(function(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('change', function() {
+        const anio = document.getElementById('rgcAnio').value;
+        const mes  = document.getElementById('rgcMes').value;
+        const from = anio + '-' + String(mes).padStart(2,'0') + '-01';
+        const to   = new Date(parseInt(anio), parseInt(mes), 0).toISOString().split('T')[0];
+        // Deactivate period buttons (period is now custom via dropdowns)
+        document.querySelectorAll('.rgc-period-btn').forEach(function(b) { b.classList.remove('active'); });
+        document.getElementById('rgcPeriodoLabel').textContent = '';
+        fetchGestionData(from, to);
+        if (CARTERA_BI_DATA) updateRGCKPIsFromExcel();
+      });
     });
 
     // ─── Inicio: fetch real data from backend ──────────────
@@ -867,13 +891,21 @@
 
     // ─── Resumen Gestión Comercial: fetch real data ────────
     function renderResumenGestion() {
+      // Set period buttons & dropdowns to current month default
+      const now = new Date();
+      const anioSel = document.getElementById('rgcAnio');
+      const mesSel  = document.getElementById('rgcMes');
+      if (anioSel) anioSel.value = String(now.getFullYear());
+      if (mesSel)  mesSel.value  = String(now.getMonth() + 1);
+      document.querySelectorAll('.rgc-period-btn').forEach(function(b) {
+        b.classList.toggle('active', b.dataset.periodo === 'mes');
+      });
       const range = getDateRange('mes');
       fetchGestionData(range.from, range.to);
-      // Ensure Excel cartera data is loaded; renderRGCExcelCharts is called
-      // from renderCarteraBI() once data arrives, or right now if already cached
       if (!CARTERA_BI_DATA) {
-        loadCarteraData(); // renderCarteraBI() will call renderRGCExcelCharts when done
+        loadCarteraData();
       } else {
+        populateRGCFilters();
         setTimeout(renderRGCExcelCharts, 300);
       }
     }
@@ -903,15 +935,21 @@
       var totalAg = (ag.cumplidas||0) + (ag.vencidas||0) + (ag.pendientes||0);
       var labor = d.labor || [];
 
-      // KPI bar: datos reales de agendas; monetarios no disponibles desde esta API
-      document.getElementById('rgc-total-ventas').textContent = '—';
-      document.getElementById('rgc-tx-ventas').textContent = d.total_appointments || 0;
-      document.getElementById('rgc-prom-venta').textContent = '—';
-      document.getElementById('rgc-total-recaudos').textContent = '—';
-      document.getElementById('rgc-tx-recaudos').textContent = '—';
-      document.getElementById('rgc-prom-recaudo').textContent = '—';
-      document.getElementById('rgc-usuarios').textContent = labor.length;
-      document.getElementById('rgc-clientes').textContent = d.clientes?.gestionados || 0;
+      // KPI bar: monetarios vienen del Excel (updateRGCKPIsFromExcel), agendas de RSales
+      // Solo actualizar usuarios y clientes desde RSales si no hay datos de Excel
+      if (!CARTERA_BI_DATA) {
+        document.getElementById('rgc-total-ventas').textContent = '—';
+        document.getElementById('rgc-tx-ventas').textContent = d.total_appointments || 0;
+        document.getElementById('rgc-prom-venta').textContent = '—';
+        document.getElementById('rgc-total-recaudos').textContent = '—';
+        document.getElementById('rgc-tx-recaudos').textContent = '—';
+        document.getElementById('rgc-prom-recaudo').textContent = '—';
+      }
+      // Usuarios/Clientes: prefer Excel totals; RSales shows active-period subset
+      if (!CARTERA_BI_DATA) {
+        document.getElementById('rgc-usuarios').textContent = labor.length;
+        document.getElementById('rgc-clientes').textContent = d.clientes?.gestionados || 0;
+      }
 
       // Ventas / Recaudos: rendered from Excel data — see renderRGCExcelCharts()
       window._rgcLabor = labor; // Store RSales labor for merging in vendor table
@@ -971,9 +1009,9 @@
         var causalesEl2 = document.querySelector('#rgcCausalesChart') ? document.querySelector('#rgcCausalesChart').parentElement : null;
         if (causalesEl2) causalesEl2.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:160px;color:var(--text-muted);font-size:13px;">Sin observaciones en el período</div>';
       }
-      // Formulario: not available from appointments API
+      // Formulario: RSales form data not available via appointments API or Excel
       var formularioEl2 = document.querySelector('#rgcFormularioChart') ? document.querySelector('#rgcFormularioChart').parentElement : null;
-      if (formularioEl2) { if (chartInstances['rgcFormularioChart']) { chartInstances['rgcFormularioChart'].destroy(); delete chartInstances['rgcFormularioChart']; } formularioEl2.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:160px;color:var(--text-muted);font-size:13px;text-align:center;padding:16px;">Formularios no disponibles en la API REST de RSales</div>'; }
+      if (formularioEl2) { if (chartInstances['rgcFormularioChart']) { chartInstances['rgcFormularioChart'].destroy(); delete chartInstances['rgcFormularioChart']; } formularioEl2.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:160px;color:var(--text-muted);font-size:12px;text-align:center;padding:20px;gap:8px;"><span style="font-size:28px;opacity:0.3">📋</span><span>Formularios no disponibles</span><span style="font-size:11px;opacity:0.7">Esta información no está en el Excel ni en la API de Agendas RSales</span></div>'; }
 
       // Chart: Gestiones por día — real
       var dias = d.gestiones_dia || [];
@@ -1742,7 +1780,8 @@
         // Extra resize pass after DOM paints
         setTimeout(resizeEChartsAll, 250);
         setTimeout(resizeEChartsAll, 800);
-        // Also update RGC section if visible (user is on that tab)
+        // Populate RGC year filter and update charts if section is visible
+        populateRGCFilters();
         if (renderedSections.has('resumen-gestion')) setTimeout(renderRGCExcelCharts, 400);
       }));
     }
@@ -2052,52 +2091,83 @@
     }
 
     // ─── RGC Excel Charts (powered by Excel data, independent of RSales API) ────
-    function renderRGCExcelCharts() {
+    // ─── RGC: populate Año dropdown from available rgc_monthly years ───────────
+    function populateRGCFilters() {
       const d = CARTERA_BI_DATA;
-      // If data not ready yet, retry once more after a delay
-      if (!d) { setTimeout(renderRGCExcelCharts, 800); return; }
-      // If section not visible, skip (charts won't measure correctly)
-      const section = document.getElementById('section-resumen-gestion');
-      if (section && !section.classList.contains('active')) return;
-      const tipoDoc = d.tipo_doc_grouped || [];
-      const facturas = tipoDoc.find(t => t.label === 'Factura') || {};
-      const recibos  = tipoDoc.find(t => t.label === 'Recibo')  || {};
+      if (!d || !d.rgc_monthly) return;
+      const years = [...new Set(d.rgc_monthly.map(r => r.mes.split('-')[0]))].sort().reverse();
+      const currentYear = String(new Date().getFullYear());
+      const anioSel = document.getElementById('rgcAnio');
+      if (!anioSel) return;
+      const curVal = anioSel.value || currentYear;
+      anioSel.innerHTML = years.map(y => `<option value="${y}"${y===curVal?' selected':''}>${y}</option>`).join('');
+    }
 
-      // KPIs
-      const rgcTV = document.getElementById('rgc-total-ventas');   if (rgcTV) rgcTV.textContent = fmtBil(facturas.saldo || 0);
-      const rgcTxV = document.getElementById('rgc-tx-ventas');     if (rgcTxV) rgcTxV.textContent = (facturas.docs||0).toLocaleString('es-CO');
-      const rgcPV = document.getElementById('rgc-prom-venta');     if (rgcPV) rgcPV.textContent = facturas.docs > 0 ? fmtBil(Math.round((facturas.saldo||0)/facturas.docs)) : '—';
-      const rgcTR = document.getElementById('rgc-total-recaudos'); if (rgcTR) rgcTR.textContent = fmtBil(recibos.saldo || 0);
-      const rgcTxR = document.getElementById('rgc-tx-recaudos');   if (rgcTxR) rgcTxR.textContent = (recibos.docs||0).toLocaleString('es-CO');
-      const rgcPR = document.getElementById('rgc-prom-recaudo');   if (rgcPR) rgcPR.textContent = recibos.docs > 0 ? fmtBil(Math.round((recibos.saldo||0)/recibos.docs)) : '—';
-      const rgcU = document.getElementById('rgc-usuarios');        if (rgcU) rgcU.textContent = d.kpis?.total_vendedores || '—';
-      const rgcC = document.getElementById('rgc-clientes');        if (rgcC) rgcC.textContent = d.kpis?.total_clientes || '—';
+    // ─── RGC: update KPIs + Ventas-tipo chart from filtered rgc_monthly ────────
+    function updateRGCKPIsFromExcel() {
+      const d = CARTERA_BI_DATA;
+      if (!d) return;
+      const anio = document.getElementById('rgcAnio')?.value || String(new Date().getFullYear());
+      const mes  = document.getElementById('rgcMes')?.value  || String(new Date().getMonth() + 1);
+      const mesKey = anio + '-' + String(mes).padStart(2, '0');
 
-      // Chart: $ Ventas por tipo de transacción
+      const monthly  = (d.rgc_monthly || []).filter(r => r.mes === mesKey);
+      const factura  = monthly.find(r => r.cat === 'Factura') || {};
+      const recibo   = monthly.find(r => r.cat === 'Recibo')  || {};
+
+      // KPI bar
+      const rgcTV  = document.getElementById('rgc-total-ventas');   if (rgcTV)  rgcTV.textContent  = factura.saldo  ? fmtBil(factura.saldo)  : '—';
+      const rgcTxV = document.getElementById('rgc-tx-ventas');      if (rgcTxV) rgcTxV.textContent = (factura.docs  || 0).toLocaleString('es-CO');
+      const rgcPV  = document.getElementById('rgc-prom-venta');     if (rgcPV)  rgcPV.textContent  = factura.docs  > 0 ? fmtBil(Math.round((factura.saldo  || 0) / factura.docs))  : '—';
+      const rgcTR  = document.getElementById('rgc-total-recaudos'); if (rgcTR)  rgcTR.textContent  = recibo.saldo  ? fmtBil(recibo.saldo)   : '—';
+      const rgcTxR = document.getElementById('rgc-tx-recaudos');    if (rgcTxR) rgcTxR.textContent = (recibo.docs   || 0).toLocaleString('es-CO');
+      const rgcPR  = document.getElementById('rgc-prom-recaudo');   if (rgcPR)  rgcPR.textContent  = recibo.docs   > 0 ? fmtBil(Math.round((recibo.saldo   || 0) / recibo.docs))   : '—';
+      const rgcU   = document.getElementById('rgc-usuarios');        if (rgcU)   rgcU.textContent   = d.kpis?.total_vendedores || '—';
+      const rgcC   = document.getElementById('rgc-clientes');        if (rgcC)   rgcC.textContent   = d.kpis?.total_clientes   || '—';
+
+      // Chart: $ Ventas por tipo de transacción — filtered by selected month
       const vtEl = document.getElementById('rgcVentasTipoChart');
-      if (vtEl) ecInit('rgcVentasTipoChart', {
-        backgroundColor: EC_BG,
-        tooltip: { trigger:'axis', axisPointer:{ type:'shadow' },
-          formatter: params => params[0].axisValueLabel+'<br/>'+params.map(p => p.marker+' '+p.seriesName+': '+(p.seriesIndex===0?fmtBil(p.value):Number(p.value).toLocaleString('es-CO'))).join('<br/>') },
-        legend: { data:['Saldo en cartera','Cant. documentos'], textStyle:{ color:EC_TEXT }, bottom:0 },
-        grid: { left:'12%', right:'10%', top:'8%', bottom:'14%' },
-        xAxis: { type:'category', data: tipoDoc.map(t => t.label), axisLabel:{ color:EC_TEXT } },
-        yAxis: [
-          { type:'value', name:'Saldo', axisLabel:{ color:EC_TEXT, formatter:fmtBilAxis }, splitLine:{ lineStyle:{ color:EC_GRID } } },
-          { type:'value', name:'Docs', position:'right', axisLabel:{ color:EC_TEXT }, splitLine:{ show:false } }
-        ],
-        series: [
-          { name:'Saldo en cartera', type:'bar', barMaxWidth:80,
-            data: tipoDoc.map((t,i) => ({ value:Math.max(0,t.saldo||0), itemStyle:{ color:[EC_BLUE,EC_GREEN,'#a78bfa','#f97316'][i]||EC_BLUE } })) },
-          { name:'Cant. documentos', type:'line', yAxisIndex:1, symbol:'circle', symbolSize:7,
-            itemStyle:{ color:EC_YELLOW }, lineStyle:{ width:2 }, data: tipoDoc.map(t => t.docs||0) }
-        ]
-      });
+      if (vtEl) {
+        const tipoItems = monthly.filter(r => r.saldo > 0);
+        if (tipoItems.length > 0) {
+          ecInit('rgcVentasTipoChart', {
+            backgroundColor: EC_BG,
+            tooltip: { trigger:'axis', axisPointer:{ type:'shadow' },
+              formatter: params => params[0].axisValueLabel+'<br/>'+params.map(p => p.marker+' '+p.seriesName+': '+(p.seriesIndex===0?fmtBil(p.value):Number(p.value).toLocaleString('es-CO'))).join('<br/>') },
+            legend: { data:['Saldo documentos','Cant. documentos'], textStyle:{ color:EC_TEXT }, bottom:0 },
+            grid: { left:'12%', right:'10%', top:'8%', bottom:'14%' },
+            xAxis: { type:'category', data: tipoItems.map(t => t.cat), axisLabel:{ color:EC_TEXT } },
+            yAxis: [
+              { type:'value', name:'Saldo', axisLabel:{ color:EC_TEXT, formatter:fmtBilAxis }, splitLine:{ lineStyle:{ color:EC_GRID } } },
+              { type:'value', name:'Docs', position:'right', axisLabel:{ color:EC_TEXT }, splitLine:{ show:false } }
+            ],
+            series: [
+              { name:'Saldo documentos', type:'bar', barMaxWidth:80,
+                data: tipoItems.map((t,i) => ({ value:Math.max(0,t.saldo||0), itemStyle:{ color:[EC_BLUE,EC_GREEN,'#a78bfa','#f97316'][i]||EC_BLUE } })) },
+              { name:'Cant. documentos', type:'line', yAxisIndex:1, symbol:'circle', symbolSize:7,
+                itemStyle:{ color:EC_YELLOW }, lineStyle:{ width:2 }, data: tipoItems.map(t => t.docs||0) }
+            ]
+          });
+        } else {
+          if (ecInstances['rgcVentasTipoChart']) { try { ecInstances['rgcVentasTipoChart'].dispose(); } catch(e){} delete ecInstances['rgcVentasTipoChart']; }
+          vtEl.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-muted);font-size:13px;">Sin datos para ' + mesKey + '</div>';
+        }
+      }
 
-      // Chart: Estado de cartera por edad (aging buckets — horizontal bar)
+      // Chart: Estado de cartera por edad (static snapshot — doesn't change with period)
+      renderRGCAgingChart();
+
+      // Chart: Evolución mensual
+      renderRGCEvolucionChart();
+    }
+
+    function renderRGCAgingChart() {
+      const d = CARTERA_BI_DATA;
+      if (!d || !d.aging_bi) return;
       const aging = d.aging_bi || [];
       const reEl = document.getElementById('rgcRecaudosEstadoChart');
-      if (reEl) ecInit('rgcRecaudosEstadoChart', {
+      if (!reEl) return;
+      ecInit('rgcRecaudosEstadoChart', {
         backgroundColor: EC_BG,
         tooltip: { trigger:'axis', axisPointer:{ type:'shadow' },
           formatter: params => params[0].name+'<br/>'+fmtBil(params[0].value) },
@@ -2109,12 +2179,16 @@
           label: { show:true, position:'right', color:EC_TEXT, formatter:p=>fmtBil(p.value), fontSize:10 }
         }]
       });
+    }
 
-      // Chart: Evolución mensual de cartera
+    function renderRGCEvolucionChart() {
+      const d = CARTERA_BI_DATA;
+      if (!d) return;
       const period = d.period || [];
       const last24 = period.slice(-24);
       const evolEl = document.getElementById('rgcEvolucionMensualChart');
-      if (evolEl) ecInit('rgcEvolucionMensualChart', {
+      if (!evolEl) return;
+      ecInit('rgcEvolucionMensualChart', {
         backgroundColor: EC_BG,
         tooltip: { trigger:'axis', axisPointer:{ type:'cross' },
           formatter: params => params[0].name+'<br/>'+params.map(p => p.marker+' '+p.seriesName+': '+fmtBil(p.value)).join('<br/>') },
@@ -2127,6 +2201,17 @@
           { name:'Saldo corriente', type:'bar', stack:'s', itemStyle:{ color:EC_GREEN, opacity:0.85 }, data: last24.map(p => Math.max(0,(p.saldo||0)-(p.saldo_vencido||0))) }
         ]
       });
+    }
+
+    function renderRGCExcelCharts() {
+      const d = CARTERA_BI_DATA;
+      if (!d) { setTimeout(renderRGCExcelCharts, 800); return; }
+      const section = document.getElementById('section-resumen-gestion');
+      if (section && !section.classList.contains('active')) return;
+
+      // Update KPIs and charts from filtered monthly data
+      populateRGCFilters();
+      updateRGCKPIsFromExcel();
 
       // Table: Análisis por usuarios — vendor data (Excel) + RSales gestiones
       const laborMap = {};
