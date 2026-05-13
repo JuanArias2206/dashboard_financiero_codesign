@@ -60,7 +60,7 @@
     .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
     .chart-title { font-size: 15px; font-weight: 600; color: var(--text-primary); }
     .chart-subtitle { font-size: 12px; color: var(--text-muted); }
-    .chart-container { position: relative; height: 300px; } .chart-container.tall { height: 380px; }
+    .chart-container { position: relative; height: 300px; width: 100%; } .chart-container.tall { height: 380px; }
     .insights-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 16px; margin-bottom: 24px; }
     .insight-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; border-left: 4px solid var(--accent-blue); }
     .insight-card.critical { border-left-color: var(--accent-red); } .insight-card.warning { border-left-color: var(--accent-yellow); }
@@ -292,6 +292,11 @@
   <div class="container">
     <!-- Loading state -->
     <div class="cc-loading" id="ccLoading"><span>Cargando datos del Excel…</span></div>
+
+    <div id="ccDataNotice" style="display:none;background:linear-gradient(90deg,#1e293b,#0f172a);border-left:3px solid #3b82f6;padding:10px 16px;margin-bottom:14px;border-radius:6px;font-size:12px;color:#94a3b8;line-height:1.5;">
+      <strong style="color:#e2e8f0;">📊 Fuente:</strong> Excel SQL exportado el <strong style="color:#3b82f6;">12/05/2026</strong> · 89,064 documentos históricos.
+      <span style="color:#64748b;">Los totales reflejan saldo acumulado histórico — para snapshot actual ver detalle por período en cada gráfico.</span>
+    </div>
 
     <!-- KPI Header bar -->
     <div class="bi-kpi-bar" id="ccKpiBar" style="display:none;">
@@ -1212,19 +1217,28 @@
     function loadChart(id, config) {
       if (chartInstances[id]) { try { chartInstances[id].destroy(); } catch(e){} delete chartInstances[id]; }
       const ctx = document.getElementById(id);
-      if (!ctx) { console.warn('[loadChart] canvas not found:', id); return; }
-      // Reset canvas attributes so Chart.js re-reads container dimensions
+      if (!ctx) { return; }
       ctx.removeAttribute('width'); ctx.removeAttribute('height');
       ctx.style.width = '100%'; ctx.style.height = '100%';
-      // Ensure the parent has non-zero width before rendering
+      // Skip render if canvas is in a hidden container — will be rendered when tab/section becomes visible
       const parent = ctx.parentElement;
       if (parent && parent.offsetWidth === 0) {
-        console.warn('[loadChart] parent has 0 width, retrying in 300ms:', id);
-        setTimeout(() => loadChart(id, config), 300);
+        // Store config to render later when container becomes visible
+        chartInstances['_pending_' + id] = { id, config };
         return;
       }
-      try { chartInstances[id] = new Chart(ctx, config); }
+      try { chartInstances[id] = new Chart(ctx, config); delete chartInstances['_pending_' + id]; }
       catch(e) { console.error('[loadChart] Chart.js error for', id, ':', e.message); }
+    }
+    function renderPendingCharts() {
+      Object.keys(chartInstances).filter(k=>k.startsWith('_pending_')).forEach(k=>{
+        const { id, config } = chartInstances[k];
+        const ctx = document.getElementById(id);
+        if (ctx && ctx.parentElement && ctx.parentElement.offsetWidth > 0) {
+          delete chartInstances[k];
+          loadChart(id, config);
+        }
+      });
     }
     const chartDefaults = { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#94a3b8', font: { size: 12 }, padding: 16 } } }, scales: { x: { ticks: { color: '#64748b', font: { size: 11 } }, grid: { color: '#33415530' } }, y: { ticks: { color: '#64748b', font: { size: 11 } }, grid: { color: '#33415550' } } } };
     function getActiveData() { return CURRENT_DATA || ALL_DATA; }
@@ -1626,8 +1640,22 @@
     }
 
     async function verifyAuth() { if (!authToken) return false; try { const resp = await fetch('/api/verify', { headers: { 'Authorization': 'Bearer ' + authToken } }); const data = await resp.json(); return data.authenticated; } catch { return false; } }
-    function showDashboard() { document.getElementById('loginOverlay').classList.add('hidden'); document.getElementById('userDisplay').style.display = 'inline'; document.getElementById('userDisplay').textContent = 'naprolab'; document.getElementById('logoutBtn').style.display = 'inline'; document.getElementById('reportsBar').style.display = 'flex'; document.getElementById('syncBtn').style.display = 'inline-block'; }
-    function showLogin() { document.getElementById('loginOverlay').classList.remove('hidden'); document.getElementById('userDisplay').style.display = 'none'; document.getElementById('logoutBtn').style.display = 'none'; document.getElementById('reportsBar').style.display = 'none'; authToken = null; localStorage.removeItem('authToken'); }
+    function _setEl(id, prop, val) { const el = document.getElementById(id); if (el) { if (prop === 'textContent') el.textContent = val; else el.style[prop] = val; } }
+    function showDashboard() {
+      document.getElementById('loginOverlay')?.classList.add('hidden');
+      _setEl('userDisplay', 'display', 'inline');
+      _setEl('userDisplay', 'textContent', 'naprolab');
+      _setEl('logoutBtn', 'display', 'inline');
+      _setEl('reportsBar', 'display', 'flex');
+      _setEl('syncBtn', 'display', 'inline-block');
+    }
+    function showLogin() {
+      document.getElementById('loginOverlay')?.classList.remove('hidden');
+      _setEl('userDisplay', 'display', 'none');
+      _setEl('logoutBtn', 'display', 'none');
+      _setEl('reportsBar', 'display', 'none');
+      authToken = null; localStorage.removeItem('authToken');
+    }
 
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -1647,6 +1675,7 @@
 
     document.getElementById('logoutBtn').addEventListener('click', showLogin);
 
+    // Legacy filter UI removed in refactor — these listeners are no-ops if elements absent
     document.querySelectorAll('.period-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
@@ -1654,6 +1683,7 @@
         const months = parseInt(btn.dataset.months);
         const desdeEl = document.getElementById('filterDesde');
         const hastaEl = document.getElementById('filterHasta');
+        if (!desdeEl || !hastaEl) return;
         if (months === 0) { desdeEl.value = ''; hastaEl.value = ''; applyFilter(null, null, 0); return; }
         const now = new Date();
         const desde = new Date(now.getFullYear(), now.getMonth() - months + 1, 1);
@@ -1665,19 +1695,21 @@
       });
     });
 
-    document.getElementById('applyFilter').addEventListener('click', () => {
-      const desde = document.getElementById('filterDesde').value || null;
-      const hasta = document.getElementById('filterHasta').value || null;
+    const _applyFilterBtn = document.getElementById('applyFilter');
+    if (_applyFilterBtn) _applyFilterBtn.addEventListener('click', () => {
+      const desde = document.getElementById('filterDesde')?.value || null;
+      const hasta = document.getElementById('filterHasta')?.value || null;
       document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
-      if (!desde && !hasta) { document.querySelector('[data-months="0"]').classList.add('active'); }
-      applyFilter(desde, hasta, null); // custom range → use closest snapshot key computed inside
+      if (!desde && !hasta) { document.querySelector('[data-months="0"]')?.classList.add('active'); }
+      applyFilter(desde, hasta, null);
     });
 
-    document.getElementById('resetFilter').addEventListener('click', () => {
+    const _resetFilterBtn = document.getElementById('resetFilter');
+    if (_resetFilterBtn) _resetFilterBtn.addEventListener('click', () => {
       document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
-      document.querySelector('[data-months="0"]').classList.add('active');
-      document.getElementById('filterDesde').value = '';
-      document.getElementById('filterHasta').value = '';
+      document.querySelector('[data-months="0"]')?.classList.add('active');
+      const dEl = document.getElementById('filterDesde'); if (dEl) dEl.value = '';
+      const hEl = document.getElementById('filterHasta'); if (hEl) hEl.value = '';
       applyFilter(null, null);
     });
 
@@ -1686,19 +1718,21 @@
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         btn.classList.add('active');
-        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+        const tc = document.getElementById('tab-' + btn.dataset.tab);
+        if (tc) tc.classList.add('active');
         renderTabCharts(btn.dataset.tab);
       });
     });
 
     document.querySelectorAll('.data-table th').forEach(th => {
       th.addEventListener('click', () => {
-        const table = th.closest('table'); const tbody = table.querySelector('tbody');
+        const table = th.closest('table'); const tbody = table?.querySelector('tbody');
+        if (!tbody) return;
         const rows = [...tbody.querySelectorAll('tr')];
         const isAsc = th.dataset.dir !== 'asc'; th.dataset.dir = isAsc ? 'desc' : 'asc';
         rows.sort((a, b) => {
-          const aVal = a.children[[...th.parentNode.children].indexOf(th)].textContent;
-          const bVal = b.children[[...th.parentNode.children].indexOf(th)].textContent;
+          const aVal = a.children[[...th.parentNode.children].indexOf(th)]?.textContent || '';
+          const bVal = b.children[[...th.parentNode.children].indexOf(th)]?.textContent || '';
           const aNum = parseFloat(aVal.replace(/[$.,%BKM\s]/g, '').replace(',', '.'));
           const bNum = parseFloat(bVal.replace(/[$.,%BKM\s]/g, '').replace(',', '.'));
           if (!isNaN(aNum) && !isNaN(bNum)) return isAsc ? aNum - bNum : bNum - aNum;
@@ -1973,6 +2007,7 @@
       document.getElementById('ccLoading').style.display = 'none';
       document.getElementById('ccKpiBar').style.display = 'flex';
       document.getElementById('ccBiTabs').style.display = 'flex';
+      const _notice = document.getElementById('ccDataNotice'); if (_notice) _notice.style.display = 'block';
 
       // KPIs
       const k = d.kpis || {};
@@ -2026,7 +2061,7 @@
         this.classList.add('active');
         const tc = document.getElementById('bitab-' + tab);
         if (tc) tc.classList.add('active');
-        requestAnimationFrame(() => requestAnimationFrame(() => resizeEChartsAll()));
+        setTimeout(() => { renderPendingCharts(); Object.values(chartInstances).forEach(c=>{ if(c&&c.resize)try{c.resize()}catch(e){}}); }, 150);
       });
     });
 

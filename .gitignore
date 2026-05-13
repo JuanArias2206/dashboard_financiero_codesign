@@ -1,5 +1,6 @@
 node_modules/
 .env
+skills/claude-skills/
 *.log
 data/connection.json
 data/*.xlsx
