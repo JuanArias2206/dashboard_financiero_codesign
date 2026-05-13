@@ -100,8 +100,22 @@ function loadData() {
     else estadoData.vencido.docs += a.docs || 0;
   });
 
+  // Snapshot KPIs: usar el último mes completo (>=500 docs filtra meses parciales) — acerca a RSales BI
+  const significantMonths = (period || []).filter(p => (p.docs || 0) >= 500);
+  const lastSnap = significantMonths[significantMonths.length - 1] || period[period.length - 1] || null;
+  const snapshotKpis = lastSnap ? {
+    mes: lastSnap.mes,
+    saldo_total: lastSnap.saldo || 0,
+    cartera_vencida: lastSnap.saldo_vencido || 0,
+    cartera_corriente: lastSnap.saldo_corriente || 0,
+    pct_vencida: lastSnap.saldo > 0 ? (lastSnap.saldo_vencido / lastSnap.saldo * 100) : 0,
+    total_docs: lastSnap.docs || 0,
+    total_clientes: lastSnap.clientes || 0
+  } : null;
+
   _cache = {
-    kpis,
+    kpis,                  // histórico acumulado
+    kpis_snapshot: snapshotKpis,  // snapshot del último mes (≈ RSales BI)
     aging_bi: agingBI,
     estado: estadoData,
     vendors: vendorsBI,
@@ -109,7 +123,7 @@ function loadData() {
     tipo_doc: tipoDoc.slice(0, 20),
     tipo_doc_grouped: tipoDocGrouped,
     cobrador: cobrador.filter(c => c.cod !== '101').slice(0, 20),
-    period: period.slice(-24), // last 2 years (default; frontend can filter)
+    period: period.slice(-24),
     rgc_monthly: rgcMonthly,
     generated_at: summary.generado_en || new Date().toISOString()
   };

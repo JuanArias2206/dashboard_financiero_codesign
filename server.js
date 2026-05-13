@@ -322,6 +322,20 @@ app.get('/api/cartera-data', requireSession, (req, res) => {
   }
 });
 
+// ─── RUTAS BI: Inventario / Tiempos / Pedidos (RSales API) ────────
+app.get('/api/inventario', requireSession, async (req, res) => {
+  try { await require('./api/inventario')(req, res); }
+  catch (err) { console.error('[/api/inventario]', err.message); res.status(500).json({ error: err.message }); }
+});
+app.get('/api/tiempos', requireSession, async (req, res) => {
+  try { await require('./api/tiempos')(req, res); }
+  catch (err) { console.error('[/api/tiempos]', err.message); res.status(500).json({ error: err.message }); }
+});
+app.get('/api/pedidos', requireSession, async (req, res) => {
+  try { await require('./api/pedidos')(req, res); }
+  catch (err) { console.error('[/api/pedidos]', err.message); res.status(500).json({ error: err.message }); }
+});
+
 // ─── SPA fallback ─────────────────────────────
 app.get('*', (req, res) => {
   if (req.path.startsWith('/api')) {

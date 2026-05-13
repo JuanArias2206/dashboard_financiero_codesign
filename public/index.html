@@ -266,11 +266,13 @@
             <div class="nav-dropdown-divider"></div>
             <button class="nav-dropdown-item" data-section="reporte-recaudos">💰 Reporte Recaudos</button>
             <div class="nav-dropdown-divider"></div>
+            <div class="nav-section-label">Inventario y Ventas</div>
+            <button class="nav-dropdown-item" data-section="inventario">📦 Análisis de Inventario</button>
+            <button class="nav-dropdown-item" data-section="tiempos">⏱️ Control de Tiempos</button>
+            <button class="nav-dropdown-item" data-section="pedidos">🛒 Pedido / Factura / Cotización</button>
+            <div class="nav-dropdown-divider"></div>
             <div class="nav-section-label">Próximamente</div>
-            <button class="nav-dropdown-item soon">📦 Análisis de Inventario</button>
-            <button class="nav-dropdown-item soon">⏱️ Control de Tiempos</button>
-            <button class="nav-dropdown-item soon">🛒 Pedido / Factura / Cotización</button>
-            <button class="nav-dropdown-item soon">📅 Agenda</button>
+            <button class="nav-dropdown-item soon">📅 Agenda detallada</button>
             <button class="nav-dropdown-item soon">👥 Clientes Gestionados</button>
           </div>
         </div>
@@ -293,9 +295,17 @@
     <!-- Loading state -->
     <div class="cc-loading" id="ccLoading"><span>Cargando datos del Excel…</span></div>
 
-    <div id="ccDataNotice" style="display:none;background:linear-gradient(90deg,#1e293b,#0f172a);border-left:3px solid #3b82f6;padding:10px 16px;margin-bottom:14px;border-radius:6px;font-size:12px;color:#94a3b8;line-height:1.5;">
-      <strong style="color:#e2e8f0;">📊 Fuente:</strong> Excel SQL exportado el <strong style="color:#3b82f6;">12/05/2026</strong> · 89,064 documentos históricos.
-      <span style="color:#64748b;">Los totales reflejan saldo acumulado histórico — para snapshot actual ver detalle por período en cada gráfico.</span>
+    <div id="ccDataNotice" style="display:none;background:linear-gradient(90deg,#1e293b,#0f172a);border-left:3px solid #3b82f6;padding:10px 16px;margin-bottom:14px;border-radius:6px;font-size:12px;color:#94a3b8;line-height:1.5;display:none;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+        <div>
+          <strong style="color:#e2e8f0;">📊 Fuente:</strong> Excel SQL exportado el <strong style="color:#3b82f6;">12/05/2026</strong>
+          <span style="color:#64748b;">— <span id="cc-kpi-mode-label">snapshot del último mes</span></span>
+        </div>
+        <div style="display:flex;gap:4px;background:#0f172a;padding:3px;border-radius:8px;border:1px solid #1e293b;">
+          <button id="cc-mode-snapshot" class="cc-mode-btn active" data-mode="snapshot" style="padding:5px 12px;background:#3b82f6;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-weight:600;">📍 Snapshot actual</button>
+          <button id="cc-mode-historic" class="cc-mode-btn" data-mode="historic" style="padding:5px 12px;background:transparent;color:#94a3b8;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-weight:500;">📚 Histórico acumulado</button>
+        </div>
+      </div>
     </div>
 
     <!-- KPI Header bar -->
@@ -731,6 +741,223 @@
   </div>
   </div><!-- /section-reporte-recaudos -->
 
+  <!-- ══════════════════════ ANÁLISIS DE INVENTARIO ══════════════════════ -->
+  <div class="section-content" id="section-inventario">
+  <div class="container">
+    <div class="cc-loading" id="invLoading"><span>Cargando inventario desde RSales…</span></div>
+    <div id="invError" style="display:none;padding:14px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);color:#fca5a5;border-radius:8px;margin-bottom:14px;font-size:13px;"></div>
+
+    <div id="invDataNotice" style="display:none;background:linear-gradient(90deg,#1e293b,#0f172a);border-left:3px solid #10b981;padding:10px 16px;margin-bottom:14px;border-radius:6px;font-size:12px;color:#94a3b8;">
+      <strong style="color:#e2e8f0;">📦 Fuente:</strong> RSales API — <code style="background:#0f172a;padding:2px 6px;border-radius:3px;color:#10b981;">/products + /stocks</code> · datos en tiempo real
+    </div>
+
+    <div class="bi-kpi-bar" id="invKpiBar" style="display:none;">
+      <div class="bi-kpi-item"><div class="bi-kpi-val" id="inv-total-prod">—</div><div class="bi-kpi-lbl">Total productos creados</div></div>
+      <div class="bi-kpi-item"><div class="bi-kpi-val info" id="inv-activos">—</div><div class="bi-kpi-lbl">Productos activos</div><div class="bi-kpi-sub" id="inv-inactivos">— inactivos</div></div>
+      <div class="bi-kpi-item"><div class="bi-kpi-val" id="inv-disponibles">—</div><div class="bi-kpi-lbl">Productos disponibles</div><div class="bi-kpi-sub" id="inv-agotados">— agotados</div></div>
+      <div class="bi-kpi-item"><div class="bi-kpi-val" id="inv-unidades">—</div><div class="bi-kpi-lbl">Total unidades en inventario</div></div>
+    </div>
+
+    <div class="bi-tabs" id="invTabs" style="display:none;">
+      <button class="bi-tab active" data-bitab-inv="rotacion">Rotación de inventario</button>
+      <button class="bi-tab" data-bitab-inv="bodega">Inventario por bodega</button>
+    </div>
+
+    <!-- TAB: Rotación -->
+    <div class="bi-tab-content active" id="bitab-inv-rotacion">
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Productos agotados por grupo</div><div class="chart-subtitle">Top 25 grupos con productos sin stock</div></div></div>
+          <div style="height:380px;position:relative;width:100%;"><canvas id="invAgotadosChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Productos por grupo (con / sin rotación)</div><div class="chart-subtitle">Stacked — verde rotando, rojo sin stock</div></div></div>
+          <div style="height:380px;position:relative;width:100%;"><canvas id="invSinRotacionChart"></canvas></div>
+        </div>
+      </div>
+      <div class="chart-card" style="margin-bottom:20px;">
+        <div class="chart-header"><div><div class="chart-title">Productos sin inventario</div><div class="chart-subtitle">Listado de productos agotados (top 100)</div></div></div>
+        <div class="table-wrapper" style="max-height:450px;">
+          <table class="data-table" id="invSinInvTable">
+            <thead><tr><th>Código</th><th>Producto</th><th>Grupo</th><th>Estado</th></tr></thead>
+            <tbody id="invSinInvBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: Inventario por bodega -->
+    <div class="bi-tab-content" id="bitab-inv-bodega">
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Productos por estado</div></div></div>
+          <div style="height:300px;position:relative;width:100%;"><canvas id="invEstadoChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Productos por disponibilidad</div></div></div>
+          <div style="height:300px;position:relative;width:100%;"><canvas id="invDispChart"></canvas></div>
+        </div>
+      </div>
+      <div class="chart-card" style="margin-bottom:20px;">
+        <div class="chart-header"><div><div class="chart-title">Productos por ubicación (bodega) y disponibilidad</div></div></div>
+        <div style="height:380px;position:relative;width:100%;"><canvas id="invBodegaChart"></canvas></div>
+      </div>
+      <div class="chart-card" style="margin-bottom:20px;">
+        <div class="chart-header"><div><div class="chart-title">Detalle de productos</div></div></div>
+        <div class="table-wrapper" style="max-height:450px;">
+          <table class="data-table" id="invProdTable">
+            <thead><tr><th>Código</th><th>Producto</th><th>Grupo</th><th>Estado</th><th>Cantidad</th><th>Disponible</th></tr></thead>
+            <tbody id="invProdBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div><!-- /section-inventario -->
+
+  <!-- ══════════════════════ CONTROL DE TIEMPOS ══════════════════════ -->
+  <div class="section-content" id="section-tiempos">
+  <div class="container">
+    <div class="cc-loading" id="tiemLoading"><span>Cargando control de tiempos…</span></div>
+    <div id="tiemError" style="display:none;padding:14px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);color:#fca5a5;border-radius:8px;margin-bottom:14px;font-size:13px;"></div>
+
+    <div id="tiemDataNotice" style="display:none;background:linear-gradient(90deg,#1e293b,#0f172a);border-left:3px solid #f59e0b;padding:10px 16px;margin-bottom:14px;border-radius:6px;font-size:12px;color:#94a3b8;">
+      <strong style="color:#e2e8f0;">⏱️ Fuente:</strong> RSales API — <code style="background:#0f172a;padding:2px 6px;border-radius:3px;color:#f59e0b;">/appointments</code> · agendas de visitas
+    </div>
+
+    <div class="bi-kpi-bar" id="tiemKpiBar" style="display:none;">
+      <div class="bi-kpi-item"><div class="bi-kpi-val" id="tiem-total-gestiones">—</div><div class="bi-kpi-lbl">Total gestiones</div></div>
+      <div class="bi-kpi-item"><div class="bi-kpi-val" id="tiem-programadas">—</div><div class="bi-kpi-lbl">Programadas</div></div>
+      <div class="bi-kpi-item"><div class="bi-kpi-val info" id="tiem-cumplidas">—</div><div class="bi-kpi-lbl">Cumplidas</div><div class="bi-kpi-sub" id="tiem-pct-cumpl">—</div></div>
+      <div class="bi-kpi-item"><div class="bi-kpi-val danger" id="tiem-extraruta">—</div><div class="bi-kpi-lbl">Extraruta</div></div>
+      <div class="bi-kpi-item"><div class="bi-kpi-val info" id="tiem-clientes">—</div><div class="bi-kpi-lbl">Clientes gestionados</div></div>
+      <div class="bi-kpi-item"><div class="bi-kpi-val info" id="tiem-usuarios">—</div><div class="bi-kpi-lbl">Usuarios</div></div>
+    </div>
+
+    <div class="bi-data-source" id="tiemFilters" style="display:none;background:transparent;border:1px solid var(--border);padding:12px 16px;border-radius:10px;margin-bottom:16px;">
+      <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:end;">
+        <div class="bi-filter-group"><label>AÑO</label><select id="tiemAnio"></select></div>
+        <div class="bi-filter-group"><label>MES</label><select id="tiemMes">
+          <option value="0">Todo el año</option>
+          <option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option>
+          <option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option>
+          <option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option>
+          <option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
+        </select></div>
+        <button id="tiemReload" style="padding:8px 16px;background:#3b82f6;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:500;">↻ Aplicar</button>
+      </div>
+    </div>
+
+    <div id="tiemContent" style="display:none;">
+      <div class="chart-card" style="margin-bottom:20px;">
+        <div class="chart-header"><div><div class="chart-title">Gestiones programadas, cumplidas y extraruta por supervisor</div></div></div>
+        <div style="height:380px;position:relative;width:100%;"><canvas id="tiemSupervisorChart"></canvas></div>
+      </div>
+      <div class="chart-card" style="margin-bottom:20px;">
+        <div class="chart-header"><div><div class="chart-title">Comportamiento agenda por día</div><div class="chart-subtitle">Programadas vs cumplidas vs extraruta</div></div></div>
+        <div style="height:340px;position:relative;width:100%;"><canvas id="tiemDiaChart"></canvas></div>
+      </div>
+      <div class="chart-card" style="margin-bottom:20px;">
+        <div class="chart-header"><div><div class="chart-title">Análisis por usuarios</div></div></div>
+        <div class="table-wrapper" style="max-height:500px;">
+          <table class="data-table" id="tiemUserTable">
+            <thead><tr>
+              <th>Usuario</th><th>Hora inicio</th><th>Hora fin</th>
+              <th>Programadas</th><th>Cumplidas</th><th>% Cumplimiento</th><th>Extraruta</th><th>Clientes</th>
+            </tr></thead>
+            <tbody id="tiemUserBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div><!-- /section-tiempos -->
+
+  <!-- ══════════════════════ PEDIDO / FACTURA / DEVOLUCIÓN / COTIZACIÓN ══════════════════════ -->
+  <div class="section-content" id="section-pedidos">
+  <div class="container">
+    <div class="cc-loading" id="pedLoading"><span>Cargando pedidos desde RSales…</span></div>
+    <div id="pedError" style="display:none;padding:14px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);color:#fca5a5;border-radius:8px;margin-bottom:14px;font-size:13px;"></div>
+
+    <div id="pedDataNotice" style="display:none;background:linear-gradient(90deg,#1e293b,#0f172a);border-left:3px solid #a78bfa;padding:10px 16px;margin-bottom:14px;border-radius:6px;font-size:12px;color:#94a3b8;">
+      <strong style="color:#e2e8f0;">🛒 Fuente:</strong> RSales API — <code style="background:#0f172a;padding:2px 6px;border-radius:3px;color:#a78bfa;">/orders</code> · valores antes de IVA con descuentos aplicados
+    </div>
+
+    <div class="bi-kpi-bar" id="pedKpiBar" style="display:none;">
+      <div class="bi-kpi-item"><div class="bi-kpi-val" id="ped-ventas">—</div><div class="bi-kpi-lbl">Total de ventas</div></div>
+      <div class="bi-kpi-item"><div class="bi-kpi-val info" id="ped-unidades">—</div><div class="bi-kpi-lbl">Unidades pedidas</div></div>
+      <div class="bi-kpi-item"><div class="bi-kpi-val info" id="ped-tx">—</div><div class="bi-kpi-lbl">Total transacciones</div></div>
+      <div class="bi-kpi-item"><div class="bi-kpi-val" id="ped-clientes-imp">—</div><div class="bi-kpi-lbl">Clientes impactados</div><div class="bi-kpi-sub" id="ped-pct-impacto">—</div></div>
+      <div class="bi-kpi-item"><div class="bi-kpi-val info" id="ped-usuarios">—</div><div class="bi-kpi-lbl"># Usuarios</div></div>
+      <div class="bi-kpi-item"><div class="bi-kpi-val info" id="ped-refs">—</div><div class="bi-kpi-lbl"># Referencias</div></div>
+    </div>
+
+    <div class="bi-data-source" id="pedFilters" style="display:none;background:transparent;border:1px solid var(--border);padding:12px 16px;border-radius:10px;margin-bottom:16px;">
+      <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:end;">
+        <div class="bi-filter-group"><label>AÑO</label><select id="pedAnio"></select></div>
+        <div class="bi-filter-group"><label>MES</label><select id="pedMes">
+          <option value="0">Todo el año</option>
+          <option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option>
+          <option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option>
+          <option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option>
+          <option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
+        </select></div>
+        <button id="pedReload" style="padding:8px 16px;background:#3b82f6;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:500;">↻ Aplicar</button>
+      </div>
+    </div>
+
+    <div id="pedContent" style="display:none;">
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">$ Ventas por tipo de transacción</div></div></div>
+          <div style="height:300px;position:relative;width:100%;"><canvas id="pedTipoChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">$ Ventas por estado</div></div></div>
+          <div style="height:300px;position:relative;width:100%;"><canvas id="pedEstadoChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="chart-card" style="margin-bottom:20px;">
+        <div class="chart-header"><div><div class="chart-title">Total ventas y # transacciones por supervisor</div></div></div>
+        <div style="height:340px;position:relative;width:100%;"><canvas id="pedSupervisorChart"></canvas></div>
+      </div>
+
+      <div class="chart-card" style="margin-bottom:20px;">
+        <div class="chart-header"><div><div class="chart-title">Análisis por usuarios</div></div></div>
+        <div class="table-wrapper" style="max-height:450px;">
+          <table class="data-table" id="pedUserTable">
+            <thead><tr>
+              <th>Usuario</th><th>Supervisor</th><th>Clientes</th><th>Unidades</th><th># Tx</th><th>$ Promedio</th><th>$ Total ventas</th>
+            </tr></thead>
+            <tbody id="pedUserBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="chart-card" style="margin-bottom:20px;">
+        <div class="chart-header"><div><div class="chart-title">Análisis por productos (top 40 grupos)</div></div></div>
+        <div style="height:340px;position:relative;width:100%;"><canvas id="pedProductoChart"></canvas></div>
+      </div>
+
+      <div class="chart-card" style="margin-bottom:20px;">
+        <div class="chart-header"><div><div class="chart-title">Top clientes (top 30 por ventas)</div></div></div>
+        <div class="table-wrapper" style="max-height:450px;">
+          <table class="data-table" id="pedCliTable">
+            <thead><tr><th>Cliente</th><th>Ciudad</th><th>Unidades</th><th># Tx</th><th>$ Total ventas</th></tr></thead>
+            <tbody id="pedCliBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="chart-card" style="margin-bottom:20px;">
+        <div class="chart-header"><div><div class="chart-title">Evolución mensual de ventas</div><div class="chart-subtitle">Comparativo dentro del período seleccionado</div></div></div>
+        <div style="height:340px;position:relative;width:100%;"><canvas id="pedEvolucionChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+  </div><!-- /section-pedidos -->
+
   <script>
     let ALL_DATA = null;
     let CURRENT_DATA = null;
@@ -769,7 +996,6 @@
       document.getElementById('navMenuBtn').classList.remove('open');
       if (!renderedSections.has(sectionId)) {
         renderedSections.add(sectionId);
-        // Use double rAF so section is laid out (display:block) before Chart.js reads dimensions
         if (sectionId === 'inicio') {
           requestAnimationFrame(() => requestAnimationFrame(() => renderInicioSection()));
         } else if (sectionId === 'resumen-gestion') {
@@ -784,6 +1010,12 @@
             if (!CARTERA_BI_DATA) loadCarteraData();
             else renderRecaudosSection();
           }));
+        } else if (sectionId === 'inventario') {
+          requestAnimationFrame(() => requestAnimationFrame(() => loadInventario()));
+        } else if (sectionId === 'tiempos') {
+          requestAnimationFrame(() => requestAnimationFrame(() => loadTiempos()));
+        } else if (sectionId === 'pedidos') {
+          requestAnimationFrame(() => requestAnimationFrame(() => loadPedidos()));
         }
       } else if (sectionId === 'control-cartera') {
         setTimeout(() => { if (CARTERA_BI_DATA) renderCarteraBI(); }, 100);
@@ -791,6 +1023,12 @@
         setTimeout(() => { resizeEChartsAll(); if (CARTERA_BI_DATA) renderRGCExcelCharts(); }, 150);
       } else if (sectionId === 'reporte-recaudos') {
         setTimeout(() => { resizeEChartsAll(); if (CARTERA_BI_DATA) renderRecaudosSection(); }, 150);
+      } else if (sectionId === 'inventario') {
+        setTimeout(() => { if (INV_DATA) renderInventario(); else loadInventario(); }, 100);
+      } else if (sectionId === 'tiempos') {
+        setTimeout(() => { if (TIEM_DATA) renderTiempos(); else loadTiempos(); }, 100);
+      } else if (sectionId === 'pedidos') {
+        setTimeout(() => { if (PED_DATA) renderPedidos(); else loadPedidos(); }, 100);
       }
     }
 
@@ -1297,7 +1535,7 @@
         document.getElementById('filterIndicator').classList.add('visible');
       }
       renderedTabs.clear();
-      Object.values(chartInstances).forEach(c => c.destroy());
+      Object.values(chartInstances).forEach(c => { try { if (c && typeof c.destroy === 'function') c.destroy(); } catch(e){} });
       chartInstances = {};
       const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab || 'overview';
       renderTabCharts(activeTab);
@@ -1773,7 +2011,7 @@
       }
 
       renderedTabs.clear();
-      Object.values(chartInstances).forEach(c => c.destroy());
+      Object.values(chartInstances).forEach(c => { try { if (c && typeof c.destroy === 'function') c.destroy(); } catch(e){} });
       chartInstances = {};
       renderTabCharts('overview');
     }
@@ -1827,20 +2065,21 @@
     });
 
     // ─── CONTROL DE CARTERA — ECharts BI ──────────────────
+    // Formato $ — convención española: 1 billón = 10^12 (un millón de millones)
     function fmtBil(n) {
       if (!n && n !== 0) return '—';
       const abs = Math.abs(n);
-      if (abs >= 1e12) return '$' + (n/1e12).toFixed(2) + 'T';
-      if (abs >= 1e9)  return '$' + (n/1e9).toFixed(2) + 'B';
-      if (abs >= 1e6)  return '$' + (n/1e6).toFixed(1) + 'M';
+      if (abs >= 1e12) return '$' + (n/1e12).toFixed(2) + ' Bn';        // billón = 10^12
+      if (abs >= 1e9)  return '$' + (n/1e9).toFixed(2) + ' mil M';      // mil millones = 10^9
+      if (abs >= 1e6)  return '$' + (n/1e6).toFixed(1) + ' M';           // millones = 10^6
       if (abs >= 1e3)  return '$' + (n/1e3).toFixed(0) + 'K';
       return '$' + n.toLocaleString('es-CO');
     }
     function fmtBilAxis(n) {
       const abs = Math.abs(n);
-      if (abs >= 1e12) return (n/1e12).toFixed(1)+'T';
-      if (abs >= 1e9)  return (n/1e9).toFixed(1)+'B';
-      if (abs >= 1e6)  return (n/1e6).toFixed(0)+'M';
+      if (abs >= 1e12) return (n/1e12).toFixed(1)+' Bn';
+      if (abs >= 1e9)  return (n/1e9).toFixed(1)+' mil M';
+      if (abs >= 1e6)  return (n/1e6).toFixed(0)+' M';
       return n.toLocaleString('es-CO');
     }
     function resizeEChartsAll() {
@@ -2001,6 +2240,23 @@
       }
     }
 
+    let CC_KPI_MODE = 'snapshot'; // 'snapshot' | 'historic'
+    function _ccUpdateKpis() {
+      const d = CARTERA_BI_DATA; if (!d) return;
+      const useSnap = CC_KPI_MODE === 'snapshot' && d.kpis_snapshot;
+      const k = useSnap ? d.kpis_snapshot : (d.kpis || {});
+      const lbl = document.getElementById('cc-kpi-mode-label');
+      if (lbl) lbl.textContent = useSnap ? `snapshot del último mes (${k.mes || ''})` : 'histórico acumulado completo';
+      document.getElementById('cc-saldo-total').textContent = fmtBil(k.saldo_total);
+      document.getElementById('cc-total-docs').textContent = ((k.total_docs || '—')).toLocaleString('es-CO') + ' documentos';
+      document.getElementById('cc-saldo-mora').textContent = fmtBil(k.cartera_vencida);
+      document.getElementById('cc-pct-mora').textContent = (k.pct_vencida || 0).toFixed(1) + '%';
+      document.getElementById('cc-saldo-corriente').textContent = fmtBil(useSnap ? k.cartera_corriente : ((k.saldo_total||0) - (k.cartera_vencida||0)));
+      document.getElementById('cc-total-vendedores').textContent = useSnap ? ((d.vendors||[]).filter(v=>v.saldo>0).length || '—') : (k.total_vendedores || '—');
+      document.getElementById('cc-vend-con-saldo').textContent = (d.vendors || []).filter(v=>v.saldo>0).length + ' con saldo';
+      document.getElementById('cc-total-clientes').textContent = (k.total_clientes || (d.customers||[]).length || '—').toLocaleString('es-CO');
+      document.getElementById('cc-clientes-mora').textContent = (d.customers||[]).filter(c=>c.saldo_vencido>0).length + ' en mora (top 200)';
+    }
     function renderCarteraBI() {
       if (!CARTERA_BI_DATA) return;
       const d = CARTERA_BI_DATA;
@@ -2008,18 +2264,7 @@
       document.getElementById('ccKpiBar').style.display = 'flex';
       document.getElementById('ccBiTabs').style.display = 'flex';
       const _notice = document.getElementById('ccDataNotice'); if (_notice) _notice.style.display = 'block';
-
-      // KPIs
-      const k = d.kpis || {};
-      document.getElementById('cc-saldo-total').textContent = fmtBil(k.saldo_total);
-      document.getElementById('cc-total-docs').textContent = (k.total_docs || '—') + ' documentos';
-      document.getElementById('cc-saldo-mora').textContent = fmtBil(k.cartera_vencida);
-      document.getElementById('cc-pct-mora').textContent = (k.pct_vencida || 0).toFixed(1) + '%';
-      document.getElementById('cc-saldo-corriente').textContent = fmtBil((k.saldo_total||0) - (k.cartera_vencida||0));
-      document.getElementById('cc-total-vendedores').textContent = k.total_vendedores || '—';
-      document.getElementById('cc-vend-con-saldo').textContent = (d.vendors || []).filter(v=>v.saldo>0).length + ' con saldo';
-      document.getElementById('cc-total-clientes').textContent = k.total_clientes || '—';
-      document.getElementById('cc-clientes-mora').textContent = (d.customers||[]).filter(c=>c.saldo_vencido>0).length + ' en mora (top 200)';
+      _ccUpdateKpis();
 
       // Populate vendor select
       const vendSel = document.getElementById('cc-vend-sel');
@@ -2062,6 +2307,21 @@
         const tc = document.getElementById('bitab-' + tab);
         if (tc) tc.classList.add('active');
         setTimeout(() => { renderPendingCharts(); Object.values(chartInstances).forEach(c=>{ if(c&&c.resize)try{c.resize()}catch(e){}}); }, 150);
+      });
+    });
+
+    // CC KPI mode toggle (snapshot vs historic)
+    document.querySelectorAll('.cc-mode-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        CC_KPI_MODE = this.dataset.mode;
+        document.querySelectorAll('.cc-mode-btn').forEach(b => {
+          const isActive = b.dataset.mode === CC_KPI_MODE;
+          b.classList.toggle('active', isActive);
+          b.style.background = isActive ? '#3b82f6' : 'transparent';
+          b.style.color = isActive ? '#fff' : '#94a3b8';
+          b.style.fontWeight = isActive ? '600' : '500';
+        });
+        _ccUpdateKpis();
       });
     });
 
@@ -2582,6 +2842,337 @@
       if(el) el.addEventListener('change',function(){if(CARTERA_BI_DATA){renderRecaudosCharts();setTimeout(resizeEChartsAll,200);}});
     });
     document.getElementById('rrClienteSearch')?.addEventListener('input',function(){if(CARTERA_BI_DATA) renderRecaudosCharts();});
+
+    // ═══════════════════════════════════════════════════════════════
+    // ANÁLISIS DE INVENTARIO
+    // ═══════════════════════════════════════════════════════════════
+    let INV_DATA = null;
+    async function loadInventario() {
+      const lo = document.getElementById('invLoading'); if (lo) lo.style.display = 'flex';
+      const er = document.getElementById('invError'); if (er) er.style.display = 'none';
+      try {
+        const r = await fetch('/api/inventario', { headers: authToken ? {'Authorization': 'Bearer '+authToken} : {} });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const j = await r.json();
+        if (!j.success) throw new Error(j.error || 'Sin datos');
+        INV_DATA = j.data;
+        renderInventario();
+      } catch (e) {
+        if (lo) lo.style.display = 'none';
+        if (er) { er.style.display = 'block'; er.textContent = 'Error: ' + e.message + '. La sección requiere credenciales RSales API válidas.'; }
+      }
+    }
+    function renderInventario() {
+      const d = INV_DATA; if (!d) return;
+      document.getElementById('invLoading').style.display = 'none';
+      document.getElementById('invKpiBar').style.display = 'flex';
+      document.getElementById('invTabs').style.display = 'flex';
+      document.getElementById('invDataNotice').style.display = 'block';
+      const k = d.kpis;
+      document.getElementById('inv-total-prod').textContent  = (k.total_productos || 0).toLocaleString('es-CO');
+      document.getElementById('inv-activos').textContent     = (k.total_activos || 0).toLocaleString('es-CO');
+      document.getElementById('inv-inactivos').textContent   = (k.total_inactivos || 0).toLocaleString('es-CO') + ' inactivos';
+      document.getElementById('inv-disponibles').textContent = (k.productos_disponibles || 0).toLocaleString('es-CO');
+      document.getElementById('inv-agotados').textContent    = (k.productos_agotados || 0).toLocaleString('es-CO') + ' agotados';
+      document.getElementById('inv-unidades').textContent    = (k.total_inventario_unidades || 0).toLocaleString('es-CO');
+
+      setTimeout(() => {
+        // Productos agotados por grupo (vendedor BI bar)
+        const ag = d.agotados_por_grupo || [];
+        loadChart('invAgotadosChart', {
+          type:'bar',
+          data:{ labels:ag.map(x=>x.grupo.substring(0,18)), datasets:[{ label:'Productos agotados', data:ag.map(x=>x.count), backgroundColor:'#ef4444cc', borderRadius:3 }]},
+          options:{...CJ, plugins:{legend:{display:false}}, scales:{x:{ticks:{color:'#64748b',font:{size:9},maxRotation:60}},y:{ticks:{color:'#64748b'}}}}
+        });
+        // Productos por grupo (stacked sin rotacion)
+        const pg = d.productos_por_grupo || [];
+        loadChart('invSinRotacionChart', {
+          type:'bar',
+          data:{ labels:pg.map(x=>x.grupo.substring(0,16)), datasets:[
+            { label:'Con rotación', data:pg.map(x=>x.total - x.sin_rotacion), backgroundColor:EC_GREEN, stack:'s' },
+            { label:'Sin rotación', data:pg.map(x=>x.sin_rotacion),           backgroundColor:EC_RED,   stack:'s' }
+          ]},
+          options:{...CJ, plugins:{legend:{labels:{color:'#94a3b8'}}}, scales:{x:{stacked:true,ticks:{color:'#64748b',font:{size:9},maxRotation:60}},y:{stacked:true,ticks:{color:'#64748b'}}}}
+        });
+        // Estado pie
+        const est = d.estado || [];
+        loadChart('invEstadoChart', {
+          type:'doughnut',
+          data:{ labels:est.map(x=>x.label), datasets:[{ data:est.map(x=>x.count), backgroundColor:[EC_GREEN, EC_RED], borderWidth:0 }]},
+          options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{position:'right',labels:{color:'#94a3b8'}}}}
+        });
+        // Disponibilidad pie
+        const disp = d.disponibilidad || [];
+        loadChart('invDispChart', {
+          type:'doughnut',
+          data:{ labels:disp.map(x=>x.label), datasets:[{ data:disp.map(x=>x.count), backgroundColor:[EC_GREEN, EC_RED], borderWidth:0 }]},
+          options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{position:'right',labels:{color:'#94a3b8'}}}}
+        });
+        // Bodega
+        const bd = d.inventario_por_bodega || [];
+        loadChart('invBodegaChart', {
+          type:'bar',
+          data:{ labels:bd.map(x=>x.bodega), datasets:[
+            { label:'Sí disponibles',  data:bd.map(x=>x.si), backgroundColor:EC_GREEN, stack:'b' },
+            { label:'No disponibles',  data:bd.map(x=>x.no), backgroundColor:EC_RED,   stack:'b' }
+          ]},
+          options:{...CJ, plugins:{legend:{labels:{color:'#94a3b8'}}}, scales:{x:{stacked:true,ticks:{color:'#64748b',font:{size:9},maxRotation:60}},y:{stacked:true,ticks:{color:'#64748b'}}}}
+        });
+        // Sin inventario table
+        const sin = d.sin_inventario || [];
+        document.getElementById('invSinInvBody').innerHTML = sin.map(p => `<tr><td>${p.code}</td><td>${p.name}</td><td>${p.group}</td><td><span class="mora-badge ${p.state==='Activo'?'low':'high'}">${p.state}</span></td></tr>`).join('');
+        // Productos table
+        const prods = d.productos || [];
+        document.getElementById('invProdBody').innerHTML = prods.slice(0, 200).map(p => `<tr>
+          <td>${p.code}</td><td>${p.name}</td><td>${p.group}</td>
+          <td><span class="mora-badge ${p.active?'low':'high'}">${p.state}</span></td>
+          <td style="text-align:right;">${(p.quantity||0).toLocaleString('es-CO')}</td>
+          <td style="text-align:center;"><span class="mora-badge ${p.available_qty>0||p.quantity>0?'low':'high'}">${p.available_qty>0||p.quantity>0?'Sí':'No'}</span></td>
+        </tr>`).join('');
+      }, 200);
+    }
+    // Inventario tab switch
+    document.querySelectorAll('[data-bitab-inv]').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const tab = this.dataset.bitabInv;
+        document.querySelectorAll('[data-bitab-inv]').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('#bitab-inv-rotacion, #bitab-inv-bodega').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+        document.getElementById('bitab-inv-' + tab)?.classList.add('active');
+        setTimeout(() => { renderPendingCharts(); Object.values(chartInstances).forEach(c=>{ if(c&&c.resize)try{c.resize()}catch(e){}}); }, 150);
+      });
+    });
+
+    // ═══════════════════════════════════════════════════════════════
+    // CONTROL DE TIEMPOS
+    // ═══════════════════════════════════════════════════════════════
+    let TIEM_DATA = null;
+    function _populateYearSelect(id, current) {
+      const sel = document.getElementById(id); if (!sel || sel.options.length > 0) return;
+      const y = new Date().getFullYear();
+      const years = [y, y-1, y-2, y-3];
+      sel.innerHTML = years.map(yy => `<option value="${yy}"${yy===current?' selected':''}>${yy}</option>`).join('');
+    }
+    async function loadTiempos() {
+      const lo = document.getElementById('tiemLoading'); if (lo) lo.style.display = 'flex';
+      const er = document.getElementById('tiemError'); if (er) er.style.display = 'none';
+      const now = new Date();
+      _populateYearSelect('tiemAnio', now.getFullYear());
+      const tiemMes = document.getElementById('tiemMes');
+      if (tiemMes && !tiemMes.dataset.set) { tiemMes.value = String(now.getMonth()+1); tiemMes.dataset.set='1'; }
+      const year = document.getElementById('tiemAnio').value || now.getFullYear();
+      const month = document.getElementById('tiemMes').value || (now.getMonth()+1);
+      try {
+        const r = await fetch(`/api/tiempos?year=${year}&month=${month}`, { headers: authToken ? {'Authorization': 'Bearer '+authToken} : {} });
+        if (!r.ok) throw new Error('HTTP '+r.status);
+        const j = await r.json();
+        if (!j.success) throw new Error(j.error || 'Sin datos');
+        TIEM_DATA = j.data;
+        renderTiempos();
+      } catch (e) {
+        if (lo) lo.style.display = 'none';
+        if (er) { er.style.display = 'block'; er.textContent = 'Error: ' + e.message; }
+      }
+    }
+    function renderTiempos() {
+      const d = TIEM_DATA; if (!d) return;
+      document.getElementById('tiemLoading').style.display = 'none';
+      document.getElementById('tiemKpiBar').style.display = 'flex';
+      document.getElementById('tiemFilters').style.display = 'block';
+      document.getElementById('tiemDataNotice').style.display = 'block';
+      document.getElementById('tiemContent').style.display = 'block';
+      const k = d.kpis;
+      document.getElementById('tiem-total-gestiones').textContent = (k.total_gestiones||0).toLocaleString('es-CO');
+      document.getElementById('tiem-programadas').textContent = (k.programadas||0).toLocaleString('es-CO');
+      document.getElementById('tiem-cumplidas').textContent = (k.cumplidas||0).toLocaleString('es-CO');
+      document.getElementById('tiem-pct-cumpl').textContent = (k.pct_cumplimiento||0).toFixed(1)+'% cumpl.';
+      document.getElementById('tiem-extraruta').textContent = (k.extraruta||0).toLocaleString('es-CO');
+      document.getElementById('tiem-clientes').textContent = (k.clientes_gestionados||0).toLocaleString('es-CO');
+      document.getElementById('tiem-usuarios').textContent = (k.usuarios||0).toLocaleString('es-CO');
+
+      setTimeout(() => {
+        const sup = d.supervisores || [];
+        loadChart('tiemSupervisorChart', {
+          type:'bar',
+          data:{ labels:sup.map(s=>s.supervisor), datasets:[
+            { label:'Programadas', data:sup.map(s=>s.programadas), backgroundColor:'#0d9488cc', stack:'s', borderRadius:2 },
+            { label:'Cumplidas',   data:sup.map(s=>s.cumplidas),   backgroundColor:EC_GREEN,     stack:'s', borderRadius:2 },
+            { label:'Extraruta',   data:sup.map(s=>s.extraruta),   backgroundColor:'#374151cc',  stack:'s', borderRadius:2 },
+            { label:'% Cumplimiento', type:'line', data:sup.map(s=>s.pct_cumplimiento), borderColor:EC_YELLOW, backgroundColor:'transparent', pointRadius:5, yAxisID:'y2' }
+          ]},
+          options:{...CJ, plugins:{legend:{labels:{color:'#94a3b8'}}}, scales:{
+            x:{stacked:true,ticks:{color:'#64748b',font:{size:10}}},
+            y:{stacked:true,ticks:{color:'#64748b'}},
+            y2:{position:'right',max:100,min:0,ticks:{color:'#64748b',callback:v=>v+'%'},grid:{display:false}}
+          }}
+        });
+        const dia = d.por_dia || [];
+        loadChart('tiemDiaChart', {
+          type:'line',
+          data:{ labels:dia.map(x=>x.fecha.slice(5)), datasets:[
+            { label:'Programadas', data:dia.map(x=>x.programadas), borderColor:'#0d9488', backgroundColor:'#0d948822', fill:true, tension:0.3 },
+            { label:'Cumplidas',   data:dia.map(x=>x.cumplidas),   borderColor:EC_GREEN,  backgroundColor:'transparent', tension:0.3 },
+            { label:'Extraruta',   data:dia.map(x=>x.extraruta),   borderColor:'#64748b', backgroundColor:'transparent', tension:0.3 }
+          ]},
+          options:{...CJ, plugins:{legend:{labels:{color:'#94a3b8'}}}, scales:{x:{ticks:{color:'#64748b',font:{size:9},maxRotation:40}},y:{ticks:{color:'#64748b'}}}}
+        });
+        const u = d.usuarios || [];
+        document.getElementById('tiemUserBody').innerHTML = u.map(usr => {
+          const pct = usr.pct_cumplimiento || 0;
+          const badge = pct >= 70 ? 'low' : pct >= 40 ? 'mid' : 'high';
+          return `<tr>
+            <td>${usr.nombre}</td>
+            <td style="text-align:center;">${usr.hora_inicio}</td>
+            <td style="text-align:center;">${usr.hora_fin}</td>
+            <td style="text-align:right;">${usr.programadas}</td>
+            <td style="text-align:right;color:var(--accent-green);">${usr.cumplidas}</td>
+            <td style="text-align:center;"><span class="mora-badge ${badge}">${pct.toFixed(1)}%</span></td>
+            <td style="text-align:right;color:var(--accent-yellow);">${usr.extraruta}</td>
+            <td style="text-align:right;">${usr.clientes}</td>
+          </tr>`;
+        }).join('');
+      }, 200);
+    }
+    document.getElementById('tiemReload')?.addEventListener('click', loadTiempos);
+    ['tiemAnio','tiemMes'].forEach(id => document.getElementById(id)?.addEventListener('change', loadTiempos));
+
+    // ═══════════════════════════════════════════════════════════════
+    // PEDIDOS / FACTURAS / DEVOLUCIONES / COTIZACIONES
+    // ═══════════════════════════════════════════════════════════════
+    let PED_DATA = null;
+    async function loadPedidos() {
+      const lo = document.getElementById('pedLoading'); if (lo) lo.style.display = 'flex';
+      const er = document.getElementById('pedError'); if (er) er.style.display = 'none';
+      const now = new Date();
+      _populateYearSelect('pedAnio', now.getFullYear());
+      const pedMes = document.getElementById('pedMes');
+      if (pedMes && !pedMes.dataset.set) { pedMes.value = String(now.getMonth()+1); pedMes.dataset.set='1'; }
+      const year = document.getElementById('pedAnio').value || now.getFullYear();
+      const month = document.getElementById('pedMes').value || (now.getMonth()+1);
+      try {
+        const r = await fetch(`/api/pedidos?year=${year}&month=${month}`, { headers: authToken ? {'Authorization': 'Bearer '+authToken} : {} });
+        if (!r.ok) throw new Error('HTTP '+r.status);
+        const j = await r.json();
+        if (!j.success) throw new Error(j.error || 'Sin datos');
+        PED_DATA = j.data;
+        renderPedidos();
+      } catch (e) {
+        if (lo) lo.style.display = 'none';
+        if (er) { er.style.display = 'block'; er.textContent = 'Error: ' + e.message; }
+      }
+    }
+    function renderPedidos() {
+      const d = PED_DATA; if (!d) return;
+      document.getElementById('pedLoading').style.display = 'none';
+      document.getElementById('pedKpiBar').style.display = 'flex';
+      document.getElementById('pedFilters').style.display = 'block';
+      document.getElementById('pedDataNotice').style.display = 'block';
+      document.getElementById('pedContent').style.display = 'block';
+      const k = d.kpis;
+      // Si /orders no tiene datos en este período, mostrar aviso amigable
+      if ((d.total_orders || 0) === 0) {
+        const er = document.getElementById('pedError');
+        er.style.display = 'block';
+        er.style.background = 'rgba(245,158,11,0.08)';
+        er.style.borderColor = 'rgba(245,158,11,0.3)';
+        er.style.color = '#fcd34d';
+        er.innerHTML = '<strong>⚠️ Sin datos de pedidos en este período.</strong> El endpoint <code style="background:#0f172a;padding:2px 6px;border-radius:3px;">/orders</code> de RSales API no devolvió transacciones para ' + (d.periodo?.from||'') + ' → ' + (d.periodo?.to||'') + '. Esto puede deberse a que la cuenta no tiene órdenes registradas para este rango o que el permiso de lectura de pedidos no está habilitado en RSales. Las gráficas se llenarán automáticamente cuando lleguen datos.';
+      } else {
+        document.getElementById('pedError').style.display = 'none';
+      }
+      document.getElementById('ped-ventas').textContent = fmtBil(k.total_ventas);
+      document.getElementById('ped-unidades').textContent = (k.unidades_pedidas||0).toLocaleString('es-CO');
+      document.getElementById('ped-tx').textContent = (k.total_tx||0).toLocaleString('es-CO');
+      document.getElementById('ped-clientes-imp').textContent = (k.clientes_impactados||0).toLocaleString('es-CO');
+      document.getElementById('ped-pct-impacto').textContent = (k.pct_impacto||0).toFixed(2)+'% impacto';
+      document.getElementById('ped-usuarios').textContent = (k.usuarios||0).toLocaleString('es-CO');
+      document.getElementById('ped-refs').textContent = (k.referencias||0).toLocaleString('es-CO');
+
+      setTimeout(() => {
+        const tt = d.tipo_transaccion || [];
+        loadChart('pedTipoChart', {
+          type:'bar',
+          data:{ labels:tt.map(x=>x.tipo), datasets:[
+            { label:'Total ventas', data:tt.map(x=>x.total), backgroundColor:'#0d9488cc', yAxisID:'y', borderRadius:4, order:2 },
+            { label:'# Transacciones', type:'line', data:tt.map(x=>x.tx), borderColor:'#64748b', backgroundColor:'transparent', pointRadius:5, yAxisID:'y2', order:1 }
+          ]},
+          options:{...CJ, plugins:{legend:{labels:{color:'#94a3b8'}}}, scales:{
+            y:{ticks:{color:'#64748b',callback:v=>fmtBilAxis(v)}},
+            y2:{position:'right',ticks:{color:'#64748b'},grid:{display:false}}
+          }}
+        });
+        const est = d.estados || [];
+        loadChart('pedEstadoChart', {
+          type:'bar',
+          data:{ labels:est.map(x=>x.estado), datasets:[
+            { label:'Total ventas', data:est.map(x=>x.total), backgroundColor:est.map(x => x.estado==='Aprobado'?EC_GREEN:x.estado==='Rechazado'?EC_RED:x.estado==='Retenido'?EC_YELLOW:'#a78bfa'), borderRadius:4, yAxisID:'y', order:2 },
+            { label:'# Tx', type:'line', data:est.map(x=>x.tx), borderColor:'#64748b', backgroundColor:'transparent', pointRadius:5, yAxisID:'y2', order:1 }
+          ]},
+          options:{...CJ, plugins:{legend:{labels:{color:'#94a3b8'}}}, scales:{
+            y:{ticks:{color:'#64748b',callback:v=>fmtBilAxis(v)}},
+            y2:{position:'right',ticks:{color:'#64748b'},grid:{display:false}}
+          }}
+        });
+        const sup = d.supervisores || [];
+        loadChart('pedSupervisorChart', {
+          type:'bar',
+          data:{ labels:sup.map(x=>x.supervisor), datasets:[
+            { label:'Total ventas', data:sup.map(x=>x.total), backgroundColor:'#0d9488cc', yAxisID:'y', borderRadius:3, order:2 },
+            { label:'# Tx', type:'line', data:sup.map(x=>x.tx), borderColor:'#64748b', backgroundColor:'transparent', pointRadius:5, yAxisID:'y2', order:1 }
+          ]},
+          options:{...CJ, plugins:{legend:{labels:{color:'#94a3b8'}}}, scales:{
+            x:{ticks:{color:'#64748b',font:{size:10}}},
+            y:{ticks:{color:'#64748b',callback:v=>fmtBilAxis(v)}},
+            y2:{position:'right',ticks:{color:'#64748b'},grid:{display:false}}
+          }}
+        });
+        const prod = (d.productos || []).slice(0, 30);
+        loadChart('pedProductoChart', {
+          type:'bar',
+          data:{ labels:prod.map(p=>p.grupo.substring(0,12)), datasets:[
+            { label:'Total ventas', data:prod.map(p=>p.total), backgroundColor:'#0d9488cc', yAxisID:'y', borderRadius:2, order:2 },
+            { label:'Unidades', type:'line', data:prod.map(p=>p.unidades), borderColor:'#64748b', backgroundColor:'transparent', pointRadius:4, yAxisID:'y2', order:1 }
+          ]},
+          options:{...CJ, plugins:{legend:{labels:{color:'#94a3b8'}}}, scales:{
+            x:{ticks:{color:'#64748b',font:{size:9},maxRotation:60}},
+            y:{ticks:{color:'#64748b',callback:v=>fmtBilAxis(v)}},
+            y2:{position:'right',ticks:{color:'#64748b'},grid:{display:false}}
+          }}
+        });
+        const ev = d.evolucion_mensual || [];
+        loadChart('pedEvolucionChart', {
+          type:'bar',
+          data:{ labels:ev.map(x=>x.mes), datasets:[
+            { label:'Total ventas', data:ev.map(x=>x.total), backgroundColor:'#0d9488cc', yAxisID:'y', borderRadius:3, order:2 },
+            { label:'# Tx', type:'line', data:ev.map(x=>x.tx), borderColor:EC_BLUE, backgroundColor:'transparent', pointRadius:5, yAxisID:'y2', tension:0.3, order:1 }
+          ]},
+          options:{...CJ, plugins:{legend:{labels:{color:'#94a3b8'}}}, scales:{
+            y:{ticks:{color:'#64748b',callback:v=>fmtBilAxis(v)}},
+            y2:{position:'right',ticks:{color:'#64748b'},grid:{display:false}}
+          }}
+        });
+        // Users table
+        document.getElementById('pedUserBody').innerHTML = (d.usuarios||[]).slice(0,25).map(u => `<tr>
+          <td>${u.nombre}</td>
+          <td style="color:#94a3b8;">${u.supervisor}</td>
+          <td style="text-align:right;">${u.clientes}</td>
+          <td style="text-align:right;">${u.unidades.toLocaleString('es-CO')}</td>
+          <td style="text-align:right;">${u.tx}</td>
+          <td style="text-align:right;">${fmtBil(u.promedio)}</td>
+          <td style="text-align:right;color:var(--accent-green);font-weight:600;">${fmtBil(u.total_ventas)}</td>
+        </tr>`).join('');
+        // Clients table
+        document.getElementById('pedCliBody').innerHTML = (d.clientes||[]).map(c => `<tr>
+          <td>${c.name}</td>
+          <td style="color:#94a3b8;">${c.city||'—'}</td>
+          <td style="text-align:right;">${(c.units||0).toLocaleString('es-CO')}</td>
+          <td style="text-align:right;">${c.tx||0}</td>
+          <td style="text-align:right;color:var(--accent-green);font-weight:600;">${fmtBil(c.total)}</td>
+        </tr>`).join('');
+      }, 200);
+    }
+    document.getElementById('pedReload')?.addEventListener('click', loadPedidos);
+    ['pedAnio','pedMes'].forEach(id => document.getElementById(id)?.addEventListener('change', loadPedidos));
 
     init();
   </script>
