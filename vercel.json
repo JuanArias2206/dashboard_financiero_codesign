@@ -5,24 +5,10 @@
   "installCommand": "npm install",
   "framework": null,
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/api/(.*)", "destination": "/api/index" },
     { "source": "/chatbot", "destination": "/chatbot.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
-  "functions": {
-    "api/*.js": {
-      "memory": 1024,
-      "maxDuration": 30
-    },
-    "api/reports/*.js": {
-      "memory": 1024,
-      "maxDuration": 60
-    },
-    "api/sync/*.js": {
-      "memory": 1024,
-      "maxDuration": 60
-    }
-  },
   "crons": [
     {
       "path": "/api/sync/rsales?cron=true&entity=all",

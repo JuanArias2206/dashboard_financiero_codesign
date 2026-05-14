@@ -304,7 +304,7 @@ app.post('/api/reports/conversation', requireSession, async (req, res) => {
 // ─── RUTA: RSales Indicators ──────────────────
 app.get('/api/rsales-indicators', async (req, res) => {
   try {
-    const handler = require('./api/rsales-indicators');
+    const handler = require('./lib/api-handlers/rsales-indicators');
     await handler(req, res);
   } catch (err) {
     console.error('[/api/rsales-indicators]', err.message);
@@ -315,7 +315,7 @@ app.get('/api/rsales-indicators', async (req, res) => {
 // ─── RUTA: Cartera Data (Excel-based BI) ──────
 app.get('/api/cartera-data', requireSession, (req, res) => {
   try {
-    require('./api/cartera-data')(req, res);
+    require('./lib/api-handlers/cartera-data')(req, res);
   } catch (err) {
     console.error('[/api/cartera-data]', err.message);
     res.status(500).json({ error: err.message });
@@ -324,16 +324,31 @@ app.get('/api/cartera-data', requireSession, (req, res) => {
 
 // ─── RUTAS BI: Inventario / Tiempos / Pedidos (RSales API) ────────
 app.get('/api/inventario', requireSession, async (req, res) => {
-  try { await require('./api/inventario')(req, res); }
+  try { await require('./lib/api-handlers/inventario')(req, res); }
   catch (err) { console.error('[/api/inventario]', err.message); res.status(500).json({ error: err.message }); }
 });
 app.get('/api/tiempos', requireSession, async (req, res) => {
-  try { await require('./api/tiempos')(req, res); }
+  try { await require('./lib/api-handlers/tiempos')(req, res); }
   catch (err) { console.error('[/api/tiempos]', err.message); res.status(500).json({ error: err.message }); }
 });
 app.get('/api/pedidos', requireSession, async (req, res) => {
-  try { await require('./api/pedidos')(req, res); }
+  try { await require('./lib/api-handlers/pedidos')(req, res); }
   catch (err) { console.error('[/api/pedidos]', err.message); res.status(500).json({ error: err.message }); }
+});
+
+// ─── RUTA: Sync RSales (cron + manual) ────────
+app.all('/api/sync/rsales', async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (req.method === 'OPTIONS') return res.status(200).end();
+  try {
+    const handler = require('./lib/api-handlers/sync/rsales');
+    await handler(req, res);
+  } catch (err) {
+    console.error('[/api/sync/rsales]', err.message);
+    res.status(500).json({ error: 'Error en sincronización', details: err.message });
+  }
 });
 
 // ─── SPA fallback ─────────────────────────────
@@ -344,15 +359,17 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// ─── Start ────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`\n🚀 ADATEC Dashboard Server`);
-  console.log(`   Puerto:          ${PORT}`);
-  console.log(`   IA disponible:   ${aiAvailable()}`);
-  console.log(`   Modelo:          ${getModel()}`);
-  console.log(`   URL:             http://localhost:${PORT}`);
-  console.log(`   Dashboard:       http://localhost:${PORT}/index.html`);
-  console.log(`   Chatbot:         http://localhost:${PORT}/chatbot.html\n`);
-});
+// ─── Start (solo local, no en Vercel) ─────────
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`\n🚀 ADATEC Dashboard Server`);
+    console.log(`   Puerto:          ${PORT}`);
+    console.log(`   IA disponible:   ${aiAvailable()}`);
+    console.log(`   Modelo:          ${getModel()}`);
+    console.log(`   URL:             http://localhost:${PORT}`);
+    console.log(`   Dashboard:       http://localhost:${PORT}/index.html`);
+    console.log(`   Chatbot:         http://localhost:${PORT}/chatbot.html\n`);
+  });
+}
 
 module.exports = app;
