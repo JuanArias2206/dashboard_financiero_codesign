@@ -1,828 +1,491 @@
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-  "accent": "#10b981",
-  "accentWarm": "#f59e0b",
-  "density": 1,
-  "darkMode": true
+  "accent": "#10b981"
 }/*EDITMODE-END*/;
 
-/* ──────────────────────────────────────────────
-   FINANCIAL DATA
-   ────────────────────────────────────────────── */
-const MONTHLY_REVENUE = [
-  { month: 'Ene', actual: 184, target: 170, forecast: 186 },
-  { month: 'Feb', actual: 192, target: 178, forecast: 190 },
-  { month: 'Mar', actual: 188, target: 185, forecast: 193 },
-  { month: 'Abr', actual: 201, target: 190, forecast: 198 },
-  { month: 'May', actual: 215, target: 198, forecast: 208 },
-  { month: 'Jun', actual: 224, target: 205, forecast: 216 },
-  { month: 'Jul', actual: 238, target: 215, forecast: 225 },
-  { month: 'Ago', actual: 251, target: 225, forecast: 234 },
-  { month: 'Sep', actual: 267, target: 235, forecast: 246 },
-  { month: 'Oct', actual: 282, target: 248, forecast: 258 },
-  { month: 'Nov', actual: 298, target: 260, forecast: 270 },
-  { month: 'Dic', actual: 312, target: 275, forecast: 285 },
+/* === DATA === */
+const D = {
+  kpis: [
+    { id:'saldo', label:'Saldo Total Cartera', value:'$38.374M', icon:'💰', delta:'+2.3%', deltaUp:true, spark:[34.2,35.1,36.8,37.2,36.5,37.8,38.4], accent:'#10b981', sub:'89.064 docs • 2.854 clientes' },
+    { id:'vencida', label:'Cartera Vencida', value:'$35.495M', icon:'⚠️', delta:'92.5%', deltaUp:false, spark:[88,89,90,91,91.5,92,92.5], accent:'#ef4444', sub:'92.5% del total en mora' },
+    { id:'mora', label:'Días Mora Promedio', value:'1.038', icon:'📅', delta:'+14 días', deltaUp:false, spark:[980,995,1010,1020,1028,1035,1038], accent:'#f59e0b', sub:'Clientes riesgo alto: 2.613' },
+    { id:'corriente', label:'Cartera Corriente', value:'$2.879M', icon:'✅', delta:'7.5%', deltaUp:true, spark:[6.2,6.5,6.8,7.0,7.1,7.3,7.5], accent:'#34d399', sub:'749 docs sin mora' },
+  ],
+  aging: [
+    { key:'c', label:'Corriente', docs:749, saldo:2879186150.55, pct:7.5, color:'#10b981' },
+    { key:'a', label:'1-30 días', docs:1163, saldo:1635080227.87, pct:4.3, color:'#34d399' },
+    { key:'b', label:'31-60 días', docs:1011, saldo:1820123664.73, pct:4.7, color:'#f59e0b' },
+    { key:'d', label:'61-90 días', docs:1260, saldo:1713344845.59, pct:4.5, color:'#f97316' },
+    { key:'e', label:'91-180 días', docs:4032, saldo:6226043692.95, pct:16.2, color:'#ef4444' },
+    { key:'f', label:'181-360 días', docs:7861, saldo:9612176940.30, pct:25.0, color:'#dc2626' },
+    { key:'g', label:'+360 días', docs:72988, saldo:14488207635.35, pct:37.8, color:'#b91c1c' },
+  ],
+  topClientes: [
+    { nombre:'BAHAMON GUALDRON GINA ANDREA', nit:'67040225-0', docs:60, saldo:162760789513.41, pctTotal:424.1, riesgo:'critico', ciudad:'CALI' },
+    { nombre:'ELMER ENRIQUE PACHECO POLO', nit:'72139503-0', docs:345, saldo:5358074175.34, pctTotal:14.0, riesgo:'alto', ciudad:'VALLEDUPAR' },
+    { nombre:'ARISTIZABAL GRISALES HECTOR FABIO', nit:'6549981-0', docs:21, saldo:4617920128.00, pctTotal:12.0, riesgo:'alto', ciudad:'ARMENIA' },
+    { nombre:'SIN NOMBRE', nit:'991520783001-0', docs:164, saldo:4613754706.00, pctTotal:12.0, riesgo:'alto', ciudad:'BOGOTA' },
+    { nombre:'WILSON RODOLFO JAIMES FLOREZ', nit:'88216979-0', docs:687, saldo:3895788100.00, pctTotal:10.2, riesgo:'alto', ciudad:'CUCUTA' },
+    { nombre:'JORGE ELIECER HERNANDEZ GIRALDO', nit:'98583058-0', docs:149, saldo:3658472100.00, pctTotal:9.5, riesgo:'alto', ciudad:'BOGOTA' },
+    { nombre:'JOSE ANTONIO SUAREZ GUERRERO', nit:'8325410-0', docs:312, saldo:3412567800.00, pctTotal:8.9, riesgo:'alto', ciudad:'NEIVA' },
+    { nombre:'LUZ MERY GUTIERREZ DE DIAZ', nit:'51701898-0', docs:56, saldo:2987654300.00, pctTotal:7.8, riesgo:'medio', ciudad:'IBAGUE' },
+    { nombre:'MARIA EUGENIA LOPEZ RAMIREZ', nit:'38654321-0', docs:28, saldo:2654321000.00, pctTotal:6.9, riesgo:'medio', ciudad:'MEDELLIN' },
+    { nombre:'CARLOS ALBERTO MORA RIVERA', nit:'79123456-0', docs:94, saldo:2345678900.00, pctTotal:6.1, riesgo:'medio', ciudad:'CALI' },
+  ],
+  alertas: [
+    { nivel:'critico', mensaje:'92.5% de la cartera está vencida — $35.495M en riesgo' },
+    { nivel:'critico', mensaje:'Mora promedio superior a 1 año: 1.038 días' },
+    { nivel:'alto', mensaje:'2.613 clientes con mora mayor a 360 días' },
+    { nivel:'alto', mensaje:'Concentración: Top 10 clientes = 502.2% del total' },
+    { nivel:'medio', mensaje:'Base de retención total: $235.796M' },
+  ],
+  trendData: [
+    { month:'Jun', f:2100,s:35200},{month:'Jul',f:2350,s:35800},{month:'Ago',f:2280,s:36100},
+    { month:'Sep', f:2520,s:36500},{month:'Oct',f:2680,s:37000},{month:'Nov',f:2850,s:37400},
+    { month:'Dic', f:3100,s:37800},{month:'Ene',f:2750,s:38000},{month:'Feb',f:2900,s:38100},
+    { month:'Mar', f:3050,s:38200},{month:'Abr',f:3200,s:38300},{month:'May',f:3350,s:38374},
+  ],
+};
+
+const NAV = [
+  { label:'Dashboard', items:[{ id:'dashboard', label:'Panel General', icon:'◈' },{ id:'analytics', label:'Analítica', icon:'▤' }]},
+  { label:'Gestión', items:[{ id:'clientes', label:'Clientes', icon:'◉' },{ id:'reportes', label:'Alertas', icon:'⚡' }]},
+  { label:'Herramientas', items:[{ id:'chat', label:'Asistente IA', icon:'🤖' }]},
 ];
 
-const EXPENSES_BY_CATEGORY = [
-  { category: 'Cloud infra', value: 42, color: '#6366f1' },
-  { category: 'Marketing', value: 28, color: '#10b981' },
-  { category: 'Salaries', value: 86, color: '#f59e0b' },
-  { category: 'Operations', value: 18, color: '#ef4444' },
-  { category: 'R&D', value: 34, color: '#8b5cf6' },
-];
+/* === UTIL === */
+const fmt = (v) => {
+  if(v>=1e9) return '$'+(v/1e9).toFixed(1)+'B';
+  if(v>=1e6) return '$'+(v/1e6).toFixed(0)+'M';
+  if(v>=1e3) return '$'+(v/1e3).toFixed(0)+'K';
+  return '$'+v.toFixed(0);
+};
 
-const PORTFOLIO = [
-  { symbol: 'AAPL', name: 'Apple Inc.', allocation: 22, value: '$48.2K', change: '+3.2%', positive: true },
-  { symbol: 'MSFT', name: 'Microsoft Corp.', allocation: 18, value: '$39.5K', change: '+2.8%', positive: true },
-  { symbol: 'GOOGL', name: 'Alphabet Inc.', allocation: 15, value: '$32.9K', change: '-1.4%', positive: false },
-  { symbol: 'AMZN', name: 'Amazon.com Inc.', allocation: 12, value: '$26.3K', change: '+5.1%', positive: true },
-  { symbol: 'NVDA', name: 'NVIDIA Corp.', allocation: 10, value: '$21.9K', change: '+8.7%', positive: true },
-  { symbol: 'TSLA', name: 'Tesla Inc.', allocation: 8, value: '$17.5K', change: '-4.2%', positive: false },
-  { symbol: 'BTC', name: 'Bitcoin ETF', allocation: 15, value: '$32.9K', change: '+12.3%', positive: true },
-];
+/* === KPI CARD === */
+const s = {
+  card: {background:'#111b2e',borderRadius:16,padding:'18px 20px 16px',border:'1px solid rgba(148,163,184,0.08)',cursor:'default',transition:'all 0.2s'},
+  row: {display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:14},
+  lrow: {display:'flex',alignItems:'center',gap:10},
+  icon: {width:34,height:34,borderRadius:10,display:'flex',alignItems:'center',justifyContent:'center',fontSize:16,background:'rgba(16,185,129,0.08)'},
+  label: {fontSize:13,color:'#64748b',fontWeight:500},
+  spark: {flexShrink:0,opacity:0.7},
+  vrow: {display:'flex',alignItems:'baseline',gap:10},
+  val: {fontSize:28,fontWeight:700,color:'#f1f5f9',fontFamily:"'JetBrains Mono',monospace",fontVariantNumeric:'tabular-nums',letterSpacing:'-0.02em'},
+  sub: {display:'block',fontSize:11,color:'#475569',marginTop:6,fontFamily:"'JetBrains Mono',monospace"},
+};
 
-const RECENT_TRANSACTIONS = [
-  { id: 'TXN-001', description: 'Transferencia entrante — Cliente Corp.', amount: '+$24,500', date: 'Hoy, 14:23', status: 'Completada', type: 'incoming' },
-  { id: 'TXN-002', description: 'Pago proveedor — Cloud Services', amount: '-$8,420', date: 'Hoy, 11:05', status: 'Pendiente', type: 'outgoing' },
-  { id: 'TXN-003', description: 'Dividendo trimestral — AAPL', amount: '+$1,280', date: 'Ayer, 09:30', status: 'Completada', type: 'incoming' },
-  { id: 'TXN-004', description: 'Suscripción anual — SaaS Suite', amount: '-$3,600', date: 'Ayer, 08:15', status: 'Completada', type: 'outgoing' },
-  { id: 'TXN-005', description: 'Depósito cuenta rendimiento', amount: '+$50,000', date: '24 Mar, 2025', status: 'Completada', type: 'incoming' },
-  { id: 'TXN-006', description: 'Retiro — Cuenta operativa', amount: '-$12,000', date: '23 Mar, 2025', status: 'Rechazada', type: 'outgoing' },
-];
-
-const PERIODS = ['7 días', '30 días', '90 días', '1 año'];
-
-/* ──────────────────────────────────────────────
-   NAVIGATION CONFIG
-   ────────────────────────────────────────────── */
-const NAV_SECTIONS = [
-  { label: 'Principal', items: [
-    { id: 'dashboard', label: 'Dashboard', icon: '◈' },
-    { id: 'analytics', label: 'Analítica', icon: '▤' },
-    { id: 'transacciones', label: 'Transacciones', icon: '⇄' },
-  ]},
-  { label: 'Gestión', items: [
-    { id: 'portafolio', label: 'Portafolio', icon: '◉' },
-    { id: 'reportes', label: 'Reportes', icon: '▣' },
-    { id: 'presupuesto', label: 'Presupuesto', icon: '⟐' },
-  ]},
-  { label: 'Configuración', items: [
-    { id: 'ajustes', label: 'Ajustes', icon: '⚙' },
-  ]},
-];
-
-/* ──────────────────────────────────────────────
-   CHART COMPONENTS (Inline SVG)
-   ────────────────────────────────────────────── */
-
-/* Area chart for revenue trend */
-function RevenueChart({ data, accent, onHover, hoveredIndex }) {
-  const W_ = 640, H_ = 280, P = { top: 20, right: 16, bottom: 32, left: 48 };
-  const iW = W_ - P.left - P.right;
-  const iH = H_ - P.top - P.bottom;
-  const maxVal = Math.max(...data.map(d => Math.max(d.actual, d.target, d.forecast))) * 1.12;
-
-  const xScale = (i) => P.left + (i / (data.length - 1)) * iW;
-  const yScale = (v) => P.top + iH - (v / maxVal) * iH;
-
-  const linePath = data.map((d, i) =>
-    `${i === 0 ? 'M' : 'L'}${xScale(i).toFixed(1)},${yScale(d.actual).toFixed(1)}`
-  ).join('');
-
-  const areaPath = linePath +
-    `L${xScale(data.length - 1).toFixed(1)},${(P.top + iH).toFixed(1)}` +
-    `L${xScale(0).toFixed(1)},${(P.top + iH).toFixed(1)}Z`;
-
+function KpiCard(p) {
+  const W=100,H=32;
+  const mx=Math.max(...p.spark,1), mn=Math.min(...p.spark), rg=Math.max(1,mx-mn);
+  const st=W/(p.spark.length-1);
+  const pts=p.spark.map((v,i)=>`${(i*st).toFixed(1)},${(H-((v-mn)/rg)*H).toFixed(1)}`).join(' L');
   return (
-    <svg viewBox={`0 0 ${W_} ${H_}`} style={{ width: '100%', height: 'auto', overflow: 'visible' }} role="img" aria-label="Gráfico de ingresos mensuales">
-      {/* Grid lines */}
-      {[0, 0.25, 0.5, 0.75, 1].map((r) => {
-        const y = P.top + iH - r * iH;
-        return (
-          <g key={r}>
-            <line x1={P.left} y1={y} x2={W_ - P.right} y2={y} stroke="rgba(148,163,184,0.08)" strokeWidth={1} />
-            <text x={P.left - 8} y={y + 4} textAnchor="end" fill="var(--ocd-tweak-text-muted)" fontSize={11} fontFamily="ui-monospace,monospace">
-              ${(maxVal * r).toFixed(0)}K
-            </text>
+    <div style={s.card}>
+      <div style={s.row}>
+        <div style={s.lrow}>
+          <div style={s.icon}>{p.icon}</div>
+          <span style={s.label}>{p.label}</span>
+        </div>
+        <svg width={W} height={H} style={s.spark}>
+          <path d={`M${pts} L${W},${H} L0,${H} Z`} fill={p.accent} opacity={0.1}/>
+          <path d={`M${pts}`} stroke={p.accent} strokeWidth={1.5} fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </div>
+      <div style={s.vrow}>
+        <span style={s.val}>{p.value}</span>
+        {p.delta && <span style={{fontSize:12,fontWeight:600,fontFamily:"'JetBrains Mono',monospace",color:p.deltaUp?p.accent:'#ef4444'}}>{p.deltaUp?'↑ ':'↓ '}{p.delta}</span>}
+      </div>
+      {p.sub && <span style={s.sub}>{p.sub}</span>}
+    </div>
+  );
+}
+
+/* === TREND CHART === */
+function TrendChart({data}) {
+  const [h,setH]=React.useState(-1);
+  const W=600,HT=220,P={top:16,right:16,bottom:28,left:44};
+  const iW=W-P.left-P.right,iH=HT-P.top-P.bottom;
+  const mx=Math.max(...data.flatMap(d=>[d.f||0,d.s||0]))*1.15;
+  const xs=i=>P.left+(i/(data.length-1||1))*iW;
+  const ys=v=>P.top+iH-(v/mx)*iH;
+  const fp=data.map((d,i)=>`${i===0?'M':'L'}${xs(i).toFixed(1)},${ys(d.f||0).toFixed(1)}`).join('');
+  const sp=data.map((d,i)=>`${i===0?'M':'L'}${xs(i).toFixed(1)},${ys(d.s||0).toFixed(1)}`).join('');
+  return (
+    <div style={{background:'#111b2e',borderRadius:16,padding:'14px 10px 6px',border:'1px solid rgba(148,163,184,0.08)'}}>
+      <svg viewBox={`0 0 ${W} ${HT}`} style={{width:'100%',height:'auto',overflow:'visible'}} role="img" aria-label="Evolución mensual">
+        {[0,.25,.5,.75,1].map((r,i)=>{const y=P.top+iH-r*iH;return(
+          <g key={i}>
+            <line x1={P.left} y1={y} x2={W-P.right} y2={y} stroke="rgba(148,163,184,0.07)" strokeWidth={1}/>
+            <text x={P.left-8} y={y+4} textAnchor="end" fill="#475569" fontSize={10} fontFamily="'JetBrains Mono',monospace">{fmt(mx*r)}</text>
           </g>
-        );
-      })}
-
-      {/* Target line */}
-      <line
-        x1={P.left} y1={yScale(data[0].target)}
-        x2={W_ - P.right} y2={yScale(data[data.length-1].target)}
-        stroke="var(--ocd-tweak-accent-warm)" strokeWidth={1.5} strokeDasharray="6,4"
-        opacity={0.5}
-      />
-      <text x={W_ - P.right + 4} y={yScale(data[0].target) + 4} fill="var(--ocd-tweak-accent-warm)" fontSize={10} opacity={0.6}>Meta</text>
-
-      {/* Area fill */}
-      <path d={areaPath} fill={`var(--ocd-tweak-accent)`} opacity={0.1} />
-
-      {/* Line */}
-      <path d={linePath} fill="none" stroke={`var(--ocd-tweak-accent)`} strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" />
-
-      {/* Data points & hover areas */}
-      {data.map((d, i) => (
-        <g key={i}>
-          <rect
-            x={xScale(i) - 14} y={P.top} width={28} height={iH}
-            fill="transparent"
-            style={{ cursor: 'pointer' }}
-            onMouseEnter={() => onHover(i)}
-            onMouseLeave={() => onHover(-1)}
-          />
-          {(hoveredIndex === i) && (
-            <>
-              <circle cx={xScale(i)} cy={yScale(d.actual)} r={5} fill="var(--ocd-tweak-accent)" stroke="#0a0e17" strokeWidth={2.5} />
-              <rect
-                x={Math.min(Math.max(xScale(i) - 48, 4), W_ - 104)}
-                y={Math.max(yScale(d.actual) - 48, 4)}
-                width={96} height={38} rx={8}
-                fill="#1c2333" stroke="rgba(148,163,184,0.15)"
-              />
-              <text
-                x={Math.min(Math.max(xScale(i), 52), W_ - 56)}
-                y={Math.max(yScale(d.actual) - 34, 10)}
-                textAnchor="middle" fill="#f1f5f9" fontSize={13} fontWeight={700}
-              >
-                ${d.actual}K
-              </text>
-              <text
-                x={Math.min(Math.max(xScale(i), 52), W_ - 56)}
-                y={Math.max(yScale(d.actual) - 20, 24)}
-                textAnchor="middle" fill="#94a3b8" fontSize={10}
-              >
-                {d.month} — vs ${d.target}K meta
-              </text>
-            </>
-          )}
-        </g>
-      ))}
-
-      {/* X-axis labels */}
-      {data.filter((_, i) => i % 2 === 0).map((d, i) => {
-        const idx = data.indexOf(d);
-        return (
-          <text key={idx} x={xScale(idx)} y={H_ - 6} textAnchor="middle" fill="var(--ocd-tweak-text-muted)" fontSize={11}>
-            {d.month}
-          </text>
-        );
-      })}
-    </svg>
+        )})}
+        <path d={fp+`L${xs(data.length-1).toFixed(1)},${(P.top+iH).toFixed(1)}L${xs(0).toFixed(1)},${(P.top+iH).toFixed(1)}Z`} fill="#10b981" opacity={0.08}/>
+        <path d={fp} fill="none" stroke="#10b981" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round"/>
+        <path d={sp} fill="none" stroke="#f59e0b" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" strokeDasharray="4,3" opacity={0.5}/>
+        {data.map((d,i)=><text key={i} x={xs(i)} y={HT-4} textAnchor={i===0?'start':i===data.length-1?'end':'middle'} fill="#475569" fontSize={8} fontFamily="'JetBrains Mono',monospace">{d.month.slice(0,3)}</text>)}
+        {data.map((d,i)=><g key={'h'+i}>
+          <rect x={xs(i)-14} y={P.top} width={28} height={iH} fill="transparent" style={{cursor:'pointer'}}
+            onMouseEnter={()=>setH(i)} onMouseLeave={()=>setH(-1)}/>
+          {h===i&&<>
+            <circle cx={xs(i)} cy={ys(d.f||0)} r={4} fill="#10b981" stroke="#0a0e17" strokeWidth={2}/>
+            <rect x={Math.min(Math.max(xs(i)-50,4),W-110)} y={Math.max(ys(Math.max(d.f||0,d.s||0))-44,4)} width={108} height={40} rx={6} fill="#1c2333" stroke="rgba(148,163,184,0.15)"/>
+            <text x={Math.min(Math.max(xs(i),55),W-56)} y={Math.max(ys(Math.max(d.f||0,d.s||0))-30,10)} textAnchor="middle" fill="#f1f5f9" fontSize={10} fontWeight={700}>{d.month}</text>
+            <text x={Math.min(Math.max(xs(i),55),W-56)} y={Math.max(ys(Math.max(d.f||0,d.s||0))-16,22)} textAnchor="middle" fill="#34d399" fontSize={9} fontFamily="'JetBrains Mono',monospace">{'Fact: $'+(d.f||0)}</text>
+            <text x={Math.min(Math.max(xs(i),55),W-56)} y={Math.max(ys(Math.max(d.f||0,d.s||0))-4,32)} textAnchor="middle" fill="#f59e0b" fontSize={9} fontFamily="'JetBrains Mono',monospace">{'Saldo: $'+(d.s||0)}</text>
+          </>}
+        </g>)}
+      </svg>
+    </div>
   );
 }
 
-/* Horizontal bar chart for expenses */
-function ExpensesChart({ data }) {
-  const W_ = 420, H_ = 200, barH = 28, gap_ = 8, left = 90, right = 60;
-  const maxVal = Math.max(...data.map(d => d.value));
-
+/* === DONUT CHART === */
+function DonutChart({data}) {
+  const [h,setH]=React.useState(-1);
+  const CX=110,CY=110,R=84,IR=48;
+  let cur=0;
+  const arc=(s,e)=>{
+    const sr=((s/100)*2-.5)*Math.PI,er=((e/100)*2-.5)*Math.PI;
+    const sx=CX+R*Math.cos(sr),sy=CY+R*Math.sin(sr),ex=CX+R*Math.cos(er),ey=CY+R*Math.sin(er);
+    const ix=CX+IR*Math.cos(sr),iy=CY+IR*Math.sin(sr),jx=CX+IR*Math.cos(er),jy=CY+IR*Math.sin(er);
+    const l=e-s>50?1:0;
+    return `M${ix.toFixed(1)},${iy.toFixed(1)} L${sx.toFixed(1)},${sy.toFixed(1)} A${R},${R} 0 ${l} 1 ${ex.toFixed(1)},${ey.toFixed(1)} L${jx.toFixed(1)},${jy.toFixed(1)} A${IR},${IR} 0 ${l} 0 ${ix.toFixed(1)},${iy.toFixed(1)} Z`;
+  };
   return (
-    <svg viewBox={`0 0 ${W_} ${H_}`} style={{ width: '100%', height: 'auto' }} role="img" aria-label="Gastos por categoría">
-      {data.map((d, i) => {
-        const y = i * (barH + gap_);
-        const barW = (d.value / maxVal) * (W_ - left - right);
-        return (
-          <g key={d.category}>
-            <text x={left - 8} y={y + barH * 0.68} textAnchor="end" fill="var(--ocd-tweak-text-muted)" fontSize={11}>
-              {d.category}
-            </text>
-            <rect x={left} y={y + 2} width={barW} height={barH - 4} rx={6} fill={d.color} opacity={0.85} />
-            <text x={left + barW + 8} y={y + barH * 0.68} fill="var(--ocd-tweak-text)" fontSize={11} fontWeight={600}>
-              ${d.value}K
-            </text>
+    <div style={{background:'#111b2e',borderRadius:16,padding:'12px',border:'1px solid rgba(148,163,184,0.08)'}}>
+      <svg viewBox="0 0 220 220" style={{width:'100%',maxWidth:250,height:'auto',display:'block',margin:'0 auto'}} role="img" aria-label="Distribución cartera">
+        {data.map((d,i)=>{const sa=cur;cur+=d.pct;const ea=cur;const is=h===i;return(
+          <g key={d.key} onMouseEnter={()=>setH(i)} onMouseLeave={()=>setH(-1)} style={{cursor:'pointer',transition:'transform 0.2s'}}
+            transform={is?`scale(1.04) translate(${-CX*.04},${-CY*.04})`:''}>
+            <path d={arc(sa,ea)} fill={d.color} opacity={is?1:.85} stroke="#0a0e17" strokeWidth={1.5}/>
           </g>
-        );
-      })}
-    </svg>
+        )})}
+        <circle cx={CX} cy={CY} r={IR-4} fill="#0f1622"/>
+        <text x={CX} y={CY-8} textAnchor="middle" fill="#94a3b8" fontSize={9} fontFamily="'JetBrains Mono',monospace">Total</text>
+        <text x={CX} y={CY+12} textAnchor="middle" fill="#f1f5f9" fontSize={14} fontWeight={700} fontFamily="'JetBrains Mono',monospace">$38.4B</text>
+        {h>=0&&h<data.length&&(()=>{const d=data[h];return(
+          <g><rect x={20} y={196} width={180} height={18} rx={5} fill="#1c2333" stroke="rgba(148,163,184,0.12)"/>
+          <text x={110} y={208} textAnchor="middle" fill="#f1f5f9" fontSize={9} fontFamily="'JetBrains Mono',monospace">{d.label+': '+fmt(d.saldo)}</text></g>
+        )})()}
+      </svg>
+      <div style={{marginTop:6,display:'grid',gridTemplateColumns:'1fr 1fr',gap:'2px 12px'}}>
+        {data.map((d,i)=><div key={d.key} style={{display:'flex',alignItems:'center',gap:5,cursor:'pointer',padding:'2px 4px',borderRadius:4}}
+          onMouseEnter={()=>setH(i)} onMouseLeave={()=>setH(-1)}>
+          <span style={{width:7,height:7,borderRadius:4,flexShrink:0,background:d.color,opacity:h===i?1:0.7}}/>
+          <span style={{fontSize:9,flex:1,color:h===i?'#f1f5f9':'#94a3b8',fontFamily:"'JetBrains Mono',monospace",transition:'color 0.15s'}}>{d.label}</span>
+          <span style={{fontSize:9,color:'#64748b',fontFamily:"'JetBrains Mono',monospace"}}>{d.pct}%</span>
+        </div>)}
+      </div>
+    </div>
   );
 }
 
-/* Donut for portfolio allocation */
-function PortfolioDonut({ data }) {
-  const cx = 100, cy = 100, r = 72, iR = 48;
-  const total = data.reduce((s, d) => s + d.allocation, 0);
-  let angle = -90;
-
-  const toRad = (deg) => (deg * Math.PI) / 180;
-  const polar = (deg, radius) => ({
-    x: cx + radius * Math.cos(toRad(deg)),
-    y: cy + radius * Math.sin(toRad(deg)),
-  });
-
-  const pal = ['#10b981', '#6366f1', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899'];
-
-  const slices = data.map((d, i) => {
-    const pct = (d.allocation / total) * 360;
-    const startA = angle;
-    const endA = angle + pct;
-    angle = endA;
-
-    const s1 = polar(startA, r);
-    const s2 = polar(endA, r);
-    const s3 = polar(endA, iR);
-    const s4 = polar(startA, iR);
-    const large = pct > 180 ? 1 : 0;
-
-    const midA = startA + pct / 2;
-    const labelP = polar(midA, (r + iR) / 2);
-
-    const path = [
-      `M ${s1.x} ${s1.y}`,
-      `A ${r} ${r} 0 ${large} 1 ${s2.x} ${s2.y}`,
-      `L ${s3.x} ${s3.y}`,
-      `A ${iR} ${iR} 0 ${large} 0 ${s4.x} ${s4.y}`,
-      'Z',
-    ].join(' ');
-
-    return { path, color: pal[i % pal.length], label: d.symbol, pct: d.allocation, lx: labelP.x, ly: labelP.y };
-  });
-
+/* === AGING CHART === */
+function AgingChart({data}) {
+  const [h,setH]=React.useState(-1);
+  const bH=20,gap=5,mx=Math.max(...data.map(d=>d.saldo));
   return (
-    <svg viewBox="0 0 200 200" style={{ width: '100%', height: 'auto', maxWidth: 280 }} role="img" aria-label="Distribución del portafolio">
-      {slices.map((s, i) => (
-        <g key={i}>
-          <path d={s.path} fill={s.color} opacity={0.85} stroke="#0a0e17" strokeWidth={1.5} />
-          {s.pct > 8 && (
-            <text x={s.lx} y={s.ly + 4} textAnchor="middle" fill="#fff" fontSize={9} fontWeight={700}>
-              {s.pct}%
+    <div style={{background:'#111b2e',borderRadius:16,padding:'16px 12px 8px',border:'1px solid rgba(148,163,184,0.08)'}}>
+      <svg viewBox={`0 0 520 ${data.length*(bH+gap)+44}`} style={{width:'100%',height:'auto'}} role="img" aria-label="Distribución por antigüedad">
+        {data.map((d,i)=>{const y=8+i*(bH+gap);const bw=(d.saldo/mx)*400;const is=h===i;return(
+          <g key={d.key}>
+            <text x={68} y={y+bH/2+4} textAnchor="end" fill={is?'#f1f5f9':'#64748b'} fontSize={is?11:10} fontWeight={is?700:500}>{d.label}</text>
+            <rect x={76} y={y} width={Math.max(bw,3)} height={bH} rx={3} fill={d.color} opacity={is?1:0.8}
+              style={{cursor:'pointer',transition:'opacity 0.15s'}}
+              onMouseEnter={()=>setH(i)} onMouseLeave={()=>setH(-1)}/>
+            <text x={76+bw+6} y={y+bH/2+4} fill={is?'#f1f5f9':'#94a3b8'} fontSize={10} fontFamily="'JetBrains Mono',monospace" opacity={is?1:0.6}>
+              {fmt(d.saldo)} ({d.pct}%)
             </text>
-          )}
-        </g>
-      ))}
-      <text x={cx} y={cy - 6} textAnchor="middle" fill="var(--ocd-tweak-text)" fontSize={14} fontWeight={800}>$219K</text>
-      <text x={cx} y={cy + 12} textAnchor="middle" fill="var(--ocd-tweak-text-muted)" fontSize={9}>Total</text>
-    </svg>
+            {is&&<g><rect x={340} y={y-18} width={140} height={18} rx={5} fill="#1c2333" stroke="rgba(148,163,184,0.15)"/>
+            <text x={410} y={y-5} textAnchor="middle" fill="#94a3b8" fontSize={9} fontFamily="'JetBrains Mono',monospace">{d.docs.toLocaleString()} docs</text></g>}
+          </g>
+        )})}
+      </svg>
+    </div>
   );
 }
 
-/* Sparkline mini chart for KPI cards */
-function Sparkline({ data, color, width = 80, height = 32 }) {
-  const min = Math.min(...data);
-  const max = Math.max(...data);
-  const range = max - min || 1;
-  const pts = data.map((v, i) =>
-    `${(i / (data.length - 1)) * width},${height - ((v - min) / range) * (height - 4) - 2}`
-  ).join(' ');
-  const poly = `0,${height} ${pts} ${width},${height}`;
-
+/* === CLIENT TABLE === */
+function ClientTable({data}) {
+  const [sk,setSk]=React.useState('saldo');
+  const [sd,setSd]=React.useState('desc');
+  const [sel,setSel]=React.useState(null);
+  const sorted=[...data].sort((a,b)=>{
+    let va=a[sk],vb=b[sk];if(typeof va==='string')va=va.toLowerCase();if(typeof vb==='string')vb=vb.toLowerCase();
+    return va<vb?sd==='asc'?-1:1:va>vb?sd==='asc'?1:-1:0;
+  });
+  const mxS=Math.max(...data.map(d=>d.saldo));
+  const rs=(r)=>{if(r==='critico')return{bg:'rgba(239,68,68,0.15)',fg:'#ef4444',lb:'Crítico'};if(r==='alto')return{bg:'rgba(245,158,11,0.15)',fg:'#f59e0b',lb:'Alto'};return{bg:'rgba(234,179,8,0.12)',fg:'#eab308',lb:'Medio'};};
+  const SI=({k})=>sk===k?<span style={{opacity:0.8}}>{sd==='asc'?'▲':'▼'}</span>:<span style={{opacity:0.3}}>⇅</span>;
   return (
-    <svg width={width} height={height} aria-hidden="true">
-      <polygon points={poly} fill={color} opacity={0.1} />
-      <polyline points={pts} fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-/* ──────────────────────────────────────────────
-   MAIN APP COMPONENT
-   ────────────────────────────────────────────── */
-function App() {
-  const [activeNav, setActiveNav] = React.useState('dashboard');
-  const [hoveredPoint, setHoveredPoint] = React.useState(-1);
-  const [period, setPeriod] = React.useState('30 días');
-  const [drawerTx, setDrawerTx] = React.useState(null);
-  const [sidebarOpen, setSidebarOpen] = React.useState(true);
-  const [showAllTx, setShowAllTx] = React.useState(false);
-
-  const gap = 16 * TWEAK_DEFAULTS.density;
-  const accent = `var(--ocd-tweak-accent, ${TWEAK_DEFAULTS.accent})`;
-
-  const kpis = [
-    { label: 'Ingresos Totales', value: '$3.12M', delta: '+18.3%', positive: true, sparkData: [124,138,145,152,168,172,185,194,212,228,244,261,278,292,312] },
-    { label: 'MRR (Mensual)', value: '$267.4K', delta: '+12.7%', positive: true, sparkData: [210,218,224,231,238,244,251,258,267,274,282,298] },
-    { label: 'Churn Rate', value: '3.2%', delta: '-0.8%', positive: true, sparkData: [4.8,4.5,4.3,4.1,3.9,3.8,3.6,3.5,3.4,3.3,3.2,3.2] },
-    { label: 'Gastos Operativos', value: '$208K', delta: '+4.1%', positive: false, sparkData: [178,182,185,188,192,196,198,201,204,206,208,208] },
-  ];
-
-  const visibleTx = showAllTx ? RECENT_TRANSACTIONS : RECENT_TRANSACTIONS.slice(0, 4);
-
-  return (
-    <div style={{
-      minHeight: '100%',
-      background: '#0a0e17',
-      color: '#f1f5f9',
-      fontFamily: "'Inter', 'SF Pro Display', system-ui, sans-serif",
-      display: 'grid',
-      gridTemplateColumns: sidebarOpen ? '228px minmax(0, 1fr)' : '0px minmax(0, 1fr)',
-      transition: 'grid-template-columns 0.25s ease',
-    }}>
-      {/* ─── SIDEBAR ─── */}
-      <aside style={{
-        background: '#0f1622',
-        borderRight: '1px solid rgba(148,163,184,0.08)',
-        display: 'flex', flexDirection: 'column',
-        minHeight: '100vh',
-        overflow: 'hidden',
-        width: sidebarOpen ? 228 : 0,
-      }}>
-        {/* Logo */}
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 12, padding: '20px 18px 16px',
-          borderBottom: '1px solid rgba(148,163,184,0.08)',
-        }}>
-          <div style={{
-            width: 36, height: 36, borderRadius: 10,
-            background: 'linear-gradient(135deg, #10b981, #059669)',
-            display: 'grid', placeItems: 'center', fontSize: 18, fontWeight: 800,
-          }}>F</div>
-          <div>
-            <div style={{ fontWeight: 700, fontSize: 15, letterSpacing: -0.3 }}>Financiero</div>
-            <div style={{ fontSize: 11, color: '#64748b' }}>Dashboard ejecutivo</div>
+    <div style={{background:'#111b2e',borderRadius:16,border:'1px solid rgba(148,163,184,0.08)',overflow:'hidden'}}>
+      <div style={{overflowX:'auto'}}>
+        <table style={{width:'100%',borderCollapse:'collapse',fontSize:12}}>
+          <thead><tr>
+            <th style={{textAlign:'left',padding:'9px 12px',color:'#475569',fontWeight:600,fontSize:10,textTransform:'uppercase',letterSpacing:'0.06em',borderBottom:'1px solid rgba(148,163,184,0.08)',cursor:'pointer',userSelect:'none',whiteSpace:'nowrap'}} onClick={()=>sk==='nombre'?setSd(d=>d==='asc'?'desc':'asc'):(setSk('nombre'),setSd('desc'))}>Cliente <SI k="nombre"/></th>
+            <th style={{textAlign:'right',padding:'9px 12px',color:'#475569',fontWeight:600,fontSize:10,textTransform:'uppercase',letterSpacing:'0.06em',borderBottom:'1px solid rgba(148,163,184,0.08)',cursor:'pointer',userSelect:'none',whiteSpace:'nowrap'}} onClick={()=>sk==='saldo'?setSd(d=>d==='asc'?'desc':'asc'):(setSk('saldo'),setSd('desc'))}>Saldo <SI k="saldo"/></th>
+            <th style={{textAlign:'right',padding:'9px 12px',color:'#475569',fontWeight:600,fontSize:10,textTransform:'uppercase',letterSpacing:'0.06em',borderBottom:'1px solid rgba(148,163,184,0.08)',cursor:'pointer',userSelect:'none',whiteSpace:'nowrap'}} onClick={()=>sk==='pctTotal'?setSd(d=>d==='asc'?'desc':'asc'):(setSk('pctTotal'),setSd('desc'))}>% <SI k="pctTotal"/></th>
+            <th style={{textAlign:'left',padding:'9px 12px',color:'#475569',fontWeight:600,fontSize:10,textTransform:'uppercase',letterSpacing:'0.06em',borderBottom:'1px solid rgba(148,163,184,0.08)',cursor:'pointer',userSelect:'none',whiteSpace:'nowrap'}}>Riesgo</th>
+          </tr></thead>
+          <tbody>{sorted.map((c,i)=>{const r=rs(c.riesgo);const s=sel===i;return(
+            <tr key={c.nit} style={{background:s?'rgba(16,185,129,0.06)':'transparent',cursor:'pointer',transition:'background 0.12s',borderBottom:'1px solid rgba(148,163,184,0.04)'}}
+              onClick={()=>setSel(s?null:i)}
+              onMouseEnter={e=>{if(!s)e.currentTarget.style.background='rgba(148,163,184,0.04)';}}
+              onMouseLeave={e=>{if(!s)e.currentTarget.style.background='transparent';}}>
+              <td style={{padding:'7px 12px'}}>
+                <div style={{fontWeight:500,color:'#f1f5f9',fontSize:11,maxWidth:200,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{c.nombre}</div>
+                <div style={{fontSize:9,color:'#475569',fontFamily:"'JetBrains Mono',monospace",marginTop:1}}>{c.nit}</div>
+              </td>
+              <td style={{textAlign:'right',padding:'7px 12px'}}>
+                <div style={{position:'relative'}}>
+                  <div style={{position:'absolute',right:0,bottom:-1,width:((c.saldo/mxS)*100)+'%',height:2,borderRadius:1,background:r.bg}}/>
+                  <span style={{fontSize:11,color:'#f1f5f9',fontFamily:"'JetBrains Mono',monospace",fontVariantNumeric:'tabular-nums',position:'relative',zIndex:1}}>
+                    ${(c.saldo/1e6).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,'.')}M</span>
+                </div>
+              </td>
+              <td style={{textAlign:'right',padding:'7px 12px'}}>
+                <span style={{fontSize:11,fontWeight:600,color:c.pctTotal>100?'#ef4444':'#f59e0b',fontFamily:"'JetBrains Mono',monospace"}}>{c.pctTotal}%</span>
+              </td>
+              <td style={{padding:'7px 12px'}}>
+                <span style={{display:'inline-block',padding:'1px 6px',borderRadius:3,background:r.bg,color:r.fg,fontSize:9,fontWeight:600,letterSpacing:'0.03em',fontFamily:"'JetBrains Mono',monospace"}}>{r.lb}</span>
+              </td>
+            </tr>
+          )})}</tbody>
+        </table>
+      </div>
+      {sel!==null&&(()=>{const c=sorted[sel];return(
+        <div style={{borderTop:'1px solid rgba(148,163,184,0.1)',padding:'12px 16px',background:'rgba(0,0,0,0.15)'}}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:8}}>
+            <span style={{fontSize:12,fontWeight:600,color:'#f1f5f9'}}>{c.nombre}</span>
+            <button onClick={()=>setSel(null)} style={{background:'rgba(148,163,184,0.08)',border:'none',color:'#94a3b8',width:22,height:22,borderRadius:5,cursor:'pointer',fontSize:11}}>✕</button>
+          </div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8}}>
+            {[{l:'NIT',v:c.nit},{l:'Ciudad',v:c.ciudad},{l:'Docs',v:c.docs.toLocaleString()},
+              {l:'Saldo',v:'$'+(c.saldo/1e6).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,'.')+'M'},
+              {l:'%Total',v:c.pctTotal+'%',c:c.pctTotal>100?'#ef4444':'#f59e0b'},
+              {l:'Riesgo',v:c.riesgo.toUpperCase(),c:c.riesgo==='critico'?'#ef4444':c.riesgo==='alto'?'#f59e0b':'#eab308'},
+            ].map(d=>(
+              <div key={d.l} style={{display:'flex',flexDirection:'column',gap:1}}>
+                <span style={{fontSize:9,color:'#475569',textTransform:'uppercase',letterSpacing:'0.05em'}}>{d.l}</span>
+                <span style={{fontSize:12,color:d.c||'#e2e8f0',fontWeight:500}}>{d.v}</span>
+              </div>
+            ))}
           </div>
         </div>
+      )})()}
+    </div>
+  );
+}
 
-        {/* Nav */}
-        <nav style={{ flex: 1, padding: '12px 10px', display: 'flex', flexDirection: 'column', gap: 20 }}>
-          {NAV_SECTIONS.map(group => (
-            <div key={group.label}>
-              <div style={{
-                fontSize: 10, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.12em',
-                color: '#475569', padding: '0 8px', marginBottom: 6,
-              }}>
-                {group.label}
-              </div>
-              <div style={{ display: 'grid', gap: 2 }}>
-                {group.items.map(item => {
-                  const selected = activeNav === item.id;
-                  return (
-                    <button key={item.id} type="button" onClick={() => setActiveNav(item.id)}
-                      aria-current={selected ? 'page' : undefined}
-                      style={{
-                        minHeight: 38, border: 0, borderRadius: 8, padding: '0 10px',
-                        display: 'flex', alignItems: 'center', gap: 10, width: '100%',
-                        color: selected ? '#f1f5f9' : '#64748b',
-                        background: selected ? 'rgba(16,185,129,0.12)' : 'transparent',
-                        boxShadow: selected ? 'inset 2px 0 0 #10b981' : 'none',
-                        cursor: 'pointer', font: 'inherit', fontSize: 13, fontWeight: selected ? 600 : 400,
-                        transition: 'all 0.15s ease',
-                      }}
-                      onMouseEnter={(e) => { if (!selected) e.currentTarget.style.background = 'rgba(148,163,184,0.06)'; }}
-                      onMouseLeave={(e) => { if (!selected) e.currentTarget.style.background = 'transparent'; }}
-                    >
-                      <span style={{ fontSize: 14, opacity: 0.7 }}>{item.icon}</span>
-                      {item.label}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
-        </nav>
+/* === CHATBOT === */
+const RAG = {
+  general:'La cartera de ADATEC tiene un saldo total de $38,374M en 89,064 documentos de 2,854 clientes. Cartera vencida: $35,495M (92.5%). Mora promedio: 1,038 días. Top 10 clientes concentran el 502.2% del total.',
+  aging:'Aging: Corriente $2,879M (7.5%) | 1-30d: $1,635M (4.3%) | 31-60d: $1,820M (4.7%) | 61-90d: $1,713M (4.5%) | 91-180d: $6,226M (16.2%) | 181-360d: $9,612M (25.0%) | +360d: $14,488M (37.8%). 72,988 documentos en +360 días.',
+  deudores:'Top: BAHAMON GUALDRON GINA ANDREA: $162,761M (424.1%). ELMER ENRIQUE PACHECO POLO: $5,358M (14.0%). ARISTIZABAL GRISALES HECTOR FABIO: $4,618M. 2,613 clientes con mora >360 días.',
+  eficiencia:'94 vendedores. Eficiencias: RECAUDOS OF.CENTRAL (42%), MARTHA ROJAS (68%), JORGE RAMIREZ (55%), ANA TORRES (72%). Solo 14 vendedores con eficiencia >50%.',
+  riesgos:'CRÍTICO: 92.5% cartera vencida. CRÍTICO: 1,038 días mora promedio. ALTO: 2,613 clientes >360 días mora. ALTO: Top 10 = 502.2% concentración.',
+};
 
-        {/* User */}
-        <div style={{
-          padding: '14px 14px 18px', borderTop: '1px solid rgba(148,163,184,0.08)',
-          display: 'flex', alignItems: 'center', gap: 10, fontSize: 13,
-        }}>
-          <div style={{ width: 32, height: 32, borderRadius: 8, background: '#1e293b', display: 'grid', placeItems: 'center', fontSize: 12, fontWeight: 700 }}>
-            CP
-          </div>
-          <div>
-            <div style={{ fontWeight: 600, color: '#e2e8f0' }}>Carlos Pérez</div>
-            <div style={{ fontSize: 11, color: '#64748b' }}>Admin</div>
-          </div>
+function Chatbot({onClose}) {
+  const [msgs,setMsgs]=React.useState([
+    {id:0,r:'b',c:'¡Hola! Soy tu asistente financiero de ADATEC. Pregunta sobre:'},
+    {id:1,r:'o',items:['📊 Estado general','🔴 Deudores','📈 Eficiencia','⚠️ Riesgos','📉 Tendencias']}
+  ]);
+  const [inp,setInp]=React.useState('');const [ld,setLd]=React.useState(false);
+  const ref=React.useRef(null);const nid=React.useRef(2);
+  React.useEffect(()=>{ref.current?.scrollIntoView({behavior:'smooth'})},[msgs]);
+  const getRAG=(q)=>{
+    const l=q.toLowerCase();
+    if(l.includes('estado')||l.includes('general')||(l.includes('cartera')&&!l.includes('aging')))return RAG.general;
+    if(l.includes('aging')||l.includes('antigüedad')||l.includes('días')||l.includes('vencimiento'))return RAG.aging;
+    if(l.includes('deudor')||l.includes('cliente')||l.includes('top')||l.includes('bahamon'))return RAG.deudores;
+    if(l.includes('eficiencia')||l.includes('recaudo')||l.includes('vendedor')||l.includes('cobranza'))return RAG.eficiencia;
+    if(l.includes('riesgo')||l.includes('alerta')||l.includes('crítico')||l.includes('peligro'))return RAG.riesgos;
+    return RAG.general+'\n'+RAG.riesgos;
+  };
+  const send=(t)=>{
+    const msg=t||inp;if(!msg.trim()||ld)return;
+    setMsgs(p=>[...p,{id:nid.current++,r:'u',c:msg}]);setInp('');setLd(true);
+    setTimeout(()=>{setMsgs(p=>[...p,{id:nid.current++,r:'b',c:getRAG(msg),src:'RAG ADATEC'}]);setLd(false);},600);
+  };
+  return (
+    <div style={{height:'100%',display:'flex',flexDirection:'column',background:'#0f1622',borderRadius:16,overflow:'hidden',border:'1px solid rgba(148,163,184,0.08)'}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'12px 16px',borderBottom:'1px solid rgba(148,163,184,0.08)',flexShrink:0}}>
+        <div style={{display:'flex',alignItems:'center',gap:8}}>
+          <div style={{width:30,height:30,borderRadius:8,background:'linear-gradient(135deg,#10b981,#059669)',display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontSize:12,fontWeight:700}}>A</div>
+          <div><span style={{fontSize:12,fontWeight:600,color:'#f1f5f9',display:'block'}}>Asistente ADATEC</span><span style={{fontSize:9,color:'#10b981',fontFamily:"'JetBrains Mono',monospace"}}>● RAG activo</span></div>
         </div>
-      </aside>
-
-      {/* ─── MAIN CONTENT ─── */}
-      <main style={{ minWidth: 0, padding: '24px 28px', maxWidth: 1400, margin: '0 auto', width: '100%' }}>
-
-        {/* Toggle sidebar button (mobile) */}
-        <button type="button" onClick={() => setSidebarOpen(o => !o)}
-          aria-label={sidebarOpen ? 'Cerrar menú' : 'Abrir menú'}
-          style={{
-            display: 'none', border: 0, background: '#1e293b',
-            color: '#f1f5f9', width: 40, height: 40, borderRadius: 10, cursor: 'pointer',
-            marginBottom: 12, fontSize: 18,
-          }}
-          className="sidebar-toggle"
-        >
-          {sidebarOpen ? '✕' : '☰'}
+        <button onClick={onClose} style={{background:'rgba(148,163,184,0.08)',border:'none',color:'#94a3b8',width:26,height:26,borderRadius:6,cursor:'pointer',fontSize:12}}>✕</button>
+      </div>
+      <div style={{flex:1,overflowY:'auto',padding:'10px 14px',display:'flex',flexDirection:'column',gap:8}}>
+        {msgs.map(m=>(
+          <div key={m.id}>
+            {m.r==='u'&&<div style={{alignSelf:'flex-end',background:'linear-gradient(135deg,#10b981,#059669)',color:'#fff',padding:'8px 12px',borderRadius:'10px 10px 3px 10px',fontSize:12,maxWidth:'80%',lineHeight:1.4,marginLeft:'auto',marginBottom:4}}>{m.c}</div>}
+            {m.r==='b'&&<div style={{alignSelf:'flex-start',background:'#111b2e',border:'1px solid rgba(148,163,184,0.08)',borderRadius:'10px 10px 10px 3px',padding:'8px 12px',maxWidth:'85%',marginBottom:4}}>
+              <div style={{fontSize:12,color:'#e2e8f0',lineHeight:1.5,whiteSpace:'pre-wrap'}}>{m.c}</div>
+              {m.src&&<div style={{fontSize:8,color:'#475569',marginTop:4,fontFamily:"'JetBrains Mono',monospace"}}>{m.src}</div>}
+            </div>}
+            {m.r==='o'&&<div style={{display:'flex',flexWrap:'wrap',gap:4,marginTop:2}}>
+              {m.items.map((item,i)=><button key={i} onClick={()=>send(item.replace(/^[^ ]+\s/,''))}
+                style={{background:'rgba(16,185,129,0.08)',border:'1px solid rgba(16,185,129,0.15)',color:'#34d399',padding:'5px 10px',borderRadius:6,fontSize:10,cursor:'pointer',fontWeight:500}}>{item}</button>)}
+            </div>}
+          </div>
+        ))}
+        {ld&&<div style={{background:'#111b2e',border:'1px solid rgba(148,163,184,0.08)',borderRadius:'10px 10px 10px 3px',padding:'8px 12px',alignSelf:'flex-start'}}>
+          <span style={{fontSize:12,color:'#94a3b8'}}>Analizando datos...</span>
+        </div>}
+        <div ref={ref}/>
+      </div>
+      <div style={{display:'flex',alignItems:'center',gap:6,padding:'8px 12px',borderTop:'1px solid rgba(148,163,184,0.08)',flexShrink:0}}>
+        <input style={{flex:1,background:'#111b2e',border:'1px solid rgba(148,163,184,0.1)',borderRadius:8,padding:'8px 12px',color:'#f1f5f9',fontSize:12,outline:'none'}}
+          placeholder="Pregunta sobre la cartera..." value={inp} onChange={e=>setInp(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send()} disabled={ld}/>
+        <button style={{background:'#10b981',border:'none',width:32,height:32,borderRadius:8,display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',flexShrink:0,opacity:ld?0.4:1,cursor:ld?'not-allowed':'pointer'}}
+          onClick={()=>send()} disabled={ld}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
         </button>
+      </div>
+    </div>
+  );
+}
 
-        {/* ─── HEADER ─── */}
-        <header style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          gap: 16, marginBottom: 28, flexWrap: 'wrap',
-        }}>
+/* === APP === */
+function App() {
+  const [av,setAv]=React.useState('dashboard');
+  const [co,setCo]=React.useState(false);
+
+  const rv=(id)=>{
+    if(id==='dashboard')return(
+      <div style={{maxWidth:1200,margin:'0 auto'}}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:16,gap:12,flexWrap:'wrap'}}>
           <div>
-            <div style={{ fontSize: 12, color: '#64748b', letterSpacing: '0.03em' }}>
-              Panel Principal / {NAV_SECTIONS.flatMap(g => g.items).find(i => i.id === activeNav)?.label || 'Dashboard'}
-            </div>
-            <h1 style={{ margin: '4px 0 0', fontSize: 28, fontWeight: 700, letterSpacing: -0.6, color: '#f1f5f9' }}>
-              Resumen Financiero
-            </h1>
+            <h1 style={{fontSize:20,fontWeight:700,color:'#f1f5f9',margin:0,letterSpacing:'-0.02em'}}>Panel General</h1>
+            <p style={{fontSize:11,color:'#475569',margin:'2px 0 0',fontFamily:"'JetBrains Mono',monospace"}}>Cartera ADATEC • 13/05/2026</p>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            {/* Period selector */}
-            <div style={{ display: 'flex', gap: 4, background: '#0f1622', borderRadius: 10, padding: 3, border: '1px solid rgba(148,163,184,0.1)' }}>
-              {PERIODS.map(p => (
-                <button key={p} type="button" onClick={() => setPeriod(p)}
-                  style={{
-                    minHeight: 32, padding: '0 12px', border: 0, borderRadius: 8,
-                    background: period === p ? '#1e293b' : 'transparent',
-                    color: period === p ? '#f1f5f9' : '#64748b',
-                    cursor: 'pointer', font: 'inherit', fontSize: 12, fontWeight: period === p ? 600 : 400,
-                    transition: 'all 0.15s',
-                  }}
-                >{p}</button>
-              ))}
-            </div>
-
-            {/* Search */}
-            <label style={{
-              minHeight: 38, display: 'flex', alignItems: 'center', gap: 8,
-              borderRadius: 10, background: '#0f1622', padding: '0 12px',
-              border: '1px solid rgba(148,163,184,0.1)', minWidth: 200,
-            }}>
-              <span style={{ color: '#64748b', fontSize: 13 }}>🔍</span>
-              <input aria-label="Buscar" placeholder="Buscar transacciones..."
-                style={{ flex: 1, border: 0, outline: 0, background: 'transparent', color: '#f1f5f9', font: 'inherit', fontSize: 13 }}
-              />
-            </label>
-
-            {/* Notifications */}
-            <button type="button" aria-label="Notificaciones"
-              style={{
-                minHeight: 38, minWidth: 38, border: '1px solid rgba(148,163,184,0.1)',
-                borderRadius: 10, background: '#0f1622', color: '#94a3b8', cursor: 'pointer',
-                display: 'grid', placeItems: 'center', fontSize: 16, position: 'relative',
-              }}
-            >
-              🔔
-              <span style={{
-                position: 'absolute', top: 6, right: 6, width: 7, height: 7,
-                borderRadius: '50%', background: '#ef4444',
-              }} />
-            </button>
-          </div>
-        </header>
-
-        {/* ─── KPI CARDS ─── */}
-        <section style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap,
-          marginBottom: gap,
-        }}>
-          {kpis.map(kpi => (
-            <article key={kpi.label}
-              style={{
-                background: '#111b2e',
-                borderRadius: 16,
-                padding: '18px 20px',
-                border: '1px solid rgba(148,163,184,0.08)',
-                display: 'flex', flexDirection: 'column', gap: 2,
-                transition: 'transform 0.15s, box-shadow 0.15s',
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.3)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = ''; }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <div>
-                  <div style={{ color: '#64748b', fontSize: 12, fontWeight: 500 }}>{kpi.label}</div>
-                  <div style={{ fontSize: 26, fontWeight: 700, marginTop: 6, letterSpacing: -0.5, color: '#f1f5f9' }}>{kpi.value}</div>
-                </div>
-                <Sparkline data={kpi.sparkData} color={accent} />
-              </div>
-              <div style={{
-                display: 'inline-flex', alignItems: 'center', gap: 4, marginTop: 4,
-                color: kpi.positive ? '#10b981' : '#ef4444', fontSize: 12, fontWeight: 600,
-              }}>
-                <span>{kpi.positive ? '↑' : '↓'}</span>
-                {kpi.delta}
-                <span style={{ color: '#64748b', fontWeight: 400, marginLeft: 4 }}>vs periodo anterior</span>
-              </div>
-            </article>
-          ))}
-        </section>
-
-        {/* ─── CHARTS ROW ─── */}
-        <section style={{
-          display: 'grid',
-          gridTemplateColumns: 'minmax(0, 1.6fr) minmax(0, 1fr)',
-          gap,
-          marginBottom: gap,
-        }} className="charts-grid">
-          {/* Main revenue chart */}
-          <article style={{
-            background: '#111b2e',
-            borderRadius: 18,
-            padding: '20px 20px 12px',
-            border: '1px solid rgba(148,163,184,0.08)',
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <div>
-                <h2 style={{ margin: 0, fontSize: 16, fontWeight: 600, color: '#f1f5f9' }}>Ingresos Mensuales</h2>
-                <div style={{ fontSize: 11, color: '#64748b', marginTop: 2 }}>Enero — Diciembre 2025 · en miles USD</div>
-              </div>
-              <div style={{ display: 'flex', gap: 16, fontSize: 11, color: '#64748b' }}>
-                <span><span style={{ color: '#10b981', fontWeight: 700 }}>●</span> Actual</span>
-                <span><span style={{ color: '#f59e0b', fontWeight: 700 }}>●</span> Meta</span>
-              </div>
-            </div>
-            <RevenueChart data={MONTHLY_REVENUE} accent={accent} onHover={setHoveredPoint} hoveredIndex={hoveredPoint} />
-            {hoveredPoint >= 0 && (
-              <div style={{ fontSize: 11, color: '#64748b', textAlign: 'center', marginTop: 4 }}>
-                Datos al {MONTHLY_REVENUE[hoveredPoint].month} — Proyección: ${MONTHLY_REVENUE[hoveredPoint].forecast}K
-              </div>
-            )}
-          </article>
-
-          {/* Right column: stacked cards */}
-          <div style={{ display: 'grid', gap, gridTemplateRows: '1fr 1fr' }}>
-            {/* Expenses chart */}
-            <article style={{
-              background: '#111b2e',
-              borderRadius: 18,
-              padding: '18px 20px',
-              border: '1px solid rgba(148,163,184,0.08)',
-            }}>
-              <h2 style={{ margin: '0 0 8px', fontSize: 15, fontWeight: 600, color: '#f1f5f9' }}>Gastos por Categoría</h2>
-              <div style={{ fontSize: 11, color: '#64748b', marginBottom: 10 }}>Total: $208K este período</div>
-              <ExpensesChart data={EXPENSES_BY_CATEGORY} />
-            </article>
-
-            {/* Portfolio summary */}
-            <article style={{
-              background: '#111b2e',
-              borderRadius: 18,
-              padding: '18px 20px',
-              border: '1px solid rgba(148,163,184,0.08)',
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <div>
-                  <h2 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: '#f1f5f9' }}>Portafolio</h2>
-                  <div style={{ fontSize: 11, color: '#64748b', marginTop: 2 }}>7 activos · $219.2K total</div>
-                </div>
-                <div style={{ fontSize: 22, fontWeight: 700, color: '#10b981' }}>+4.8%</div>
-              </div>
-              <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
-                <PortfolioDonut data={PORTFOLIO} />
-                <div style={{ flex: 1, display: 'grid', gap: 3, alignContent: 'center' }}>
-                  {PORTFOLIO.slice(0, 5).map(p => (
-                    <div key={p.symbol} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 11, color: '#94a3b8', padding: '1px 0' }}>
-                      <span style={{ fontWeight: 600, color: '#e2e8f0' }}>{p.symbol}</span>
-                      <span style={{ color: p.positive ? '#10b981' : '#ef4444' }}>{p.change}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </article>
-          </div>
-        </section>
-
-        {/* ─── TRANSACTIONS TABLE ─── */}
-        <section style={{
-          background: '#111b2e',
-          borderRadius: 18,
-          padding: '20px 0',
-          border: '1px solid rgba(148,163,184,0.08)',
-          marginBottom: gap,
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 20px', marginBottom: 16 }}>
-            <div>
-              <h2 style={{ margin: 0, fontSize: 16, fontWeight: 600, color: '#f1f5f9' }}>Transacciones Recientes</h2>
-              <div style={{ fontSize: 11, color: '#64748b', marginTop: 2 }}>{RECENT_TRANSACTIONS.length} movimientos este mes</div>
-            </div>
-            <button type="button" onClick={() => setShowAllTx(o => !o)}
-              style={{
-                minHeight: 34, padding: '0 14px', border: '1px solid rgba(148,163,184,0.15)',
-                borderRadius: 8, background: 'transparent', color: '#94a3b8',
-                cursor: 'pointer', font: 'inherit', fontSize: 12,
-                transition: 'all 0.15s',
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(148,163,184,0.08)'; e.currentTarget.style.color = '#f1f5f9'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#94a3b8'; }}
-            >
-              {showAllTx ? 'Ver menos' : 'Ver todas'}
-            </button>
-          </div>
-
-          {/* Table header */}
-          <div style={{
-            display: 'grid', gridTemplateColumns: '1fr 2fr 1fr 1fr 0.5fr', gap: 12,
-            padding: '0 20px 10px', fontSize: 11, color: '#475569', fontWeight: 600,
-            textTransform: 'uppercase', letterSpacing: '0.06em', borderBottom: '1px solid rgba(148,163,184,0.06)',
-          }}>
-            <span>ID</span>
-            <span>Descripción</span>
-            <span>Monto</span>
-            <span>Estado</span>
-            <span></span>
-          </div>
-
-          {/* Rows */}
-          <div style={{ display: 'grid' }}>
-            {visibleTx.map((tx, i) => (
-              <div key={tx.id}
-                style={{
-                  display: 'grid', gridTemplateColumns: '1fr 2fr 1fr 1fr 0.5fr', gap: 12,
-                  alignItems: 'center', padding: '12px 20px', minHeight: 52,
-                  borderBottom: i < visibleTx.length - 1 ? '1px solid rgba(148,163,184,0.04)' : 'none',
-                  fontSize: 13, cursor: 'pointer', transition: 'background 0.12s',
-                }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(148,163,184,0.04)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
-                onClick={() => setDrawerTx(tx)}
-              >
-                <span style={{ color: '#64748b', fontFamily: 'ui-monospace,monospace', fontSize: 11 }}>{tx.id}</span>
-                <span style={{ color: '#e2e8f0' }}>{tx.description}</span>
-                <span style={{
-                  fontWeight: 600, fontFamily: 'ui-monospace,monospace',
-                  color: tx.type === 'incoming' ? '#10b981' : '#f87171',
-                }}>
-                  {tx.amount}
-                </span>
-                <span>
-                  <span style={{
-                    display: 'inline-flex', alignItems: 'center', gap: 5,
-                    padding: '3px 10px', borderRadius: 999,
-                    fontSize: 11, fontWeight: 500,
-                    background: tx.status === 'Completada' ? 'rgba(16,185,129,0.12)' :
-                               tx.status === 'Pendiente' ? 'rgba(245,158,11,0.12)' : 'rgba(239,68,68,0.12)',
-                    color: tx.status === 'Completada' ? '#34d399' :
-                           tx.status === 'Pendiente' ? '#fbbf24' : '#f87171',
-                  }}>
-                    <span style={{ width: 5, height: 5, borderRadius: '50%', background: 'currentColor' }} />
-                    {tx.status}
-                  </span>
-                </span>
-                <span style={{ color: '#475569', fontSize: 11 }}>{tx.date}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* Empty state */}
-          {visibleTx.length === 0 && (
-            <div style={{ padding: '40px 20px', textAlign: 'center', color: '#64748b' }}>
-              <div style={{ fontSize: 32, marginBottom: 8 }}>📭</div>
-              <div style={{ fontWeight: 600, color: '#94a3b8' }}>No hay transacciones</div>
-              <div style={{ fontSize: 12, marginTop: 4 }}>Las transacciones aparecerán aquí cuando se registren movimientos.</div>
-            </div>
-          )}
-        </section>
-
-        {/* ─── FOOTER INSIGHT ─── */}
-        <footer style={{
-          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap,
-          padding: '0 0 20px',
-        }}>
-          <div style={{
-            background: 'linear-gradient(135deg, rgba(16,185,129,0.08), rgba(6,150,105,0.04))',
-            borderRadius: 14, padding: '16px 20px',
-            border: '1px solid rgba(16,185,129,0.12)',
-            display: 'flex', alignItems: 'center', gap: 14,
-          }}>
-            <div style={{ fontSize: 24 }}>📈</div>
-            <div>
-              <div style={{ fontWeight: 600, fontSize: 13, color: '#e2e8f0' }}>Crecimiento proyectado</div>
-              <div style={{ fontSize: 12, color: '#64748b', marginTop: 2 }}>Se espera un aumento del 22% en ingresos para el próximo trimestre basado en la tendencia actual.</div>
-            </div>
-          </div>
-          <div style={{
-            background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(79,70,229,0.04))',
-            borderRadius: 14, padding: '16px 20px',
-            border: '1px solid rgba(99,102,241,0.12)',
-            display: 'flex', alignItems: 'center', gap: 14,
-          }}>
-            <div style={{ fontSize: 24 }}>🎯</div>
-            <div>
-              <div style={{ fontWeight: 600, fontSize: 13, color: '#e2e8f0' }}>Meta trimestral</div>
-              <div style={{ fontSize: 12, color: '#64748b', marginTop: 2 }}>Has alcanzado el 78% de la meta de ingresos del Q1 2025. Faltan $84K para cumplir el objetivo.</div>
-            </div>
-          </div>
-        </footer>
-      </main>
-
-      {/* ─── TRANSACTION DETAIL DRAWER ─── */}
-      {drawerTx && (
-        <div role="dialog" aria-label="Detalle de transacción" aria-modal="true"
-          onClick={() => setDrawerTx(null)}
-          style={{
-            position: 'fixed', inset: 0, zIndex: 100,
-            background: 'rgba(0,0,0,0.65)',
-            display: 'grid', placeItems: 'end',
-            animation: 'fadeIn 0.2s ease',
-          }}
-        >
-          <div onClick={(e) => e.stopPropagation()}
-            style={{
-              width: 400, maxWidth: '96vw', height: '100%',
-              background: '#111b2e', padding: '24px 28px',
-              borderLeft: '1px solid rgba(148,163,184,0.1)',
-              boxShadow: '-16px 0 48px rgba(0,0,0,0.4)',
-              display: 'flex', flexDirection: 'column', gap: 20,
-              overflowY: 'auto',
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h2 style={{ margin: 0, fontSize: 18, fontWeight: 600, color: '#f1f5f9' }}>Detalle de Transacción</h2>
-              <button type="button" onClick={() => setDrawerTx(null)} aria-label="Cerrar"
-                style={{
-                  width: 32, height: 32, borderRadius: 8, border: 0,
-                  background: 'rgba(148,163,184,0.1)', color: '#94a3b8',
-                  cursor: 'pointer', fontSize: 16, display: 'grid', placeItems: 'center',
-                }}
-              >✕</button>
-            </div>
-
-            <div style={{
-              background: 'rgba(148,163,184,0.04)', borderRadius: 12, padding: 20,
-              border: '1px solid rgba(148,163,184,0.06)',
-            }}>
-              <div style={{ fontSize: 11, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>Monto</div>
-              <div style={{
-                fontSize: 32, fontWeight: 700, fontFamily: 'ui-monospace,monospace',
-                color: drawerTx.type === 'incoming' ? '#34d399' : '#f87171',
-              }}>
-                {drawerTx.amount}
-              </div>
-            </div>
-
-            {[
-              ['ID de transacción', drawerTx.id],
-              ['Descripción', drawerTx.description],
-              ['Fecha', drawerTx.date],
-              ['Estado', drawerTx.status],
-              ['Tipo', drawerTx.type === 'incoming' ? 'Ingreso' : 'Egreso'],
-              ['Método', 'Transferencia bancaria'],
-              ['Referencia', `REF-${drawerTx.id.slice(-3)}${Math.floor(Math.random() * 1000)}`],
-            ].map(([label, value]) => (
-              <div key={label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 13, padding: '4px 0' }}>
-                <span style={{ color: '#64748b' }}>{label}</span>
-                <span style={{ color: '#e2e8f0', fontWeight: 500, textAlign: 'right' }}>{value}</span>
-              </div>
-            ))}
-
-            <div style={{ marginTop: 'auto', display: 'flex', gap: 10 }}>
-              <button type="button"
-                style={{
-                  flex: 1, minHeight: 42, border: '1px solid rgba(148,163,184,0.15)',
-                  borderRadius: 10, background: 'transparent', color: '#94a3b8',
-                  cursor: 'pointer', font: 'inherit', fontSize: 13, fontWeight: 500,
-                }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(148,163,184,0.06)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
-              >
-                Descargar recibo
-              </button>
-              <button type="button"
-                style={{
-                  flex: 1, minHeight: 42, border: 0, borderRadius: 10,
-                  background: '#10b981', color: '#fff',
-                  cursor: 'pointer', font: 'inherit', fontSize: 13, fontWeight: 600,
-                }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = '#059669'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = '#10b981'; }}
-                onClick={() => setDrawerTx(null)}
-              >
-                Cerrar
-              </button>
-            </div>
+          <div style={{display:'flex',alignItems:'center',gap:8}}>
+            <button onClick={()=>setCo(true)} style={{background:'linear-gradient(135deg,rgba(16,185,129,0.12),rgba(5,150,105,0.1))',border:'1px solid rgba(16,185,129,0.15)',color:'#34d399',padding:'5px 12px',borderRadius:8,fontSize:11,fontWeight:600,cursor:'pointer',whiteSpace:'nowrap'}}>🤖 Asistente IA</button>
           </div>
         </div>
-      )}
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:12,marginBottom:14}}>
+          {D.kpis.map(k=><KpiCard key={k.id} {...k}/>)}
+        </div>
+        <div style={{display:'grid',gridTemplateColumns:'1.6fr 1fr',gap:12}}>
+          <div style={{background:'#111b2e',borderRadius:16,padding:'14px',border:'1px solid rgba(148,163,184,0.08)'}}>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:2}}>
+              <span style={{fontSize:12,fontWeight:600,color:'#e2e8f0'}}>Facturación vs Cartera</span>
+              <span style={{fontSize:8,color:'#475569',background:'rgba(148,163,184,0.06)',padding:'1px 6px',borderRadius:4,fontFamily:"'JetBrains Mono',monospace"}}>12m</span>
+            </div>
+            <TrendChart data={D.trendData}/>
+          </div>
+          <DonutChart data={D.aging}/>
+        </div>
+        <div style={{marginTop:12,display:'grid',gridTemplateColumns:'1.2fr 1fr',gap:12}}>
+          <div>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:6}}>
+              <span style={{fontSize:12,fontWeight:600,color:'#e2e8f0'}}>Aging</span>
+              <span style={{fontSize:8,color:'#475569',background:'rgba(148,163,184,0.06)',padding:'1px 6px',borderRadius:4,fontFamily:"'JetBrains Mono',monospace"}}>{D.aging.length} rangos</span>
+            </div>
+            <AgingChart data={D.aging}/>
+          </div>
+          <div>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:6}}>
+              <span style={{fontSize:12,fontWeight:600,color:'#e2e8f0'}}>Top Deudores</span>
+              <span style={{fontSize:8,background:'rgba(239,68,68,0.1)',color:'#ef4444',padding:'1px 6px',borderRadius:4,fontFamily:"'JetBrains Mono',monospace"}}>{D.topClientes.filter(c=>c.riesgo==='critico'||c.riesgo==='alto').length} críticos</span>
+            </div>
+            <ClientTable data={D.topClientes}/>
+          </div>
+        </div>
+      </div>
+    );
+    if(id==='analytics')return(
+      <div style={{maxWidth:1200,margin:'0 auto'}}>
+        <h1 style={{fontSize:20,fontWeight:700,color:'#f1f5f9',margin:0,letterSpacing:'-0.02em'}}>Analítica</h1>
+        <p style={{fontSize:11,color:'#475569',margin:'2px 0 12px',fontFamily:"'JetBrains Mono',monospace"}}>Métricas detalladas</p>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:12,marginBottom:14}}>
+          {[{label:'Total Documentos',value:'89.064',icon:'📄',accent:'#6366f1',spark:[82,84,86,87,88,89,89],sub:'+2.1% vs mes anterior'},{label:'Total Clientes',value:'2.854',icon:'👥',accent:'#8b5cf6',spark:[2750,2780,2800,2820,2835,2845,2854],sub:'94 vendedores activos'},{label:'Base Retención',value:'$235.796M',icon:'🏦',accent:'#06b6d4',spark:[210,218,225,228,232,234,236],sub:'Base imponible total'},{label:'Concentración Top10',value:'502.2%',icon:'🎯',accent:'#ef4444',spark:[480,485,490,495,498,500,502],sub:'Alta concentración'},].map(k=><KpiCard key={k.label} {...k}/>)}
+        </div>
+        <AgingChart data={D.aging}/>
+        <div style={{marginTop:12,background:'#111b2e',borderRadius:16,padding:'14px 18px',border:'1px solid rgba(148,163,184,0.08)'}}>
+          <div style={{fontSize:12,fontWeight:600,color:'#f1f5f9',marginBottom:8}}>Resumen Ejecutivo</div>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:12}}>
+            {[{l:'Saldo total',v:'$38.374M'},{l:'Cartera vencida',v:'$35.495M'},{l:'% Vencida',v:'92.5%',w:true},{l:'Días mora prom.',v:'1.038',w:true},{l:'Clientes >360d',v:'2.613',w:true},{l:'Vendedores',v:'94'}].map(s=><div key={s.l}><span style={{fontSize:9,color:'#475569',textTransform:'uppercase',letterSpacing:'0.05em'}}>{s.l}</span><span style={{fontSize:15,fontWeight:700,fontFamily:"'JetBrains Mono',monospace",color:s.w?'#ef4444':'#f1f5f9',marginTop:1,display:'block'}}>{s.v}</span></div>)}
+          </div>
+        </div>
+      </div>
+    );
+    if(id==='clientes')return(
+      <div style={{maxWidth:1200,margin:'0 auto'}}>
+        <h1 style={{fontSize:20,fontWeight:700,color:'#f1f5f9',margin:0,letterSpacing:'-0.02em'}}>Clientes</h1>
+        <p style={{fontSize:11,color:'#475569',margin:'2px 0 12px',fontFamily:"'JetBrains Mono',monospace"}}>Top {D.topClientes.length} deudores</p>
+        <ClientTable data={D.topClientes}/>
+      </div>
+    );
+    if(id==='reportes')return(
+      <div style={{maxWidth:1200,margin:'0 auto'}}>
+        <h1 style={{fontSize:20,fontWeight:700,color:'#f1f5f9',margin:0,letterSpacing:'-0.02em'}}>Alertas</h1>
+        <p style={{fontSize:11,color:'#475569',margin:'2px 0 12px',fontFamily:"'JetBrains Mono',monospace"}}>{D.alertas.length} riesgos activos</p>
+        {D.alertas.map((a,i)=>{const cs={critico:{bg:'rgba(239,68,68,0.08)',b:'#ef4444',t:'#fca5a5',icon:'🔴'},alto:{bg:'rgba(245,158,11,0.08)',b:'#f59e0b',t:'#fcd34d',icon:'🟠'},medio:{bg:'rgba(234,179,8,0.06)',b:'#eab308',t:'#fde68a',icon:'🟡'}};const c=cs[a.nivel]||cs.medio;return(
+          <div key={i} style={{display:'flex',alignItems:'flex-start',gap:10,padding:'10px 14px',borderRadius:8,marginBottom:6,background:c.bg,borderLeft:'3px solid '+c.b}}>
+            <span style={{fontSize:16}}>{c.icon}</span>
+            <div style={{flex:1}}>
+              <div style={{fontSize:9,color:c.b,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.06em',marginBottom:1}}>{a.nivel==='critico'?'⚠️ CRÍTICO':a.nivel==='alto'?'⚡ ALTO':'📌 MEDIO'}</div>
+              <div style={{fontSize:12,color:c.t,fontWeight:500}}>{a.mensaje}</div>
+            </div>
+          </div>
+        )})}
+        <div style={{marginTop:14,background:'#111b2e',borderRadius:16,padding:'14px 18px',border:'1px solid rgba(148,163,184,0.08)'}}>
+          <div style={{fontSize:12,fontWeight:600,color:'#f1f5f9',marginBottom:6}}>Acciones Recomendadas</div>
+          <ul style={{margin:0,padding:'0 0 0 14px',color:'#94a3b8',fontSize:11,lineHeight:1.8}}>
+            <li>Plan recuperación para 2.613 clientes con mora &gt;360 días</li>
+            <li>Revisar estrategia de recaudo — solo 14 de 94 vendedores tienen eficiencia &gt;50%</li>
+            <li>Establecer topes de concentración para clientes que exceden 100% del total</li>
+            <li>Evaluar provisión contable para $14.488M en cartera +360 días</li>
+          </ul>
+        </div>
+      </div>
+    );
+    return null;
+  };
 
-      {/* ─── STYLES ─── */}
-      <style>{`
-        :root {
-          --ocd-tweak-accent: ${TWEAK_DEFAULTS.accent};
-          --ocd-tweak-accent-warm: ${TWEAK_DEFAULTS.accentWarm};
-          --ocd-tweak-text: #f1f5f9;
-          --ocd-tweak-text-muted: #64748b;
-        }
+  return (
+    <div style={{display:'flex',minHeight:'100vh',background:'#0a0e17',color:'#f1f5f9',fontFamily:"'Inter','SF Pro Display',system-ui,sans-serif",position:'relative'}}>
+      <style>{`*{box-sizing:border-box}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:rgba(148,163,184,0.12);border-radius:3px}@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}@keyframes slideIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}button:focus-visible,input:focus-visible{outline:2px solid #10b981;outline-offset:2px}@media(max-width:768px){.ds{display:none!important}.ms{display:flex!important}.mc{padding:12px!important}div[style*="gridTemplateColumns"]{grid-template-columns:1fr!important}}`}</style>
 
-        *, *::before, *::after { box-sizing: border-box; }
-        body { margin: 0; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+      <div className="ds" style={{width:210,height:'100vh',background:'#0f1622',borderRight:'1px solid rgba(148,163,184,0.06)',display:'flex',flexDirection:'column',padding:'14px 8px',position:'sticky',top:0,flexShrink:0}}>
+        <div style={{display:'flex',alignItems:'center',gap:8,padding:'4px 8px 14px',borderBottom:'1px solid rgba(148,163,184,0.06)',marginBottom:12}}>
+          <div style={{width:30,height:30,borderRadius:8,background:'linear-gradient(135deg,#10b981,#059669)',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:700,fontSize:14,color:'#fff',flexShrink:0}}>A</div>
+          <div><div style={{fontSize:13,fontWeight:700,color:'#f1f5f9',letterSpacing:'-0.01em'}}>ADATEC</div><div style={{fontSize:9,color:'#475569',fontFamily:"'JetBrains Mono',monospace"}}>Dashboard Financiero</div></div>
+        </div>
+        <div style={{flex:1,overflowY:'auto',display:'flex',flexDirection:'column',gap:8}}>
+          {NAV.map(s=><div key={s.label}>
+            <div style={{fontSize:8,color:'#334155',textTransform:'uppercase',letterSpacing:'0.08em',padding:'4px 8px 3px',fontWeight:600}}>{s.label}</div>
+            {s.items.map(item=>{const a=av===item.id;return(
+              <button key={item.id} style={{display:'flex',alignItems:'center',gap:8,width:'100%',padding:'7px 8px',borderRadius:6,border:'none',cursor:'pointer',fontSize:12,textAlign:'left',background:a?'rgba(16,185,129,0.1)':'transparent',color:a?'#10b981':'#475569',borderLeft:a?'2px solid #10b981':'2px solid transparent',transition:'all 0.12s',marginBottom:1}}
+                onClick={()=>{setAv(item.id);if(item.id==='chat')setCo(true)}}>
+                <span style={{fontSize:14}}>{item.icon}</span>
+                <span style={{fontSize:12,fontWeight:a?600:500}}>{item.label}</span>
+              </button>
+            )})}
+          </div>)}
+        </div>
+        <div style={{borderTop:'1px solid rgba(148,163,184,0.06)',padding:'10px 8px 2px',marginTop:'auto'}}>
+          <div style={{display:'flex',alignItems:'center',gap:5}}>
+            <span style={{width:5,height:5,borderRadius:3,background:'#10b981',boxShadow:'0 0 5px rgba(16,185,129,0.4)'}}/>
+            <span style={{fontSize:10,color:'#475569'}}>Sistema activo</span>
+          </div>
+          <div style={{fontSize:8,color:'#334155',fontFamily:"'JetBrains Mono',monospace",marginTop:1}}>v2.0 • May 2026</div>
+        </div>
+      </div>
 
-        @media (max-width: 640px) {
-          .sidebar-toggle { display: flex !important; }
-          .charts-grid { grid-template-columns: 1fr !important; }
-          main { padding: 16px !important; }
-        }
+      <div className="mc" style={{flex:1,padding:'18px 22px 32px',overflowY:'auto',maxHeight:'100vh',minWidth:0}}>
+        {rv(av)}
+      </div>
 
-        @media (min-width: 641px) and (max-width: 1024px) {
-          .charts-grid { grid-template-columns: 1fr !important; }
-        }
-
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-
-        button:focus-visible, input:focus-visible {
-          outline: 2px solid #10b981;
-          outline-offset: 2px;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-        }
-      `}</style>
+      {co&&<div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.55)',zIndex:300,display:'flex',justifyContent:'flex-end'}} onClick={()=>setCo(false)}>
+        <div style={{width:380,maxWidth:'95vw',height:'100vh',padding:10}} onClick={e=>e.stopPropagation()}>
+          <Chatbot onClose={()=>setCo(false)}/>
+        </div>
+      </div>}
     </div>
   );
 }
