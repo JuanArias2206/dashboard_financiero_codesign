@@ -1,60 +1,72 @@
 ---
 schemaVersion: 1
 scope: workspace
-updatedAt: "2026-05-14T08:56:27.637Z"
-workspaceName: "Dashboard Financiero Premium"
+updatedAt: "2026-05-14T12:40:16.386Z"
+workspaceName: "Dashboard Financiero ADATEC Premium"
 ---
 
 # Project Memory
 
 ## Project Overview
-This workspace builds a premium financial dashboard with interactive charts, clean navigation, and a polished user experience. No existing code – started from scratch.
+This workspace builds a premium financial dashboard for ADATEC cartera management, with real data ($38.37B cartera, 89K documentos, 2,854 clientes, 92.5% vencida), interactive SVG charts, modular components, and an integrated RAG chatbot for financial analysis.
 
 ## Current State
-Complete, self-contained React app (App.jsx) with:
-- Sidebar navigation with 4 sections: Dashboard, Transactions, Investments, Reports (all active)
-- 4 KPI cards (Ingresos, Usuarios Activos, Transacciones, Gastos Operativos) each with a sparkline SVG and delta indicator
-- Interactive bar chart: ingreso mensual vs target with hover tooltips showing month and difference
-- Horizontal stacked bar chart for gastos por categoría
-- Portfolio donut chart (SVG arc paths) with percentage labels
-- Transaction history table with color‑coded status badges (Completada, Pendiente, Cancelada)
-- Slide‑out drawer showing full transaction details when a row is clicked
-- All state managed via React useState, no external libraries
-- Full dark theme, responsive layout via media queries, hover/focus states
+- **App.jsx** — single‑file React app (~700 lines) with 4 navigable views: Panel General (KPIs reales + AgingChart + DonutChart), Analítica (TrendChart facturación vs saldo), Clientes (ClientTable ordenable con drawer de detalle), Alertas (5 alertas estratificadas con recomendaciones)
+- **8 modular components** in `components/`: DataContext, KpiCard, AgingChart, TrendChart, DonutChart, ClientTable, ChatbotInterface, AlertBanner
+- **Sidebar** with 4 nav sections + chatbot toggle button
+- **Drawer** for client detail on row click
+- **Chatbot RAG** integrado con resúmenes financieros reales (estado general, aging, deudores, eficiencia, riesgos)
+- **DESIGN.md** documenting tokens colors, typography, spacing, components
+- All real data from `data/dashboard_data.json` and `data/processed/` (period_index, financial_summaries, rag_chunks, cartera_sample, customer_index)
+- 0 console errors, 0 asset errors verified
 
 ## Artifacts
-- **App.jsx** – single‑file React application, ~500 lines of JSX + inline SVG + CSS
-- **DESIGN.md** – token system documenting colors, typography, spacing, radii, shadows, component styles used in the app
+- **App.jsx** — main application, ~700 lines JSX + inline SVG + CSS, all components inlined via data injection
+- **components/DataContext.jsx** — embeds real ADATEC KPI data, trend data, aging buckets, client sample, alerts
+- **components/KpiCard.jsx** — reusable KPI card with icon, delta, sparkline
+- **components/AgingChart.jsx** — horizontal stacked bar chart for cartera aging buckets
+- **components/TrendChart.jsx** — line/bar chart with tooltips, facturación vs saldo over 12 months
+- **components/DonutChart.jsx** — interactive donut with hover sector highlight
+- **components/ClientTable.jsx** — sortable client table with status badges, expandable drawer with full detail
+- **components/ChatbotInterface.jsx** — RAG chatbot with typing indicator, predefined questions, streaming-like responses
+- **components/AlertBanner.jsx** — hierarchical alert card (crítico, alto, medio)
+- **DESIGN.md** — token system documenting colors, typography, spacing, radii, shadows, component styles
+- **data/dashboard_data.json** — raw financial data export (4,159 lines)
 
 ## Design Direction
-Professional, dark‑mode‑first palette (`#0a0e17` background, `#111b2e` surface). Accent green (`#10b981`) for positive metrics, amber (`#f59e0b`) for warnings. Typography uses Inter family. All data visualizations are pure SVG, ensuring zero dependency overhead and full control over interactivity.
+Professional dark‑mode‑first palette (`#0a0e17` background, `#111b2e` surface). Accent green (`#10b981`) for positive metrics, amber (`#f59e0b`) for warnings, red (`#ef4444`) for critical alerts. Typography uses Inter/system-ui. All data visualizations are pure SVG. Numbers render in monospace with tabular figures for financial precision. Responsive layout with sidebar toggle below 640px.
 
 ## User Feedback
-No explicit feedback yet. Original request asked for improved design, navigation, interactivity, and a polished, clean premium feel – all addressed in current build.
+Requested improvements on existing dashboard beyond App.jsx — resulting in full modular architecture with real ADATEC data, chatbot integration, 4 navigable views, and alert system.
 
 ## Decisions
-- Inline SVG over library charts (no Recharts/d3 dependency)
-- Dark theme as default (no toggle needed for MVP)
-- Side navigation with icon + badge, single active state
-- Click row → open drawer for transaction detail instead of modal
-- Sparklines use polyline with same accent color as parent card
-- Tooltips appear on bar hover using absolute positioned `<div>` toggled by state
-- Responsive breakpoints: single column below 768px
+- Real ADATEC data replaces fake demo data (source: dashboard_data.json + processed summaries)
+- 4‑view navigation architecture (Panel General, Analítica, Clientes, Alertas)
+- Chatbot embedded as overlay drawer toggleable from sidebar, not separate page
+- Client table with sortable columns + expandable detail drawer (same pattern as transactions)
+- Alerts shown as hierarchical banner list with color‑coded severity (critico=rojo, alto=ámbar, medio=azul)
+- TrendChart shows facturación (bars) vs saldo cartera (line) for financial context
+- DonutChart shows aging distribution with hover highlight
+- All components accept data via props (no external state management needed)
+- Dark theme default, no light toggle
+- Responsive breakpoint: single column below 640px, sidebar becomes toggleable overlay
 
 ## Open Questions
-- Should portfolio allocation data come from API or remain static?
-- Is a light mode toggle desired?
-- Should chart axes show gridlines or remain minimal?
-- Need confirmation on detailed color/brand guidelines before promoting tokens to DESIGN.md.
+- Should chatbot use real DeepSeek API or stay with local RAG simulation?
+- Is export to CSV/Excel needed for ClientTable?
+- Should light mode be added for print/export scenarios?
+- Should aging data be live from API or refreshed periodically?
 
 ## Next Steps
 - Confirm direction with user
-- Potential improvements: loading/empty states, animated transitions on chart appearance, export to CSV for transactions
-- Test on mobile devices, refine sidebar collapse behavior
-- Possibly split App.jsx into modular components for maintainability
+- Test on mobile devices, refine sidebar collapse/overlay behavior
+- Add loading/empty states for charts
+- Add animated transitions on chart appearance (fadeIn, bar grow)
+- Consider splitting App.jsx further into view-level components
+- Add download/export functionality for reports
 
 ## Promotion Candidates For DESIGN.md
-Stable tokens already fully documented in DESIGN.md. No new promotions needed at this stage.
+Stable tokens already fully documented in DESIGN.md. New tokens added: alert severity colors (#ef4444 crítico, #f59e0b alto, #3b82f6 medio), monospace font for financial numbers, drawer slide animation keyframes.
 
 ## Recent History
-- 2026-05-14: Scaffolded using saas-sidebar-shell, then fully rewritten with financial data, 4 chart types, transaction table, and interactive drawer. Created DESIGN.md with system tokens. Verified zero errors in preview.
+- 2026-05-14T12:40:16: Complete rewrite with real ADATEC data, modular components (8 files), 4-view navigation, RAG chatbot, alert system. Verified 0 errors. DESIGN.md updated with new tokens. Title set to Dashboard Financiero ADATEC Premium.

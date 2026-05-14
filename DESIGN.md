@@ -1,17 +1,11 @@
 ---
 version: alpha
-name: Dashboard Financiero Premium — Design System
+name: Dashboard Financiero ADATEC — Design System
 ---
 
 ## Overview
 
-Dashboard financiero premium con tema oscuro profesional, gráficos SVG interactivos, y experiencia de usuario pulida para visualización de métricas financieras, portafolio de inversiones y transacciones.
-
-## Principles
-
-- **Claridad financiera**: Los datos son el centro. Cada elemento existe para hacer la información más comprensible.
-- **Profesional y sobrio**: Paleta oscura con acentos verdes que transmiten confianza y crecimiento.
-- **Interactividad sin fricción**: Tooltips en gráficos, hover en cards, drawer de detalle — la información aparece donde se necesita.
+Dashboard financiero premium con tema oscuro profesional, datos reales de cartera ADATEC (Colombia), gráficos SVG interactivos, y experiencia de usuario pulida para visualización de métricas de cartera, aging, top deudores y chatbot con RAG integrado.
 
 ## Colors
 
@@ -19,31 +13,35 @@ Dashboard financiero premium con tema oscuro profesional, gráficos SVG interact
 
 ```css
 --surface-page: #0a0e17;       /* Fondo principal - azul noche profundo */
---surface-sidebar: #0f1622;    /* Sidebar */
---surface-card: #111b2e;       /* Cards y contenedores */
---surface-tooltip: #1c2333;    /* Tooltips y overlays */
+--surface-sidebar: #0f1622;    /* Sidebar y paneles secundarios */
+--surface-card: #111b2e;       /* Cards, contenedores y fondos de componentes */
+--surface-tooltip: #1c2333;    /* Tooltips y overlays de detalle */
 --surface-border: rgba(148,163,184,0.08);  /* Bordes sutiles */
 ```
 
 ### Text
 
 ```css
---text-primary: #f1f5f9;       /* Texto principal */
---text-secondary: #e2e8f0;     /* Texto secundario */
---text-muted: #64748b;         /* Texto sutil */
+--text-primary: #f1f5f9;       /* Texto principal - encabezados */
+--text-secondary: #e2e8f0;     /* Texto secundario - labels */
+--text-muted: #64748b;         /* Texto sutil - metadatos */
 --text-nav-inactive: #475569;  /* Navegación inactiva */
+--text-dim: #334155;           /* Labels de sección en sidebar */
 ```
 
 ### Accent / Semantic
 
 ```css
---accent-success: #10b981;     /* Verde - ingresos, positivo, completado */
---accent-warning: #f59e0b;     /* Ámbar - alertas, meta, pendiente */
---accent-danger: #ef4444;      /* Rojo - egresos, riesgo, rechazado */
---accent-info: #6366f1;        /* Índigo - info, gastos cloud */
---accent-purple: #8b5cf6;      /* Púrpura - R&D, portafolio */
---accent-cyan: #06b6d4;        /* Cian - alternativo */
---accent-pink: #ec4899;        /* Rosa - alternativo */
+--accent-success: #10b981;     /* Verde esmeralda - métricas positivas, KPI saldo */
+--accent-success-light: #34d399; /* Verde claro - cartera corriente */
+--accent-warning: #f59e0b;     /* Ámbar - alertas medias, mora */
+--accent-warning-dark: #f97316; /* Naranja - riesgo 61-90 días */
+--accent-danger: #ef4444;      /* Rojo - crítico, cartera vencida */
+--accent-danger-dark: #dc2626; /* Rojo oscuro - 181-360 días */
+--accent-danger-deeper: #b91c1c; /* Rojo profundo - +360 días */
+--accent-info: #6366f1;        /* Índigo - documentos, métricas secundarias */
+--accent-purple: #8b5cf6;      /* Púrpura - clientes */
+--accent-cyan: #06b6d4;        /* Cian - base retención */
 ```
 
 ## Typography
@@ -58,14 +56,14 @@ Dashboard financiero premium con tema oscuro profesional, gráficos SVG interact
 ### Type Scale
 
 ```css
---fs-micro: 0.625rem;    /* 10px — badges, labels */
---fs-xs: 0.6875rem;     /* 11px — metadata, table data */
---fs-sm: 0.75rem;       /* 12px — breadcrumb, subtle text */
---fs-base: 0.8125rem;   /* 13px — body, nav items */
---fs-md: 0.9375rem;     /* 15px — card titles */
---fs-lg: 1rem;          /* 16px — section headings */
---fs-xl: 1.75rem;       /* 28px — page title */
---fs-2xl: 2rem;         /* 32px — KPI value */
+--fs-micro: 0.5rem;       /* 8px — badges, version info */
+--fs-xs: 0.5625rem;       /* 9px — metadata, segment labels */
+--fs-sm: 0.625rem;        /* 10px — table headers, badge text */
+--fs-base: 0.6875rem;     /* 11px — table data, small captions */
+--fs-md: 0.75rem;         /* 12px — body, nav items, card titles */
+--fs-lg: 0.8125rem;       /* 13px — section headings, KPI labels */
+--fs-xl: 1.25rem;         /* 20px — page titles */
+--fs-2xl: 1.75rem;        /* 28px — KPI values */
 ```
 
 ## Spacing
@@ -73,117 +71,102 @@ Dashboard financiero premium con tema oscuro profesional, gráficos SVG interact
 ```css
 --space-xs: 4px;
 --space-sm: 8px;
---space-md: 16px;
---space-lg: 24px;
---space-xl: 28px;
+--space-md: 12px;
+--space-lg: 16px;
+--space-xl: 20px;
+--space-2xl: 24px;
 ```
 
 ## Rounded
 
 ```css
---rounded-sm: 6px;      /* Badges, sparkline containers */
---rounded-md: 8px;      /* Buttons, nav items, inputs */
---rounded-lg: 10px;     /* Search bar, period selector */
---rounded-xl: 16px;     /* Cards */
---rounded-2xl: 18px;    /* Chart containers */
---rounded-full: 9999px; /* Status badges */
+--radius-sm: 4px;
+--radius-md: 8px;
+--radius-lg: 12px;
+--radius-xl: 16px;
+--radius-full: 9999px;
+```
+
+## Shadows
+
+```css
+--shadow-card: none; /* Border-based card separation */
+--shadow-elevated: 0 4px 20px rgba(0,0,0,0.3);
+--shadow-tooltip: 0 8px 30px rgba(0,0,0,0.4);
 ```
 
 ## Components
 
 ### KPI Card
+- Background: `--surface-card`
+- Border: `--surface-border`
+- Left content: icon circle (34px) + label
+- Right: SVG sparkline (100×32)
+- Value: `--fs-2xl` `--font-mono` `--text-primary`
+- Delta: colored text (green=positive, red=negative)
+- Sub: `--fs-xs` `--text-muted`
 
-#### States
-- **Default**: Surface card con border sutil
-- **Hover**: translateY(-2px) + box-shadow elevado
+### Trend Chart (Facturación vs Saldo)
+- Line: `--accent-success` 2.5px (facturación), `--accent-warning` dashed 1.5px (saldo)
+- Area fill: accent at 8% opacity
+- Grid: `rgba(148,163,184,0.07)`
+- Tooltip background: `--surface-tooltip`
+- Interactive: hover state shows circle markers + tooltip card
 
-#### Layout
-- Flex row con valor a la izquierda y sparkline a la derecha
-- Delta indicator debajo del valor
+### Donut Chart (Aging Distribution)
+- SVG arcs with hole punch (IR=48px, R=84px, center=110,110)
+- Each segment uses its aging color
+- Hover: scale(1.04) + full opacity
+- Center: "Total $38.4B"
+- Legend: 2-column grid below
+
+### Aging Chart (Horizontal Bars)
+- Bars: colored by aging bucket
+- Width proportional to saldo / max saldo
+- Text: label left, value+% right of bar
+- Tooltip on hover: document count
+
+### Client Table
+- Sortable columns: Cliente, Saldo, % Total
+- Risk badges: Crítico (red), Alto (amber), Medio (yellow)
+- Click row to expand detail drawer below
+- Inline bar indicator under Saldo values
+- Monospace numbers for financial data
+
+### Chatbot Interface
+- Slide-in drawer from right (380px)
+- Gradient header with avatar
+- Pre-defined option buttons
+- RAG-based responses from embedded data
+- User bubbles: green gradient right-aligned
+- Assistant bubbles: card-style left-aligned
+- Source attribution: "RAG ADATEC"
 
 ### Sidebar Navigation
-
-#### States
-- **Default**: Texto muted (#64748b), sin bg
-- **Active**: Fondo verde translúcido + inset border izquierdo verde (#10b981)
-- **Hover (inactive)**: Fondo sutil rgba(148,163,184,0.06)
-
-#### Layout
-- 228px ancho, secciones agrupadas con label uppercase
-- Logo con gradiente linear-gradient(135deg, #10b981, #059669)
-
-### Transaction Row
-
-#### States
-- **Default**: Border-bottom sutil
-- **Hover**: Fondo rgba(148,163,184,0.04)
-- **Click**: Abre drawer de detalle
-
-#### Variants por tipo
-- **incoming**: Monto en verde (#10b981)
-- **outgoing**: Monto en rojo (#f87171)
-
-#### Badge por estado
-- **Completada**: bg rgba(16,185,129,0.12) + text #34d399
-- **Pendiente**: bg rgba(245,158,11,0.12) + text #fbbf24
-- **Rechazada**: bg rgba(239,68,68,0.12) + text #f87171
-
-### Charts (Inline SVG)
-
-#### Revenue Chart (Area)
-- Grid lines sutiles, area fill 10% opacity
-- Tooltip en hover: rect + texto con valor exacto y comparación vs meta
-- Línea dashed para target
-
-#### Expense Chart (Bar)
-- Barras horizontales con radio 6px, colores por categoría
-- Label de categoría + valor en K
-
-#### Portfolio Donut
-- SVG viewBox 200x200, slices con stroke separador
-- Label interno cuando pct > 8%
-- Centro con valor total
-
-## Shadows / Elevation
-
-```css
---shadow-card-resting: none;
---shadow-card-hover: 0 8px 24px rgba(0,0,0,0.3);
---shadow-drawer: -16px 0 48px rgba(0,0,0,0.4);
---shadow-overlay: rgba(0,0,0,0.65);
-```
-
-## Motion
-
-```css
---transition-fast: 0.12s ease;
---transition-base: 0.15s ease;
---transition-slow: 0.25s ease;
---animation-fade: fadeIn 0.2s ease;
-```
+- Fixed left panel (210px)
+- Sections with uppercase labels in `--text-dim`
+- Active state: green accent + left border + 10% green bg
+- Hover: subtle background change
+- Footer: active status dot + version info
 
 ## Responsive Breakpoints
 
-```css
---bp-mobile: 640px;
---bp-tablet: 1024px;
---bp-desktop: 1400px;
-```
+| Breakpoint | Behavior |
+|---|---|
+| >768px | Full sidebar visible, multi-column layout |
+| ≤768px | Sidebar hidden (hamburger menu), single column charts, 2-col KPIs |
+| ≤480px | Single column KPIs, stacked layout |
 
-## Graph Interactivity Design
+## Animations
 
-### Revenue Chart Tooltip
-- Trigger: hover sobre área invisible de 28px por datapoint
-- Content: valor actual ($XXK), mes, comparación vs meta
-- Positioning: clamp entre bordes del SVG para evitar clipping
+- `fadeIn`: 0.25s ease — view transitions, alert cards
+- `slideIn`: 0.25s ease — chatbot drawer
+- Chart hover: 0.15s opacity/transform transitions
+- Table row hover: 0.12s background transition
 
-### Card Hover Elevation
-- KPI cards: translateY(-2px) + shadow-lg
-- Transaction rows: background highlight
-- Chart containers: sin hover para mantener focus en datos
+## Accessibility
 
-### Transaction Drawer
-- Trigger: click en cualquier fila de transacciones
-- Ancho: 400px desktop, 96vw mobile
-- Backdrop: rgba(0,0,0,0.65) con fadeIn animation
-- Contenido: monto destacado, metadata en pares label/value, acciones
+- `focus-visible` outlines on buttons/inputs (2px `--accent-success`)
+- `prefers-reduced-motion` media query disables animations
+- Semantic SVG `role="img"` with `aria-label`
+- Scrollbar customization for dark theme
