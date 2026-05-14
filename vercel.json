@@ -5,8 +5,7 @@
   "installCommand": "npm install",
   "framework": null,
   "rewrites": [
-    { "source": "/chatbot", "destination": "/chatbot.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/chatbot", "destination": "/chatbot.html" }
   ],
   "crons": [
     {
