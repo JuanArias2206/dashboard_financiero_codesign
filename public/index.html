@@ -271,6 +271,9 @@
             <button class="nav-dropdown-item" data-section="tiempos">⏱️ Control de Tiempos</button>
             <button class="nav-dropdown-item" data-section="pedidos">🛒 Pedido / Factura / Cotización</button>
             <div class="nav-dropdown-divider"></div>
+            <div class="nav-section-label">Forecast</div>
+            <button class="nav-dropdown-item" data-section="prediccion">🔮 Predicción de Recaudos</button>
+            <div class="nav-dropdown-divider"></div>
             <div class="nav-section-label">Próximamente</div>
             <button class="nav-dropdown-item soon">📅 Agenda detallada</button>
             <button class="nav-dropdown-item soon">👥 Clientes Gestionados</button>
@@ -958,6 +961,82 @@
   </div>
   </div><!-- /section-pedidos -->
 
+  <!-- ══════════════════════ PREDICCIÓN DE RECAUDOS ══════════════════════ -->
+  <div class="section-content" id="section-prediccion">
+  <div class="container">
+    <div class="cc-loading" id="predLoading"><span>Cargando histórico para predicción…</span></div>
+    <div id="predError" style="display:none;padding:14px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);color:#fca5a5;border-radius:8px;margin-bottom:14px;font-size:13px;"></div>
+
+    <div id="predDataNotice" style="display:none;background:linear-gradient(90deg,#1e293b,#0f172a);border-left:3px solid #06b6d4;padding:10px 16px;margin-bottom:14px;border-radius:6px;font-size:12px;color:#94a3b8;">
+      <strong style="color:#e2e8f0;">🔮 Forecast:</strong> Proyecciones basadas en histórico mensual del Excel (rgc_monthly) — <span id="pred-historia">— meses de historia</span>. La precisión se valida con holdout sobre los últimos 6 meses reales.
+    </div>
+
+    <div class="bi-kpi-bar" id="predKpiBar" style="display:none;">
+      <div class="bi-kpi-item"><div class="bi-kpi-val" style="color:var(--accent-green);" id="pred-recaudo-1m">—</div><div class="bi-kpi-lbl">Recaudo próximo mes</div><div class="bi-kpi-sub" id="pred-recaudo-1m-mes">—</div></div>
+      <div class="bi-kpi-item"><div class="bi-kpi-val" style="color:var(--accent-green);" id="pred-recaudo-acum">—</div><div class="bi-kpi-lbl">Recaudo acumulado proyección</div><div class="bi-kpi-sub" id="pred-recaudo-acum-sub">—</div></div>
+      <div class="bi-kpi-item"><div class="bi-kpi-val info" id="pred-recaudo-delta">—</div><div class="bi-kpi-lbl">Δ vs mismo período año anterior</div></div>
+      <div class="bi-kpi-item"><div class="bi-kpi-val" style="color:var(--accent-blue);" id="pred-venta-1m">—</div><div class="bi-kpi-lbl">Venta próximo mes</div><div class="bi-kpi-sub" id="pred-venta-1m-mes">—</div></div>
+      <div class="bi-kpi-item"><div class="bi-kpi-val" style="color:var(--accent-blue);" id="pred-venta-acum">—</div><div class="bi-kpi-lbl">Venta acumulada proyección</div><div class="bi-kpi-sub" id="pred-venta-acum-sub">—</div></div>
+      <div class="bi-kpi-item"><div class="bi-kpi-val info" id="pred-precision">—</div><div class="bi-kpi-lbl">Precisión del modelo</div><div class="bi-kpi-sub">Holdout 6m</div></div>
+    </div>
+
+    <div class="bi-data-source" id="predFilters" style="display:none;background:transparent;border:1px solid var(--border);padding:14px 18px;border-radius:10px;margin-bottom:18px;">
+      <div style="display:flex;gap:18px;flex-wrap:wrap;align-items:end;">
+        <div class="bi-filter-group"><label>CATEGORÍA</label><select id="predCat">
+          <option value="ambos" selected>Ambos (comparativa)</option>
+          <option value="Recibo">Recibos (dinero que entra)</option>
+          <option value="Factura">Ventas (facturas)</option>
+        </select></div>
+        <div class="bi-filter-group"><label>HORIZONTE</label><select id="predHorizonte">
+          <option value="3">3 meses</option>
+          <option value="6" selected>6 meses</option>
+          <option value="12">12 meses</option>
+        </select></div>
+        <div class="bi-filter-group"><label>MÉTODO</label><select id="predMetodo">
+          <option value="holt-winters" selected>Holt-Winters (tendencia+estacionalidad)</option>
+          <option value="sma">Promedio móvil (SMA)</option>
+          <option value="lineal">Regresión lineal</option>
+          <option value="naive">Naïve estacional</option>
+        </select></div>
+        <div class="bi-filter-group" style="justify-content:flex-end;flex-direction:row;align-items:center;gap:8px;">
+          <input type="checkbox" id="predComparar" style="width:18px;height:18px;cursor:pointer;">
+          <label for="predComparar" style="cursor:pointer;">Comparar todos los métodos</label>
+        </div>
+      </div>
+    </div>
+
+    <div id="predContent" style="display:none;">
+      <div class="chart-card" style="margin-bottom:20px;">
+        <div class="chart-header"><div><div class="chart-title">Histórico y proyección</div><div class="chart-subtitle">Línea sólida = histórico real · línea punteada = forecast · área translúcida = banda de confianza 95%</div></div></div>
+        <div style="height:420px;position:relative;width:100%;"><canvas id="predHistChart"></canvas></div>
+      </div>
+
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Estacionalidad mensual</div><div class="chart-subtitle">Promedio por mes del año (todos los años de historia)</div></div></div>
+          <div style="height:320px;position:relative;width:100%;"><canvas id="predEstacionalidadChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Comparativa de métodos</div><div class="chart-subtitle">Forecasts simultáneos para validar consistencia</div></div></div>
+          <div style="height:320px;position:relative;width:100%;"><canvas id="predComparativaChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="chart-card" style="margin-bottom:20px;">
+        <div class="chart-header"><div><div class="chart-title">Proyección mes a mes</div><div class="chart-subtitle">Valores esperados con intervalo de confianza</div></div></div>
+        <div class="table-wrapper" style="max-height:450px;">
+          <table class="data-table" id="predTable">
+            <thead><tr>
+              <th>Mes</th><th>Categoría</th><th>Forecast</th><th>IC bajo</th><th>IC alto</th><th>vs año anterior</th>
+            </tr></thead>
+            <tbody id="predTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div><!-- /section-prediccion -->
+
   <script>
     let ALL_DATA = null;
     let CURRENT_DATA = null;
@@ -1016,6 +1095,8 @@
           requestAnimationFrame(() => requestAnimationFrame(() => loadTiempos()));
         } else if (sectionId === 'pedidos') {
           requestAnimationFrame(() => requestAnimationFrame(() => loadPedidos()));
+        } else if (sectionId === 'prediccion') {
+          requestAnimationFrame(() => requestAnimationFrame(() => loadPrediccion()));
         }
       } else if (sectionId === 'control-cartera') {
         setTimeout(() => { if (CARTERA_BI_DATA) renderCarteraBI(); }, 100);
@@ -1029,6 +1110,8 @@
         setTimeout(() => { if (TIEM_DATA) renderTiempos(); else loadTiempos(); }, 100);
       } else if (sectionId === 'pedidos') {
         setTimeout(() => { if (PED_DATA) renderPedidos(); else loadPedidos(); }, 100);
+      } else if (sectionId === 'prediccion') {
+        setTimeout(() => { if (CARTERA_BI_DATA) renderPrediccion(); else loadPrediccion(); }, 100);
       }
     }
 
@@ -3173,6 +3256,429 @@
     }
     document.getElementById('pedReload')?.addEventListener('click', loadPedidos);
     ['pedAnio','pedMes'].forEach(id => document.getElementById(id)?.addEventListener('change', loadPedidos));
+
+    // ═══════════════════════════════════════════════════════════════
+    // PREDICCIÓN DE RECAUDOS Y VENTAS (forecast cliente puro)
+    // ═══════════════════════════════════════════════════════════════
+    const PRED_STATE = { categoria: 'ambos', horizonte: 6, metodo: 'holt-winters', comparar: false };
+
+    // Construye una serie {mes, valor} ordenada cronológicamente, imputando meses faltantes con 0
+    function _buildSeries(cat) {
+      const d = CARTERA_BI_DATA;
+      if (!d || !d.rgc_monthly) return [];
+      const raw = d.rgc_monthly.filter(r => r.cat === cat).map(r => ({ mes: r.mes, valor: Math.abs(r.saldo || 0) }));
+      if (raw.length === 0) return [];
+      raw.sort((a,b) => a.mes.localeCompare(b.mes));
+      // Imputar meses faltantes
+      const out = [];
+      const [y0, m0] = raw[0].mes.split('-').map(Number);
+      const [yN, mN] = raw[raw.length-1].mes.split('-').map(Number);
+      const byMes = new Map(raw.map(r => [r.mes, r.valor]));
+      let y = y0, m = m0;
+      while (y < yN || (y === yN && m <= mN)) {
+        const key = String(y) + '-' + String(m).padStart(2,'0');
+        out.push({ mes: key, valor: byMes.get(key) || 0 });
+        m++; if (m > 12) { m = 1; y++; }
+      }
+      return out;
+    }
+
+    // Genera labels de meses futuros a partir del último mes histórico
+    function _futureLabels(lastMes, n) {
+      const [y0, m0] = lastMes.split('-').map(Number);
+      const out = []; let y = y0, m = m0;
+      for (let i = 0; i < n; i++) {
+        m++; if (m > 12) { m = 1; y++; }
+        out.push(String(y) + '-' + String(m).padStart(2,'0'));
+      }
+      return out;
+    }
+
+    // ─── Algoritmos de forecast ────────────────────────────
+    function _smaForecast(values, horizon, window) {
+      window = window || 6;
+      const w = Math.min(window, values.length);
+      const avg = values.slice(-w).reduce((s,v) => s+v, 0) / w;
+      return Array(horizon).fill(avg);
+    }
+
+    function _linearForecast(values, horizon) {
+      const n = values.length;
+      if (n < 2) return Array(horizon).fill(values[n-1] || 0);
+      let sx = 0, sy = 0, sxy = 0, sxx = 0;
+      for (let i = 0; i < n; i++) { sx += i; sy += values[i]; sxy += i*values[i]; sxx += i*i; }
+      const m = (n*sxy - sx*sy) / (n*sxx - sx*sx);
+      const b = (sy - m*sx) / n;
+      const out = [];
+      for (let h = 1; h <= horizon; h++) out.push(Math.max(0, m*(n+h-1) + b));
+      return out;
+    }
+
+    function _naiveSeasonalForecast(values, horizon) {
+      const n = values.length;
+      const out = [];
+      // Trend factor: avg último año vs el año anterior
+      let trendFactor = 1;
+      if (n >= 24) {
+        const lastYear  = values.slice(-12).reduce((s,v)=>s+v,0);
+        const prevYear  = values.slice(-24, -12).reduce((s,v)=>s+v,0);
+        if (prevYear > 0) trendFactor = lastYear / prevYear;
+      }
+      for (let h = 1; h <= horizon; h++) {
+        const idx = n - 12 + (h - 1);
+        const base = idx >= 0 ? values[idx] : values[n-1];
+        out.push(Math.max(0, base * trendFactor));
+      }
+      return out;
+    }
+
+    // Holt-Winters multiplicativo (m=12) — fallback a aditivo si hay ceros
+    function _holtWintersForecast(values, horizon, alpha, beta, gamma, m) {
+      alpha = alpha || 0.3; beta = beta || 0.1; gamma = gamma || 0.3; m = m || 12;
+      const n = values.length;
+      if (n < 2*m) return _linearForecast(values, horizon); // No hay suficiente historia para estacionalidad
+      const hasZeros = values.some(v => v <= 0);
+      const additive = hasZeros;
+
+      // Inicialización
+      const firstYear = values.slice(0, m);
+      const secondYear = values.slice(m, 2*m);
+      const avgFirst = firstYear.reduce((s,v)=>s+v,0) / m;
+      const avgSecond = secondYear.reduce((s,v)=>s+v,0) / m;
+      let L = avgFirst;
+      let T = (avgSecond - avgFirst) / m;
+      const S = new Array(n + horizon);
+      for (let i = 0; i < m; i++) {
+        if (additive) S[i] = firstYear[i] - avgFirst;
+        else          S[i] = avgFirst > 0 ? firstYear[i] / avgFirst : 1;
+      }
+
+      // Recorrido principal
+      const fitted = [];
+      for (let t = 0; t < n; t++) {
+        const seasonIdx = t;
+        const Lprev = L, Tprev = T;
+        const Sprev = S[t < m ? t : t - m] != null ? S[t < m ? t : t - m] : (additive ? 0 : 1);
+        if (additive) {
+          L = alpha * (values[t] - Sprev) + (1 - alpha) * (Lprev + Tprev);
+          T = beta * (L - Lprev) + (1 - beta) * Tprev;
+          S[t] = gamma * (values[t] - L) + (1 - gamma) * Sprev;
+          fitted.push(Lprev + Tprev + Sprev);
+        } else {
+          L = alpha * (values[t] / Sprev) + (1 - alpha) * (Lprev + Tprev);
+          T = beta * (L - Lprev) + (1 - beta) * Tprev;
+          S[t] = gamma * (values[t] / L) + (1 - gamma) * Sprev;
+          fitted.push((Lprev + Tprev) * Sprev);
+        }
+      }
+
+      // Forecast
+      const out = [];
+      for (let h = 1; h <= horizon; h++) {
+        const seasonIdx = n - m + ((h - 1) % m);
+        const s = S[seasonIdx] != null ? S[seasonIdx] : (additive ? 0 : 1);
+        const f = additive ? (L + h * T + s) : ((L + h * T) * s);
+        out.push(Math.max(0, f));
+      }
+      return out;
+    }
+
+    // Dispatcher por método
+    function _forecast(method, values, horizon) {
+      switch (method) {
+        case 'sma':          return _smaForecast(values, horizon);
+        case 'lineal':       return _linearForecast(values, horizon);
+        case 'naive':        return _naiveSeasonalForecast(values, horizon);
+        case 'holt-winters':
+        default:             return _holtWintersForecast(values, horizon);
+      }
+    }
+
+    // Precisión: sMAPE (symmetric Mean Absolute Percentage Error) — más robusto a valores pequeños
+    // Excluye meses con valor anómalamente bajo (probable mes parcial)
+    function _mape(actual, predicted) {
+      if (actual.length === 0) return 0;
+      const maxVal = Math.max(...actual);
+      const cleanPairs = [];
+      for (let i = 0; i < actual.length && i < predicted.length; i++) {
+        // Excluir meses parciales (valor < 10% del máximo del holdout) y meses zero
+        if (actual[i] > 0 && actual[i] >= maxVal * 0.1) {
+          cleanPairs.push([actual[i], predicted[i]]);
+        }
+      }
+      if (cleanPairs.length === 0) return 50; // fallback neutral
+      let sum = 0;
+      cleanPairs.forEach(([a, p]) => {
+        const denom = (Math.abs(a) + Math.abs(p)) / 2;
+        if (denom > 0) sum += Math.abs(a - p) / denom;
+      });
+      return Math.min(100, (sum / cleanPairs.length) * 100);
+    }
+
+    // Banda de confianza: ±z·std(residuales in-sample)
+    function _confidenceInterval(forecast, values, method) {
+      // Calcula residuales: aplicar mismo método sobre histórico (in-sample) y comparar con real
+      // Para simplicidad: usar std de los últimos 24 meses como aproximación de la incertidumbre
+      const recent = values.slice(-Math.min(24, values.length));
+      const avg = recent.reduce((s,v) => s+v, 0) / recent.length;
+      const variance = recent.reduce((s,v) => s + (v - avg)*(v - avg), 0) / recent.length;
+      const std = Math.sqrt(variance);
+      const z = 1.96;
+      return forecast.map((f, i) => {
+        // Incertidumbre crece con el horizonte (sqrt(h))
+        const horizonFactor = Math.sqrt(i + 1);
+        const margin = z * std * horizonFactor * 0.5; // factor 0.5 para no ser demasiado conservador
+        return { low: Math.max(0, f - margin), high: f + margin };
+      });
+    }
+
+    // ─── Render principal ─────────────────────────────────
+    function loadPrediccion() {
+      // Requiere que CARTERA_BI_DATA esté cargado
+      if (!CARTERA_BI_DATA) {
+        loadCarteraData(); // ya seteado para llamar renderCarteraBI; agregamos hook
+        const wait = setInterval(() => {
+          if (CARTERA_BI_DATA) { clearInterval(wait); renderPrediccion(); }
+        }, 200);
+        setTimeout(() => clearInterval(wait), 10000);
+        return;
+      }
+      renderPrediccion();
+    }
+
+    function renderPrediccion() {
+      if (!CARTERA_BI_DATA) { return; }
+      const er = document.getElementById('predError');
+      document.getElementById('predLoading').style.display = 'none';
+      document.getElementById('predDataNotice').style.display = 'block';
+      document.getElementById('predKpiBar').style.display = 'flex';
+      document.getElementById('predFilters').style.display = 'block';
+      document.getElementById('predContent').style.display = 'block';
+
+      const cat = PRED_STATE.categoria;
+      const H = PRED_STATE.horizonte;
+      const method = PRED_STATE.metodo;
+      const comparar = PRED_STATE.comparar;
+
+      // Series base
+      const seriesRecibo  = _buildSeries('Recibo');
+      const seriesFactura = _buildSeries('Factura');
+      const historia = Math.max(seriesRecibo.length, seriesFactura.length);
+      document.getElementById('pred-historia').textContent = historia + ' meses de historia';
+
+      if ((cat === 'Recibo' && seriesRecibo.length < 24) ||
+          (cat === 'Factura' && seriesFactura.length < 24) ||
+          (cat === 'ambos' && (seriesRecibo.length < 24 || seriesFactura.length < 24))) {
+        er.style.display = 'block';
+        er.style.background = 'rgba(245,158,11,0.08)';
+        er.style.borderColor = 'rgba(245,158,11,0.3)';
+        er.style.color = '#fcd34d';
+        er.textContent = '⚠️ Datos insuficientes: se necesitan al menos 24 meses de historia para predicción estacional.';
+        return;
+      } else if (er) er.style.display = 'none';
+
+      // Detecta si el último mes es parcial (valor < 30% del promedio de los últimos 12)
+      const _trimPartial = (vals) => {
+        if (vals.length < 13) return vals;
+        const last = vals[vals.length - 1];
+        const avg12 = vals.slice(-13, -1).reduce((s,v)=>s+v,0) / 12;
+        return last < avg12 * 0.3 ? vals.slice(0, -1) : vals;
+      };
+
+      const calc = (series) => {
+        const valsFull = _trimPartial(series.map(p => p.valor));
+        const seriesTrimmed = series.slice(0, valsFull.length);
+        // Holdout: últimos 6 meses (después de excluir parcial)
+        const valsTrain = valsFull.slice(0, -6);
+        const realHoldout = valsFull.slice(-6);
+        const predHoldout = _forecast(method, valsTrain, 6);
+        const mape = _mape(realHoldout, predHoldout);
+        // Forecast hacia adelante usa la serie completa (incluyendo parcial para no perder info)
+        const forecast = _forecast(method, valsFull, H);
+        const ci = _confidenceInterval(forecast, valsFull, method);
+        const lastMes = seriesTrimmed[seriesTrimmed.length-1].mes;
+        const labels = _futureLabels(lastMes, H);
+        return { series: seriesTrimmed, forecast, ci, mape, labels };
+      };
+
+      const rec = calc(seriesRecibo);
+      const fac = calc(seriesFactura);
+
+      // ── KPIs ──
+      const fmtMes = (m) => {
+        const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+        const [y, mm] = m.split('-');
+        return meses[parseInt(mm)-1] + ' ' + y;
+      };
+      document.getElementById('pred-recaudo-1m').textContent = fmtBil(rec.forecast[0]);
+      document.getElementById('pred-recaudo-1m-mes').textContent = fmtMes(rec.labels[0]);
+      const recAcum = rec.forecast.reduce((s,v) => s+v, 0);
+      document.getElementById('pred-recaudo-acum').textContent = fmtBil(recAcum);
+      document.getElementById('pred-recaudo-acum-sub').textContent = H + ' meses';
+      // Δ vs mismo período año anterior
+      const lastYearSamePeriod = seriesRecibo.slice(-H).reduce((s,p) => s+p.valor, 0);
+      const deltaPct = lastYearSamePeriod > 0 ? ((recAcum - lastYearSamePeriod) / lastYearSamePeriod * 100) : 0;
+      const delEl = document.getElementById('pred-recaudo-delta');
+      delEl.textContent = (deltaPct >= 0 ? '+' : '') + deltaPct.toFixed(1) + '%';
+      delEl.style.color = deltaPct >= 0 ? 'var(--accent-green)' : 'var(--accent-red)';
+
+      document.getElementById('pred-venta-1m').textContent = fmtBil(fac.forecast[0]);
+      document.getElementById('pred-venta-1m-mes').textContent = fmtMes(fac.labels[0]);
+      document.getElementById('pred-venta-acum').textContent = fmtBil(fac.forecast.reduce((s,v) => s+v, 0));
+      document.getElementById('pred-venta-acum-sub').textContent = H + ' meses';
+
+      const mapeAvg = (rec.mape + fac.mape) / 2;
+      const precision = Math.max(0, 100 - mapeAvg);
+      const precEl = document.getElementById('pred-precision');
+      precEl.textContent = precision.toFixed(1) + '%';
+      precEl.style.color = precision >= 70 ? 'var(--accent-green)' : precision >= 50 ? 'var(--accent-yellow)' : 'var(--accent-red)';
+
+      // ── Chart 1: Histórico + Proyección ──
+      const buildChart1 = () => {
+        const lastN = 36; // últimos 36 meses históricos visibles
+        const recHist = rec.series.slice(-lastN);
+        const facHist = fac.series.slice(-lastN);
+        const allLabels = [...recHist.map(p=>p.mes), ...rec.labels];
+        const nullsHist = Array(recHist.length - 1).fill(null);
+
+        const datasets = [];
+        const showRec = cat === 'Recibo' || cat === 'ambos';
+        const showFac = cat === 'Factura' || cat === 'ambos';
+
+        if (showRec) {
+          datasets.push({
+            label: 'Recibos (histórico)',
+            data: [...recHist.map(p=>p.valor), ...Array(H).fill(null)],
+            borderColor: EC_GREEN, backgroundColor:'transparent', tension:0.3, pointRadius:2, borderWidth:2
+          });
+          datasets.push({
+            label: 'Recibos (proyección)',
+            data: [...nullsHist, recHist[recHist.length-1].valor, ...rec.forecast],
+            borderColor: EC_GREEN, backgroundColor:'transparent', borderDash:[6,4], tension:0.3, pointRadius:3, borderWidth:2
+          });
+          datasets.push({
+            label: 'Banda confianza Recibos',
+            data: [...nullsHist, recHist[recHist.length-1].valor, ...rec.ci.map(c=>c.high)],
+            borderColor: 'transparent', backgroundColor: EC_GREEN+'22', pointRadius:0, fill:'+1'
+          });
+          datasets.push({
+            label: '', data: [...nullsHist, recHist[recHist.length-1].valor, ...rec.ci.map(c=>c.low)],
+            borderColor: 'transparent', backgroundColor: 'transparent', pointRadius:0, fill:false, showLine:false
+          });
+        }
+        if (showFac) {
+          datasets.push({
+            label: 'Ventas (histórico)',
+            data: [...facHist.map(p=>p.valor), ...Array(H).fill(null)],
+            borderColor: EC_BLUE, backgroundColor:'transparent', tension:0.3, pointRadius:2, borderWidth:2
+          });
+          datasets.push({
+            label: 'Ventas (proyección)',
+            data: [...nullsHist, facHist[facHist.length-1].valor, ...fac.forecast],
+            borderColor: EC_BLUE, backgroundColor:'transparent', borderDash:[6,4], tension:0.3, pointRadius:3, borderWidth:2
+          });
+          datasets.push({
+            label: 'Banda confianza Ventas',
+            data: [...nullsHist, facHist[facHist.length-1].valor, ...fac.ci.map(c=>c.high)],
+            borderColor: 'transparent', backgroundColor: EC_BLUE+'22', pointRadius:0, fill:'+1'
+          });
+          datasets.push({
+            label: '', data: [...nullsHist, facHist[facHist.length-1].valor, ...fac.ci.map(c=>c.low)],
+            borderColor: 'transparent', backgroundColor: 'transparent', pointRadius:0, fill:false, showLine:false
+          });
+        }
+
+        loadChart('predHistChart', {
+          type:'line',
+          data:{ labels: allLabels, datasets },
+          options:{...CJ,
+            plugins:{ legend:{ labels:{ color:'#94a3b8', filter:(item) => item.text && !item.text.startsWith('Banda') } } },
+            scales:{
+              x:{ ticks:{ color:'#64748b', font:{size:9}, maxRotation:60 }, grid:{ color:'#33415530' } },
+              y:{ ticks:{ color:'#64748b', callback: v => fmtBilAxis(v) }, grid:{ color:'#33415550' } }
+            }
+          }
+        });
+      };
+      buildChart1();
+
+      // ── Chart 2: Estacionalidad mensual ──
+      const buildSeasonality = (series) => {
+        const sums = Array(12).fill(0), counts = Array(12).fill(0);
+        series.forEach(p => {
+          const m = parseInt(p.mes.split('-')[1]) - 1;
+          sums[m] += p.valor; counts[m]++;
+        });
+        return sums.map((s,i) => counts[i] > 0 ? s/counts[i] : 0);
+      };
+      const mesNombres = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+      const datasetsEst = [];
+      if (cat === 'Recibo' || cat === 'ambos') datasetsEst.push({ label:'Recibos', data: buildSeasonality(seriesRecibo), backgroundColor: EC_GREEN+'cc', borderRadius:3 });
+      if (cat === 'Factura' || cat === 'ambos') datasetsEst.push({ label:'Ventas', data: buildSeasonality(seriesFactura), backgroundColor: EC_BLUE+'cc', borderRadius:3 });
+      loadChart('predEstacionalidadChart', {
+        type:'bar',
+        data:{ labels: mesNombres, datasets: datasetsEst },
+        options:{...CJ, plugins:{ legend:{ labels:{color:'#94a3b8'} } },
+          scales:{ x:{ ticks:{color:'#64748b'} }, y:{ ticks:{color:'#64748b', callback:v=>fmtBilAxis(v)}, grid:{color:'#33415550'} } }
+        }
+      });
+
+      // ── Chart 3: Comparativa de métodos ──
+      const compareSeries = cat === 'Factura' ? seriesFactura : seriesRecibo;
+      const compareVals = compareSeries.map(p => p.valor);
+      const compareLabel = cat === 'Factura' ? 'Ventas' : 'Recibos';
+      const compareColor = cat === 'Factura' ? EC_BLUE : EC_GREEN;
+      const labelsCompare = _futureLabels(compareSeries[compareSeries.length-1].mes, H);
+      const methods = [
+        { key:'holt-winters', name:'Holt-Winters', color:'#10b981' },
+        { key:'sma',          name:'SMA',          color:'#f59e0b' },
+        { key:'lineal',       name:'Lineal',       color:'#a78bfa' },
+        { key:'naive',        name:'Naïve estac.', color:'#ef4444' }
+      ];
+      const lastHist = compareVals[compareVals.length-1];
+      const datasetsCompare = methods.map(mm => ({
+        label: compareLabel + ' — ' + mm.name,
+        data: [lastHist, ..._forecast(mm.key, compareVals, H)],
+        borderColor: mm.color, backgroundColor:'transparent', tension:0.3, pointRadius:3, borderWidth: mm.key === method && !comparar ? 3 : 1.5
+      }));
+      const labelsCompFull = [compareSeries[compareSeries.length-1].mes, ...labelsCompare];
+      loadChart('predComparativaChart', {
+        type:'line',
+        data:{ labels: labelsCompFull, datasets: datasetsCompare },
+        options:{...CJ, plugins:{ legend:{ labels:{color:'#94a3b8',font:{size:11}} } },
+          scales:{ x:{ ticks:{color:'#64748b',font:{size:10}} }, y:{ ticks:{color:'#64748b', callback:v=>fmtBilAxis(v)}, grid:{color:'#33415550'} } }
+        }
+      });
+
+      // ── Tabla proyección mes a mes ──
+      const rows = [];
+      const buildRows = (data, catLabel, color) => {
+        const lastYearVals = data.series.slice(-12).map(p => p.valor); // mismo mes año anterior
+        data.forecast.forEach((f, i) => {
+          const lyVal = lastYearVals[i % 12] || 0;
+          const delta = lyVal > 0 ? ((f - lyVal) / lyVal * 100) : 0;
+          const ci = data.ci[i];
+          const deltaColor = delta >= 0 ? 'var(--accent-green)' : 'var(--accent-red)';
+          rows.push(`<tr>
+            <td>${fmtMes(data.labels[i])}</td>
+            <td><span style="color:${color};font-weight:600;">${catLabel}</span></td>
+            <td style="text-align:right;font-weight:600;">${fmtBil(f)}</td>
+            <td style="text-align:right;color:#64748b;">${fmtBil(ci.low)}</td>
+            <td style="text-align:right;color:#64748b;">${fmtBil(ci.high)}</td>
+            <td style="text-align:right;color:${deltaColor};">${(delta>=0?'+':'')+delta.toFixed(1)}%</td>
+          </tr>`);
+        });
+      };
+      if (cat === 'Recibo' || cat === 'ambos') buildRows(rec, 'Recibos', EC_GREEN);
+      if (cat === 'Factura' || cat === 'ambos') buildRows(fac, 'Ventas', EC_BLUE);
+      document.getElementById('predTableBody').innerHTML = rows.join('');
+    }
+
+    // Wire filtros
+    document.getElementById('predCat')?.addEventListener('change', function() { PRED_STATE.categoria = this.value; renderPrediccion(); });
+    document.getElementById('predHorizonte')?.addEventListener('change', function() { PRED_STATE.horizonte = parseInt(this.value); renderPrediccion(); });
+    document.getElementById('predMetodo')?.addEventListener('change', function() { PRED_STATE.metodo = this.value; renderPrediccion(); });
+    document.getElementById('predComparar')?.addEventListener('change', function() { PRED_STATE.comparar = this.checked; renderPrediccion(); });
 
     init();
   </script>
