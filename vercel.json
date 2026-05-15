@@ -1,11 +1,10 @@
 {
-  "buildCommand": null,
-  "outputDirectory": "public",
-  "devCommand": "npm run serve",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
   "installCommand": "npm install",
-  "framework": null,
+  "framework": "vite",
   "rewrites": [
-    { "source": "/chatbot", "destination": "/chatbot.html" }
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
   "crons": [
     {

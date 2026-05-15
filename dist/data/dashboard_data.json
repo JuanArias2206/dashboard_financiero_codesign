@@ -1,0 +1,3896 @@
+{
+  "generado_en": "2026-05-13T04:07:43.431Z",
+  "kpis": {
+    "total_documentos": 89064,
+    "saldo_total": 38374163157.343956,
+    "cartera_vencida": 35494977006.79369,
+    "cartera_por_vencer": 2879186150.5499935,
+    "pct_vencida": 92.49707117066018,
+    "dias_mora_promedio": 1037.7636641567117,
+    "total_clientes": 2854,
+    "total_vendedores": 94,
+    "saldo_base_total": 233911698316.58948,
+    "base_retencion_total": 235796091311.66943
+  },
+  "aging": [
+    {
+      "rango": "Corriente (sin mora)",
+      "key": "corriente",
+      "documentos": 749,
+      "saldo": 2879186150.5499935,
+      "pct_del_total": 7.502928829339127
+    },
+    {
+      "rango": "1 - 30 días",
+      "key": "1_30",
+      "documentos": 1163,
+      "saldo": 1635080227.8699982,
+      "pct_del_total": 4.26088829915521
+    },
+    {
+      "rango": "31 - 60 días",
+      "key": "31_60",
+      "documentos": 1011,
+      "saldo": 1820123664.730001,
+      "pct_del_total": 4.7430966957299505
+    },
+    {
+      "rango": "61 - 90 días",
+      "key": "61_90",
+      "documentos": 1260,
+      "saldo": 1713344845.5899978,
+      "pct_del_total": 4.464839633283578
+    },
+    {
+      "rango": "91 - 180 días",
+      "key": "91_180",
+      "documentos": 4032,
+      "saldo": 6226043692.950025,
+      "pct_del_total": 16.2245719012077
+    },
+    {
+      "rango": "181 - 360 días",
+      "key": "181_360",
+      "documentos": 7861,
+      "saldo": 9612176940.299978,
+      "pct_del_total": 25.048564318881887
+    },
+    {
+      "rango": "Más de 360 días",
+      "key": "mas_360",
+      "documentos": 72988,
+      "saldo": 14488207635.353529,
+      "pct_del_total": 37.755110322401414
+    }
+  ],
+  "top_clientes": [
+    {
+      "codigo": "67040225-0",
+      "nombre": "BAHAMON GUALDRON GINA ANDREA",
+      "nit": "67040225",
+      "ciudad": "CALI",
+      "documentos": 60,
+      "saldo": 162760789513.41003,
+      "saldo_vencido": 162760789513.41003,
+      "saldo_base": 162760789513.41003,
+      "pct_vencido": 100,
+      "pct_del_total": 424.14159976870076
+    },
+    {
+      "codigo": "72139503-0",
+      "nombre": "ELMER ENRIQUE PACHECO POLO",
+      "nit": "72139503",
+      "ciudad": "VALLEDUPAR",
+      "documentos": 345,
+      "saldo": 5358074175.339999,
+      "saldo_vencido": 5014659934.959998,
+      "saldo_base": 5358074175.339999,
+      "pct_vencido": 93.5907150751938,
+      "pct_del_total": 13.962712759026207
+    },
+    {
+      "codigo": "6549981-0",
+      "nombre": "ARISTIZABAL GRISALES HECTOR FABIO",
+      "nit": "6549981",
+      "ciudad": "CALI",
+      "documentos": 243,
+      "saldo": 4617920128.020004,
+      "saldo_vencido": 4617920128.020004,
+      "saldo_base": 4617920128.020004,
+      "pct_vencido": 100,
+      "pct_del_total": 12.033930509664385
+    },
+    {
+      "codigo": "991520783001-0",
+      "nombre": "Sin nombre",
+      "nit": "",
+      "ciudad": "",
+      "documentos": 161,
+      "saldo": 4613754705.789998,
+      "saldo_vencido": 4613754705.789998,
+      "saldo_base": 4613754705.789998,
+      "pct_vencido": 100,
+      "pct_del_total": 12.023075752485898
+    },
+    {
+      "codigo": "88216979-0",
+      "nombre": "WILSON RODOLFO JAIMES FLOREZ",
+      "nit": "88216979",
+      "ciudad": "CUCUTA",
+      "documentos": 602,
+      "saldo": 3895788099.850002,
+      "saldo_vencido": 3897336249.8500013,
+      "saldo_base": 3895788099.850002,
+      "pct_vencido": 100.03973907102544,
+      "pct_del_total": 10.152112200795798
+    },
+    {
+      "codigo": "87713814-0",
+      "nombre": "HUBER ALEX BURBANO PANTOJA",
+      "nit": "87713814",
+      "ciudad": "PASTO",
+      "documentos": 438,
+      "saldo": 2925884108.5099993,
+      "saldo_vencido": 2825360541.0500007,
+      "saldo_base": 2925884108.5099993,
+      "pct_vencido": 96.564335300649,
+      "pct_del_total": 7.624619972852882
+    },
+    {
+      "codigo": "36183775-0",
+      "nombre": "SANDRA LILIANA TRUJILLO MEDINA",
+      "nit": "36183775",
+      "ciudad": "NEIVA",
+      "documentos": 508,
+      "saldo": 2587288861.5100007,
+      "saldo_vencido": 2587288861.5100007,
+      "saldo_base": 2587288861.5100007,
+      "pct_vencido": 100,
+      "pct_del_total": 6.742267840216996
+    },
+    {
+      "codigo": "900464794-0",
+      "nombre": "INVERSIONES KAUTIVA SAS",
+      "nit": "900464794",
+      "ciudad": "M6DELLIN",
+      "documentos": 798,
+      "saldo": 2169217478.060002,
+      "saldo_vencido": 2124730392.4600024,
+      "saldo_base": 2169217478.060002,
+      "pct_vencido": 97.94916433921667,
+      "pct_del_total": 5.652807252540339
+    },
+    {
+      "codigo": "900938624-0",
+      "nombre": "C D DISTRIBUCIONES SAS",
+      "nit": "900938624",
+      "ciudad": "CALI",
+      "documentos": 162,
+      "saldo": 2103674162,
+      "saldo_vencido": 2103674162,
+      "saldo_base": 2103674162,
+      "pct_vencido": 100,
+      "pct_del_total": 5.48200661308077
+    },
+    {
+      "codigo": "71653570-0",
+      "nombre": "NESTOR ZULUAGA GOMEZ",
+      "nit": "71653570",
+      "ciudad": "CALI",
+      "documentos": 479,
+      "saldo": 1674409438.0699995,
+      "saldo_vencido": 1674409438.0699995,
+      "saldo_base": 1674409438.0699995,
+      "pct_vencido": 100,
+      "pct_del_total": 4.363377075363154
+    },
+    {
+      "codigo": "900179959-0",
+      "nombre": "DIMOBE SAS",
+      "nit": "900179959",
+      "ciudad": "M6DELLIN",
+      "documentos": 273,
+      "saldo": 1430103004.3200002,
+      "saldo_vencido": 1409688952.5800002,
+      "saldo_base": 1430103004.3200002,
+      "pct_vencido": 98.57254675514044,
+      "pct_del_total": 3.726734048782274
+    },
+    {
+      "codigo": "41730954-0",
+      "nombre": "BEATRIZ ELENA RAMIREZ SANCHEZ",
+      "nit": "41730954",
+      "ciudad": "VILLAVICENCIO",
+      "documentos": 293,
+      "saldo": 1385896880.39,
+      "saldo_vencido": 1377712855.3100002,
+      "saldo_base": 1385896880.39,
+      "pct_vencido": 99.40947806465248,
+      "pct_del_total": 3.61153642545237
+    },
+    {
+      "codigo": "890300279-0",
+      "nombre": "Sin nombre",
+      "nit": "",
+      "ciudad": "",
+      "documentos": 1,
+      "saldo": 1178775000,
+      "saldo_vencido": 1178775000,
+      "saldo_base": 1178775000,
+      "pct_vencido": 100,
+      "pct_del_total": 3.071793370885298
+    },
+    {
+      "codigo": "901293584-0",
+      "nombre": "GLOBAL COSMETICA S.A.S",
+      "nit": "901293584",
+      "ciudad": "VILLAVICENCIO",
+      "documentos": 214,
+      "saldo": 1109859351.2800002,
+      "saldo_vencido": 1018568652.1900003,
+      "saldo_base": 1109859351.2800002,
+      "pct_vencido": 91.77457044582141,
+      "pct_del_total": 2.892204702234915
+    },
+    {
+      "codigo": "3101663819-0",
+      "nombre": "Sin nombre",
+      "nit": "",
+      "ciudad": "",
+      "documentos": 28,
+      "saldo": 1093125693.6100001,
+      "saldo_vencido": 1093125693.6100001,
+      "saldo_base": 1093125693.6100001,
+      "pct_vencido": 100,
+      "pct_del_total": 2.848598128714633
+    },
+    {
+      "codigo": "91284736-0",
+      "nombre": "ECAR RAMIRO ARENIS ACEVEDO",
+      "nit": "91284736",
+      "ciudad": "BUCARAMANGA",
+      "documentos": 812,
+      "saldo": 1086554893.4699988,
+      "saldo_vencido": 1065945772.559999,
+      "saldo_base": 1086554893.4699988,
+      "pct_vencido": 98.10326003464188,
+      "pct_del_total": 2.8314751490862324
+    },
+    {
+      "codigo": "900651421-0",
+      "nombre": "SURTIMOS COSMETICOS S.A.S",
+      "nit": "900651421",
+      "ciudad": "M6DELLIN",
+      "documentos": 376,
+      "saldo": 1040132997.2900002,
+      "saldo_vencido": 1023602436.1700003,
+      "saldo_base": 1040132997.2900002,
+      "pct_vencido": 98.41072620875704,
+      "pct_del_total": 2.7105034004915938
+    },
+    {
+      "codigo": "800024702-0",
+      "nombre": "Sin nombre",
+      "nit": "",
+      "ciudad": "",
+      "documentos": 1,
+      "saldo": 1006013838,
+      "saldo_vencido": 1006013838,
+      "saldo_base": 1006013838,
+      "pct_vencido": 100,
+      "pct_del_total": 2.621591600252191
+    },
+    {
+      "codigo": "902010904-0",
+      "nombre": "PCN POCION S A S",
+      "nit": "902010904",
+      "ciudad": "CALI",
+      "documentos": 32,
+      "saldo": 894313458.5,
+      "saldo_vencido": 894313458.5,
+      "saldo_base": 894313458.5,
+      "pct_vencido": 100,
+      "pct_del_total": 2.3305093451369463
+    },
+    {
+      "codigo": "901875433-0",
+      "nombre": "COMERCIALIZADORA COSMOBELLEZA DEL HUILA SAS",
+      "nit": "901875433",
+      "ciudad": "NEIVA",
+      "documentos": 182,
+      "saldo": 866309747.8800001,
+      "saldo_vencido": 708587768.6999999,
+      "saldo_base": 866309747.8800001,
+      "pct_vencido": 81.79381225179893,
+      "pct_del_total": 2.257533915014399
+    }
+  ],
+  "cartera_vendedor": [
+    {
+      "codigo": "101",
+      "nombre": "EMPLEADOS",
+      "documentos": 2533,
+      "saldo_total": 81545199441.81995,
+      "saldo_vencido": 81545199441.81995,
+      "saldo_corriente": 0,
+      "dias_mora_promedio": 0
+    },
+    {
+      "codigo": "7",
+      "nombre": "EXPORTACIONES",
+      "documentos": 183,
+      "saldo_total": 5203963597.109999,
+      "saldo_vencido": 5199125111.849998,
+      "saldo_corriente": 4838485.26,
+      "dias_mora_promedio": 0
+    },
+    {
+      "codigo": "33",
+      "nombre": "CALI NORTE",
+      "documentos": 5312,
+      "saldo_total": 5008147586.419996,
+      "saldo_vencido": 4966508294.749996,
+      "saldo_corriente": 41639291.67000002,
+      "dias_mora_promedio": 0
+    },
+    {
+      "codigo": "132",
+      "nombre": "MEDELLIN CENTRO",
+      "documentos": 3571,
+      "saldo_total": 4854827224.420005,
+      "saldo_vencido": 4776283901.650006,
+      "saldo_corriente": 78543322.77000001,
+      "dias_mora_promedio": 0
+    },
+    {
+      "codigo": "44",
+      "nombre": "VIAJERA ANTIOQUIA",
+      "documentos": 4476,
+      "saldo_total": 3440361793.7599897,
+      "saldo_vencido": 3419541721.8899894,
+      "saldo_corriente": 20820071.870000005,
+      "dias_mora_promedio": 0
+    },
+    {
+      "codigo": "157",
+      "nombre": "MAQUILA MEJIA NU©EZ ANDRES",
+      "documentos": 133,
+      "saldo_total": 2721958246.81,
+      "saldo_vencido": 2721958246.81,
+      "saldo_corriente": 0,
+      "dias_mora_promedio": 0
+    },
+    {
+      "codigo": "47",
+      "nombre": "SANTANDER",
+      "documentos": 2981,
+      "saldo_total": 2645969477.000005,
+      "saldo_vencido": 2599542718.0900035,
+      "saldo_corriente": 46426758.910000004,
+      "dias_mora_promedio": 0
+    },
+    {
+      "codigo": "129",
+      "nombre": "EJE CAFETERO",
+      "documentos": 4435,
+      "saldo_total": 2575183159.5799994,
+      "saldo_vencido": 2542964680.040001,
+      "saldo_corriente": 32218479.540000007,
+      "dias_mora_promedio": 0
+    },
+    {
+      "codigo": "140",
+      "nombre": "RECAUDOS OF.CENTRAL",
+      "documentos": 35267,
+      "saldo_total": 2516037188.4706273,
+      "saldo_vencido": 1465756423.8906138,
+      "saldo_corriente": 1050280764.5799996,
+      "dias_mora_promedio": 0
+    },
+    {
+      "codigo": "23",
+      "nombre": "NAPROLAB NORTE DE SANTANDER",
+      "documentos": 364,
+      "saldo_total": 2332610652.6400003,
+      "saldo_vencido": 2333126702.6400003,
+      "saldo_corriente": -516050,
+      "dias_mora_promedio": 0
+    },
+    {
+      "codigo": "71",
+      "nombre": "CALI SUR",
+      "documentos": 3726,
+      "saldo_total": 2242526915.4500046,
+      "saldo_vencido": 2191645494.600003,
+      "saldo_corriente": 50881420.85000001,
+      "dias_mora_promedio": 0
+    },
+    {
+      "codigo": "19",
+      "nombre": "NAPROLAB HUILA",
+      "documentos": 434,
+      "saldo_total": 2184640634.8,
+      "saldo_vencido": 2132066641.7400007,
+      "saldo_corriente": 52573993.06,
+      "dias_mora_promedio": 0
+    },
+    {
+      "codigo": "9999",
+      "nombre": "OFICINAS",
+      "documentos": 670,
+      "saldo_total": 1868382412.9199996,
+      "saldo_vencido": 1868382412.9199996,
+      "saldo_corriente": 0,
+      "dias_mora_promedio": 0
+    },
+    {
+      "codigo": "17",
+      "nombre": "NAPROLAB NARI©O",
+      "documentos": 279,
+      "saldo_total": 1721314683.0800006,
+      "saldo_vencido": 1687806827.260001,
+      "saldo_corriente": 33507855.82,
+      "dias_mora_promedio": 0
+    },
+    {
+      "codigo": "145",
+      "nombre": "TRANSFERENCISTA URABA",
+      "documentos": 2605,
+      "saldo_total": 1687148559.4299989,
+      "saldo_vencido": 1666328487.5599985,
+      "saldo_corriente": 20820071.870000005,
+      "dias_mora_promedio": 0
+    },
+    {
+      "codigo": "1",
+      "nombre": "NAPROLAB VALLE",
+      "documentos": 704,
+      "saldo_total": 1564470508.8800004,
+      "saldo_vencido": 1564470508.8800004,
+      "saldo_corriente": 0,
+      "dias_mora_promedio": 0
+    },
+    {
+      "codigo": "146",
+      "nombre": "TRANSFERENCISTA SANTANDER",
+      "documentos": 1702,
+      "saldo_total": 1516818186.8700004,
+      "saldo_vencido": 1470391427.96,
+      "saldo_corriente": 46426758.910000004,
+      "dias_mora_promedio": 0
+    },
+    {
+      "codigo": "21",
+      "nombre": "NAPROLAB META",
+      "documentos": 306,
+      "saldo_total": 1479691994.52,
+      "saldo_vencido": 1446533753.13,
+      "saldo_corriente": 33158241.39,
+      "dias_mora_promedio": 0
+    },
+    {
+      "codigo": "25",
+      "nombre": "MEDELLIN SUR",
+      "documentos": 2552,
+      "saldo_total": 1463068251.7500033,
+      "saldo_vencido": 1435982138.4100027,
+      "saldo_corriente": 27086113.34,
+      "dias_mora_promedio": 0
+    },
+    {
+      "codigo": "135",
+      "nombre": "VIAJERA VALLE",
+      "documentos": 3066,
+      "saldo_total": 1448377117.0399992,
+      "saldo_vencido": 1419744478.1299994,
+      "saldo_corriente": 28632638.910000004,
+      "dias_mora_promedio": 0
+    }
+  ],
+  "tipo_documento": [
+    {
+      "tipo": "F020",
+      "documentos": 55183,
+      "saldo": 266051032310.65964
+    },
+    {
+      "tipo": "F011",
+      "documentos": 4374,
+      "saldo": 9992044384.650005
+    },
+    {
+      "tipo": "F021",
+      "documentos": 187,
+      "saldo": 5187606081.090004
+    },
+    {
+      "tipo": "F005",
+      "documentos": 1592,
+      "saldo": 3942458755.68
+    },
+    {
+      "tipo": "F013",
+      "documentos": 35,
+      "saldo": 885568592.3100002
+    },
+    {
+      "tipo": "R108",
+      "documentos": 449,
+      "saldo": 774330590.4099997
+    },
+    {
+      "tipo": "F007",
+      "documentos": 39,
+      "saldo": 634894702.46
+    },
+    {
+      "tipo": "F025",
+      "documentos": 2497,
+      "saldo": 233878402.49999994
+    },
+    {
+      "tipo": "R104",
+      "documentos": 1164,
+      "saldo": 169793952.6200002
+    },
+    {
+      "tipo": "F022",
+      "documentos": 162,
+      "saldo": 159828279.78999996
+    },
+    {
+      "tipo": "R100",
+      "documentos": 954,
+      "saldo": 158223248.02000025
+    },
+    {
+      "tipo": "R107",
+      "documentos": 1652,
+      "saldo": 100875280.04
+    },
+    {
+      "tipo": "R103",
+      "documentos": 1010,
+      "saldo": 95615314.57999998
+    },
+    {
+      "tipo": "R111",
+      "documentos": 885,
+      "saldo": 87848369.02000001
+    },
+    {
+      "tipo": "R105",
+      "documentos": 1002,
+      "saldo": 76665438.73999989
+    },
+    {
+      "tipo": "R020",
+      "documentos": 8,
+      "saldo": 70616591.16
+    },
+    {
+      "tipo": "R106",
+      "documentos": 906,
+      "saldo": 65008708.57999995
+    },
+    {
+      "tipo": "R102",
+      "documentos": 570,
+      "saldo": 62307445.97999997
+    },
+    {
+      "tipo": "R101",
+      "documentos": 927,
+      "saldo": 36721060.17999999
+    },
+    {
+      "tipo": "R109",
+      "documentos": 590,
+      "saldo": 33373883.18
+    },
+    {
+      "tipo": "R110",
+      "documentos": 598,
+      "saldo": 32767894.26
+    },
+    {
+      "tipo": "R117",
+      "documentos": 204,
+      "saldo": 25450107.659999996
+    },
+    {
+      "tipo": "R112",
+      "documentos": 450,
+      "saldo": 18712743.60000002
+    },
+    {
+      "tipo": "F004",
+      "documentos": 240,
+      "saldo": 18007925.27
+    },
+    {
+      "tipo": "R013",
+      "documentos": 99,
+      "saldo": 13683295.65
+    },
+    {
+      "tipo": "R115",
+      "documentos": 174,
+      "saldo": 12059794.48
+    },
+    {
+      "tipo": "F014",
+      "documentos": 5,
+      "saldo": 11962258
+    },
+    {
+      "tipo": "R113",
+      "documentos": 39,
+      "saldo": 7209421.649999998
+    },
+    {
+      "tipo": "R114",
+      "documentos": 194,
+      "saldo": 6989439.220000001
+    },
+    {
+      "tipo": "F5",
+      "documentos": 3,
+      "saldo": 6279011
+    },
+    {
+      "tipo": "F05",
+      "documentos": 3,
+      "saldo": 2020656
+    },
+    {
+      "tipo": "R030",
+      "documentos": 2,
+      "saldo": 1996548.4
+    },
+    {
+      "tipo": "F.",
+      "documentos": 1,
+      "saldo": 1496434
+    },
+    {
+      "tipo": "F11",
+      "documentos": 2,
+      "saldo": 938462.55
+    },
+    {
+      "tipo": "F003",
+      "documentos": 6,
+      "saldo": 864600
+    },
+    {
+      "tipo": "F20",
+      "documentos": 8,
+      "saldo": 757088.74
+    },
+    {
+      "tipo": "R116",
+      "documentos": 4,
+      "saldo": 510250.16000000003
+    },
+    {
+      "tipo": "F16",
+      "documentos": 3,
+      "saldo": 404611.18
+    },
+    {
+      "tipo": "F023",
+      "documentos": 2,
+      "saldo": 126555.42
+    },
+    {
+      "tipo": "F126",
+      "documentos": 1,
+      "saldo": 56898.66
+    },
+    {
+      "tipo": "F012",
+      "documentos": 5,
+      "saldo": 44368.61
+    },
+    {
+      "tipo": "J.",
+      "documentos": 2,
+      "saldo": -180882.56
+    },
+    {
+      "tipo": "J06",
+      "documentos": 2,
+      "saldo": -337015.74
+    },
+    {
+      "tipo": "C001",
+      "documentos": 5,
+      "saldo": -955602.29
+    },
+    {
+      "tipo": "J001",
+      "documentos": 6,
+      "saldo": -1733746
+    },
+    {
+      "tipo": "J007",
+      "documentos": 2,
+      "saldo": -15781686.48
+    },
+    {
+      "tipo": "J005",
+      "documentos": 14,
+      "saldo": -21040746.28
+    },
+    {
+      "tipo": "J004",
+      "documentos": 1309,
+      "saldo": -546045465.8400006
+    },
+    {
+      "tipo": "J008",
+      "documentos": 865,
+      "saldo": -601098749.7700009
+    },
+    {
+      "tipo": "J006",
+      "documentos": 10630,
+      "saldo": -249419692703.85864
+    }
+  ],
+  "facturacion_mensual": [
+    {
+      "mes": "2015-12-01",
+      "documentos": 28,
+      "saldo": 256425500,
+      "facturado": 256425500
+    },
+    {
+      "mes": "2016-03-01",
+      "documentos": 18,
+      "saldo": 6564263,
+      "facturado": 6564263
+    },
+    {
+      "mes": "2016-06-01",
+      "documentos": 1,
+      "saldo": 827206.96,
+      "facturado": 827206.96
+    },
+    {
+      "mes": "2016-12-01",
+      "documentos": 6,
+      "saldo": 5314339.1899999995,
+      "facturado": 5314339.1899999995
+    },
+    {
+      "mes": "2017-01-01",
+      "documentos": 1,
+      "saldo": 828827.33,
+      "facturado": 828827.33
+    },
+    {
+      "mes": "2017-02-01",
+      "documentos": 3,
+      "saldo": 2835899,
+      "facturado": 2835899
+    },
+    {
+      "mes": "2017-03-01",
+      "documentos": 9,
+      "saldo": 26799262.44,
+      "facturado": 26799262.44
+    },
+    {
+      "mes": "2017-04-01",
+      "documentos": 3,
+      "saldo": 1555083,
+      "facturado": 1555083
+    },
+    {
+      "mes": "2017-05-01",
+      "documentos": 5,
+      "saldo": 232081,
+      "facturado": 232081
+    },
+    {
+      "mes": "2017-06-01",
+      "documentos": 2,
+      "saldo": 441565,
+      "facturado": 441565
+    },
+    {
+      "mes": "2017-07-01",
+      "documentos": 10,
+      "saldo": 43082711.769999996,
+      "facturado": 43082711.769999996
+    },
+    {
+      "mes": "2017-08-01",
+      "documentos": 6,
+      "saldo": 22593923.94,
+      "facturado": 22593923.94
+    },
+    {
+      "mes": "2017-09-01",
+      "documentos": 13,
+      "saldo": 35067443.31,
+      "facturado": 35067443.31
+    },
+    {
+      "mes": "2017-10-01",
+      "documentos": 19,
+      "saldo": 126616551.55999999,
+      "facturado": 126616551.55999999
+    },
+    {
+      "mes": "2017-11-01",
+      "documentos": 67,
+      "saldo": 148972066.43,
+      "facturado": 148972066.43
+    },
+    {
+      "mes": "2017-12-01",
+      "documentos": 132,
+      "saldo": 357989591.82,
+      "facturado": 357989591.82
+    },
+    {
+      "mes": "2018-01-01",
+      "documentos": 62,
+      "saldo": 174153867.23,
+      "facturado": 174153867.23
+    },
+    {
+      "mes": "2018-02-01",
+      "documentos": 144,
+      "saldo": 188807179.5,
+      "facturado": 188807179.5
+    },
+    {
+      "mes": "2018-03-01",
+      "documentos": 164,
+      "saldo": 1363800475.54,
+      "facturado": 1363800475.54
+    },
+    {
+      "mes": "2018-04-01",
+      "documentos": 202,
+      "saldo": 516871060.21,
+      "facturado": 516871060.21
+    },
+    {
+      "mes": "2018-05-01",
+      "documentos": 390,
+      "saldo": 508555684.36999995,
+      "facturado": 508555684.36999995
+    },
+    {
+      "mes": "2018-06-01",
+      "documentos": 279,
+      "saldo": 377622019.04,
+      "facturado": 377622019.04
+    },
+    {
+      "mes": "2018-07-01",
+      "documentos": 412,
+      "saldo": 516736960.18,
+      "facturado": 516736960.18
+    },
+    {
+      "mes": "2018-08-01",
+      "documentos": 301,
+      "saldo": 481785107.48999995,
+      "facturado": 481785107.48999995
+    },
+    {
+      "mes": "2018-09-01",
+      "documentos": 288,
+      "saldo": 560643846.41,
+      "facturado": 560643846.41
+    },
+    {
+      "mes": "2018-10-01",
+      "documentos": 324,
+      "saldo": 841638266.08,
+      "facturado": 841638266.08
+    },
+    {
+      "mes": "2018-11-01",
+      "documentos": 362,
+      "saldo": 951212667.44,
+      "facturado": 951212667.44
+    },
+    {
+      "mes": "2018-12-01",
+      "documentos": 229,
+      "saldo": 643224396.23,
+      "facturado": 643224396.23
+    },
+    {
+      "mes": "2019-01-01",
+      "documentos": 123,
+      "saldo": 189368166.47999996,
+      "facturado": 189368166.47999996
+    },
+    {
+      "mes": "2019-02-01",
+      "documentos": 275,
+      "saldo": 480689737.71000004,
+      "facturado": 480689737.71000004
+    },
+    {
+      "mes": "2019-03-01",
+      "documentos": 285,
+      "saldo": 533817342.81,
+      "facturado": 533817342.81
+    },
+    {
+      "mes": "2019-04-01",
+      "documentos": 301,
+      "saldo": 513634244.57000005,
+      "facturado": 513634244.57000005
+    },
+    {
+      "mes": "2019-05-01",
+      "documentos": 246,
+      "saldo": 475236802.86,
+      "facturado": 475236802.86
+    },
+    {
+      "mes": "2019-06-01",
+      "documentos": 276,
+      "saldo": 491691478.55,
+      "facturado": 491691478.55
+    },
+    {
+      "mes": "2019-07-01",
+      "documentos": 372,
+      "saldo": 595987351.99,
+      "facturado": 595987351.99
+    },
+    {
+      "mes": "2019-08-01",
+      "documentos": 298,
+      "saldo": 482388291.22,
+      "facturado": 482388291.22
+    },
+    {
+      "mes": "2019-09-01",
+      "documentos": 343,
+      "saldo": 1774107924.6299996,
+      "facturado": 1774107924.6299996
+    },
+    {
+      "mes": "2019-10-01",
+      "documentos": 493,
+      "saldo": 596222806.65,
+      "facturado": 596222806.65
+    },
+    {
+      "mes": "2019-11-01",
+      "documentos": 325,
+      "saldo": 840782142.6299999,
+      "facturado": 840782142.6299999
+    },
+    {
+      "mes": "2019-12-01",
+      "documentos": 347,
+      "saldo": 749078693.270001,
+      "facturado": 749078693.270001
+    },
+    {
+      "mes": "2020-01-01",
+      "documentos": 237,
+      "saldo": 428817647.1800001,
+      "facturado": 428817647.1800001
+    },
+    {
+      "mes": "2020-02-01",
+      "documentos": 315,
+      "saldo": 504375003.7700002,
+      "facturado": 504375003.7700002
+    },
+    {
+      "mes": "2020-03-01",
+      "documentos": 211,
+      "saldo": 222947260.4,
+      "facturado": 222947260.4
+    },
+    {
+      "mes": "2020-04-01",
+      "documentos": 52,
+      "saldo": 31535826.80999999,
+      "facturado": 31535826.80999999
+    },
+    {
+      "mes": "2020-05-01",
+      "documentos": 360,
+      "saldo": 345427111.6899999,
+      "facturado": 345427111.6899999
+    },
+    {
+      "mes": "2020-06-01",
+      "documentos": 386,
+      "saldo": 400567198.7900002,
+      "facturado": 400567198.7900002
+    },
+    {
+      "mes": "2020-07-01",
+      "documentos": 413,
+      "saldo": 610225005.2900001,
+      "facturado": 610225005.2900001
+    },
+    {
+      "mes": "2020-08-01",
+      "documentos": 450,
+      "saldo": 607244451.2799999,
+      "facturado": 607244451.2799999
+    },
+    {
+      "mes": "2020-09-01",
+      "documentos": 352,
+      "saldo": 592310050.1299998,
+      "facturado": 592310050.1299998
+    },
+    {
+      "mes": "2020-10-01",
+      "documentos": 337,
+      "saldo": 638886318.0000004,
+      "facturado": 638886318.0000004
+    },
+    {
+      "mes": "2020-11-01",
+      "documentos": 475,
+      "saldo": 1174143842.9299994,
+      "facturado": 1174143842.9299994
+    },
+    {
+      "mes": "2020-12-01",
+      "documentos": 353,
+      "saldo": 739503382.5100001,
+      "facturado": 739503382.5100001
+    },
+    {
+      "mes": "2021-01-01",
+      "documentos": 205,
+      "saldo": 282837619.79999995,
+      "facturado": 282837619.79999995
+    },
+    {
+      "mes": "2021-02-01",
+      "documentos": 318,
+      "saldo": 532249718.93999994,
+      "facturado": 532249718.93999994
+    },
+    {
+      "mes": "2021-03-01",
+      "documentos": 436,
+      "saldo": 546224809.6799998,
+      "facturado": 546224809.6799998
+    },
+    {
+      "mes": "2021-04-01",
+      "documentos": 324,
+      "saldo": 547054616.2499998,
+      "facturado": 547054616.2499998
+    },
+    {
+      "mes": "2021-05-01",
+      "documentos": 320,
+      "saldo": 480869883.05999994,
+      "facturado": 480869883.05999994
+    },
+    {
+      "mes": "2021-06-01",
+      "documentos": 866,
+      "saldo": 1897277316.1000018,
+      "facturado": 1897277316.1000018
+    },
+    {
+      "mes": "2021-07-01",
+      "documentos": 414,
+      "saldo": 622532404.9099997,
+      "facturado": 622532404.9099997
+    },
+    {
+      "mes": "2021-08-01",
+      "documentos": 583,
+      "saldo": 1825511226.0300014,
+      "facturado": 1825511226.0300014
+    },
+    {
+      "mes": "2021-09-01",
+      "documentos": 1064,
+      "saldo": 1617090911.4400072,
+      "facturado": 1617090911.4400072
+    },
+    {
+      "mes": "2021-10-01",
+      "documentos": 731,
+      "saldo": 1115526843.7199984,
+      "facturado": 1115526843.7199984
+    },
+    {
+      "mes": "2021-11-01",
+      "documentos": 1171,
+      "saldo": 2834710641.4600053,
+      "facturado": 2834710641.4600053
+    },
+    {
+      "mes": "2021-12-01",
+      "documentos": 947,
+      "saldo": 164529997296.0201,
+      "facturado": 164529997296.0201
+    },
+    {
+      "mes": "2022-01-01",
+      "documentos": 461,
+      "saldo": 689480830.5299994,
+      "facturado": 689480830.5299994
+    },
+    {
+      "mes": "2022-02-01",
+      "documentos": 791,
+      "saldo": 1188675040.1900008,
+      "facturado": 1188675040.1900008
+    },
+    {
+      "mes": "2022-03-01",
+      "documentos": 944,
+      "saldo": 1587637965.3000016,
+      "facturado": 1587637965.3000016
+    },
+    {
+      "mes": "2022-04-01",
+      "documentos": 672,
+      "saldo": 1079332085.3599985,
+      "facturado": 1079332085.3599985
+    },
+    {
+      "mes": "2022-05-01",
+      "documentos": 906,
+      "saldo": 1310850234.049998,
+      "facturado": 1310850234.049998
+    },
+    {
+      "mes": "2022-06-01",
+      "documentos": 774,
+      "saldo": 1494787861.7999988,
+      "facturado": 1494787861.7999988
+    },
+    {
+      "mes": "2022-07-01",
+      "documentos": 937,
+      "saldo": 973314731.1999991,
+      "facturado": 973314731.1999991
+    },
+    {
+      "mes": "2022-08-01",
+      "documentos": 937,
+      "saldo": 1579651175.1200018,
+      "facturado": 1579651175.1200018
+    },
+    {
+      "mes": "2022-09-01",
+      "documentos": 938,
+      "saldo": 2142024705.4399972,
+      "facturado": 2142024705.4399972
+    },
+    {
+      "mes": "2022-10-01",
+      "documentos": 893,
+      "saldo": 1023406572.8499985,
+      "facturado": 1023406572.8499985
+    },
+    {
+      "mes": "2022-11-01",
+      "documentos": 1156,
+      "saldo": 1904852494.1399968,
+      "facturado": 1904852494.1399968
+    },
+    {
+      "mes": "2022-12-01",
+      "documentos": 1077,
+      "saldo": 1927266012.3599977,
+      "facturado": 1927266012.3599977
+    },
+    {
+      "mes": "2023-01-01",
+      "documentos": 1029,
+      "saldo": 2198833848.040001,
+      "facturado": 2198833848.040001
+    },
+    {
+      "mes": "2023-02-01",
+      "documentos": 1599,
+      "saldo": 1249575684.2600029,
+      "facturado": 1249575684.2600029
+    },
+    {
+      "mes": "2023-03-01",
+      "documentos": 1380,
+      "saldo": 1556329062.3900015,
+      "facturado": 1556329062.3900015
+    },
+    {
+      "mes": "2023-04-01",
+      "documentos": 1650,
+      "saldo": 1693039591.5999992,
+      "facturado": 1693039591.5999992
+    },
+    {
+      "mes": "2023-05-01",
+      "documentos": 1678,
+      "saldo": 1665464870.560004,
+      "facturado": 1665464870.560004
+    },
+    {
+      "mes": "2023-06-01",
+      "documentos": 1546,
+      "saldo": 1949291991.489999,
+      "facturado": 1949291991.489999
+    },
+    {
+      "mes": "2023-07-01",
+      "documentos": 1880,
+      "saldo": 1692152496.3200028,
+      "facturado": 1692152496.3200028
+    },
+    {
+      "mes": "2023-08-01",
+      "documentos": 1811,
+      "saldo": 2504192054.119996,
+      "facturado": 2504192054.119996
+    },
+    {
+      "mes": "2023-09-01",
+      "documentos": 1854,
+      "saldo": 1639939739.8200016,
+      "facturado": 1639939739.8200016
+    },
+    {
+      "mes": "2023-10-01",
+      "documentos": 1686,
+      "saldo": 476969871.5599995,
+      "facturado": 476969871.5599995
+    },
+    {
+      "mes": "2023-11-01",
+      "documentos": 2213,
+      "saldo": 2626183006.3299932,
+      "facturado": 2626183006.3299932
+    },
+    {
+      "mes": "2023-12-01",
+      "documentos": 1943,
+      "saldo": 2341759449.5899944,
+      "facturado": 2341759449.5899944
+    },
+    {
+      "mes": "2024-01-01",
+      "documentos": 1568,
+      "saldo": 1354950984.5300014,
+      "facturado": 1354950984.5300014
+    },
+    {
+      "mes": "2024-02-01",
+      "documentos": 1551,
+      "saldo": 1111356285.1600006,
+      "facturado": 1111356285.1600006
+    },
+    {
+      "mes": "2024-03-01",
+      "documentos": 1029,
+      "saldo": 989090488.3899992,
+      "facturado": 989090488.3899992
+    },
+    {
+      "mes": "2024-04-01",
+      "documentos": 1511,
+      "saldo": 2114231984.6800048,
+      "facturado": 2114231984.6800048
+    },
+    {
+      "mes": "2024-05-01",
+      "documentos": 1210,
+      "saldo": 1525950533.2199965,
+      "facturado": 1525950533.2199965
+    },
+    {
+      "mes": "2024-06-01",
+      "documentos": 1170,
+      "saldo": -243323220790.5098,
+      "facturado": -243323220790.5098
+    },
+    {
+      "mes": "2024-07-01",
+      "documentos": 1495,
+      "saldo": 1230602420.3899992,
+      "facturado": 1230602420.3899992
+    },
+    {
+      "mes": "2024-08-01",
+      "documentos": 1391,
+      "saldo": 2150414206.0799994,
+      "facturado": 2150414206.0799994
+    },
+    {
+      "mes": "2024-09-01",
+      "documentos": 1858,
+      "saldo": 1949656098.6000018,
+      "facturado": 1949656098.6000018
+    },
+    {
+      "mes": "2024-10-01",
+      "documentos": 1339,
+      "saldo": 1130795380.3199992,
+      "facturado": 1130795380.3199992
+    },
+    {
+      "mes": "2024-11-01",
+      "documentos": 1597,
+      "saldo": 1726744462.2700002,
+      "facturado": 1726744462.2700002
+    },
+    {
+      "mes": "2024-12-01",
+      "documentos": 2322,
+      "saldo": 1715610846.8800013,
+      "facturado": 1715610846.8800013
+    },
+    {
+      "mes": "2025-01-01",
+      "documentos": 1743,
+      "saldo": 946366605.3000009,
+      "facturado": 946366605.3000009
+    },
+    {
+      "mes": "2025-02-01",
+      "documentos": 1354,
+      "saldo": 1204526164.0299993,
+      "facturado": 1204526164.0299993
+    },
+    {
+      "mes": "2025-03-01",
+      "documentos": 1477,
+      "saldo": 1522064322.3299966,
+      "facturado": 1522064322.3299966
+    },
+    {
+      "mes": "2025-04-01",
+      "documentos": 1316,
+      "saldo": 1256697206.550001,
+      "facturado": 1256697206.550001
+    },
+    {
+      "mes": "2025-05-01",
+      "documentos": 1554,
+      "saldo": 1673553110.5299985,
+      "facturado": 1673553110.5299985
+    },
+    {
+      "mes": "2025-06-01",
+      "documentos": 1389,
+      "saldo": 906715279.6299995,
+      "facturado": 906715279.6299995
+    },
+    {
+      "mes": "2025-07-01",
+      "documentos": 1398,
+      "saldo": 1705094651.0700028,
+      "facturado": 1705094651.0700028
+    },
+    {
+      "mes": "2025-08-01",
+      "documentos": 1185,
+      "saldo": 2043503097.9699996,
+      "facturado": 2043503097.9699996
+    },
+    {
+      "mes": "2025-09-01",
+      "documentos": 1382,
+      "saldo": 1274495945.270005,
+      "facturado": 1274495945.270005
+    },
+    {
+      "mes": "2025-10-01",
+      "documentos": 1259,
+      "saldo": 2091765050.4000032,
+      "facturado": 2091765050.4000032
+    },
+    {
+      "mes": "2025-11-01",
+      "documentos": 1360,
+      "saldo": 2311936352.85,
+      "facturado": 2311936352.85
+    },
+    {
+      "mes": "2025-12-01",
+      "documentos": 1599,
+      "saldo": 2135279578.8700025,
+      "facturado": 2135279578.8700025
+    },
+    {
+      "mes": "2026-01-01",
+      "documentos": 1086,
+      "saldo": 2373552430.3199973,
+      "facturado": 2373552430.3199973
+    },
+    {
+      "mes": "2026-02-01",
+      "documentos": 1106,
+      "saldo": 1112608333.8300018,
+      "facturado": 1112608333.8300018
+    },
+    {
+      "mes": "2026-03-01",
+      "documentos": 1195,
+      "saldo": 2170081643.7300024,
+      "facturado": 2170081643.7300024
+    },
+    {
+      "mes": "2026-04-01",
+      "documentos": 1246,
+      "saldo": 2374629323.009994,
+      "facturado": 2374629323.009994
+    },
+    {
+      "mes": "2026-05-01",
+      "documentos": 135,
+      "saldo": 88030572.18999997,
+      "facturado": 88030572.18999997
+    }
+  ],
+  "recaudos_mensual": [],
+  "pedidos_mensual": [],
+  "periodos": {
+    "todo": {
+      "kpis": {
+        "total_documentos": 89064,
+        "saldo_total": 38374163157.343956,
+        "cartera_vencida": 35494977006.79369,
+        "cartera_por_vencer": 2879186150.5502625,
+        "pct_vencida": 92.49707117066018,
+        "total_clientes": 2854,
+        "total_vendedores": 94,
+        "saldo_base_total": 233911698316.58948,
+        "base_retencion_total": 235796091311.66943,
+        "dias_mora_promedio": 1037.7636641567117
+      },
+      "aging": [
+        {
+          "rango": "Corriente (sin mora)",
+          "key": "corriente",
+          "documentos": 749,
+          "saldo": 2879186150.5499935,
+          "pct_del_total": 7.502928829339127
+        },
+        {
+          "rango": "1 - 30 días",
+          "key": "1_30",
+          "documentos": 1163,
+          "saldo": 1635080227.8699982,
+          "pct_del_total": 4.26088829915521
+        },
+        {
+          "rango": "31 - 60 días",
+          "key": "31_60",
+          "documentos": 1011,
+          "saldo": 1820123664.730001,
+          "pct_del_total": 4.7430966957299505
+        },
+        {
+          "rango": "61 - 90 días",
+          "key": "61_90",
+          "documentos": 1260,
+          "saldo": 1713344845.5899978,
+          "pct_del_total": 4.464839633283578
+        },
+        {
+          "rango": "91 - 180 días",
+          "key": "91_180",
+          "documentos": 4032,
+          "saldo": 6226043692.950025,
+          "pct_del_total": 16.2245719012077
+        },
+        {
+          "rango": "181 - 360 días",
+          "key": "181_360",
+          "documentos": 7861,
+          "saldo": 9612176940.299978,
+          "pct_del_total": 25.048564318881887
+        },
+        {
+          "rango": "Más de 360 días",
+          "key": "mas_360",
+          "documentos": 72988,
+          "saldo": 14488207635.353529,
+          "pct_del_total": 37.755110322401414
+        }
+      ],
+      "top_clientes": [
+        {
+          "codigo": "67040225-0",
+          "nombre": "BAHAMON GUALDRON GINA ANDREA",
+          "nit": "67040225",
+          "ciudad": "CALI",
+          "documentos": 60,
+          "saldo": 162760789513.41003,
+          "saldo_vencido": 162760789513.41003,
+          "saldo_base": 136776350820.65005,
+          "pct_vencido": 100,
+          "pct_del_total": 69.58215030918217
+        },
+        {
+          "codigo": "72139503-0",
+          "nombre": "ELMER ENRIQUE PACHECO POLO",
+          "nit": "72139503",
+          "ciudad": "VALLEDUPAR",
+          "documentos": 345,
+          "saldo": 5358074175.339999,
+          "saldo_vencido": 5014659934.959998,
+          "saldo_base": 5144899979.139997,
+          "pct_vencido": 93.5907150751938,
+          "pct_del_total": 2.2906396789475982
+        },
+        {
+          "codigo": "6549981-0",
+          "nombre": "ARISTIZABAL GRISALES HECTOR FABIO",
+          "nit": "6549981",
+          "ciudad": "CALI",
+          "documentos": 243,
+          "saldo": 4617920128.020004,
+          "saldo_vencido": 4617920128.020004,
+          "saldo_base": 4778070726.629999,
+          "pct_vencido": 100,
+          "pct_del_total": 1.9742151253033298
+        },
+        {
+          "codigo": "991520783001-0",
+          "nombre": "Sin nombre",
+          "nit": "",
+          "ciudad": "",
+          "documentos": 161,
+          "saldo": 4613754705.789998,
+          "saldo_vencido": 4613754705.789998,
+          "saldo_base": 6290138274.309998,
+          "pct_vencido": 100,
+          "pct_del_total": 1.9724343583472592
+        },
+        {
+          "codigo": "88216979-0",
+          "nombre": "WILSON RODOLFO JAIMES FLOREZ",
+          "nit": "88216979",
+          "ciudad": "CUCUTA",
+          "documentos": 602,
+          "saldo": 3895788099.850002,
+          "saldo_vencido": 3897336249.8500013,
+          "saldo_base": 4253575198.26,
+          "pct_vencido": 100.03973907102544,
+          "pct_del_total": 1.665495196643487
+        },
+        {
+          "codigo": "87713814-0",
+          "nombre": "HUBER ALEX BURBANO PANTOJA",
+          "nit": "87713814",
+          "ciudad": "PASTO",
+          "documentos": 438,
+          "saldo": 2925884108.5099993,
+          "saldo_vencido": 2825360541.0500007,
+          "saldo_base": 3348817688.24,
+          "pct_vencido": 96.564335300649,
+          "pct_del_total": 1.2508498418706449
+        },
+        {
+          "codigo": "36183775-0",
+          "nombre": "SANDRA LILIANA TRUJILLO MEDINA",
+          "nit": "36183775",
+          "ciudad": "NEIVA",
+          "documentos": 508,
+          "saldo": 2587288861.5100007,
+          "saldo_vencido": 2587288861.5100007,
+          "saldo_base": 2649046159.7699986,
+          "pct_vencido": 100,
+          "pct_del_total": 1.1060963945497997
+        },
+        {
+          "codigo": "900464794-0",
+          "nombre": "INVERSIONES KAUTIVA SAS",
+          "nit": "900464794",
+          "ciudad": "M6DELLIN",
+          "documentos": 798,
+          "saldo": 2169217478.060002,
+          "saldo_vencido": 2124730392.4600024,
+          "saldo_base": 2335584291.8000016,
+          "pct_vencido": 97.94916433921667,
+          "pct_del_total": 0.9273659648796438
+        },
+        {
+          "codigo": "900938624-0",
+          "nombre": "C D DISTRIBUCIONES SAS",
+          "nit": "900938624",
+          "ciudad": "CALI",
+          "documentos": 162,
+          "saldo": 2103674162,
+          "saldo_vencido": 2103674162,
+          "saldo_base": 2103674162,
+          "pct_vencido": 100,
+          "pct_del_total": 0.8993454269879085
+        },
+        {
+          "codigo": "71653570-0",
+          "nombre": "NESTOR ZULUAGA GOMEZ",
+          "nit": "71653570",
+          "ciudad": "CALI",
+          "documentos": 479,
+          "saldo": 1674409438.0699995,
+          "saldo_vencido": 1674409438.0699995,
+          "saldo_base": 1598742556.4699993,
+          "pct_vencido": 100,
+          "pct_del_total": 0.7158297127165303
+        },
+        {
+          "codigo": "900179959-0",
+          "nombre": "DIMOBE SAS",
+          "nit": "900179959",
+          "ciudad": "M6DELLIN",
+          "documentos": 273,
+          "saldo": 1430103004.3200002,
+          "saldo_vencido": 1409688952.5800002,
+          "saldo_base": 1431754748.7899997,
+          "pct_vencido": 98.57254675514044,
+          "pct_del_total": 0.6113858411580668
+        },
+        {
+          "codigo": "41730954-0",
+          "nombre": "BEATRIZ ELENA RAMIREZ SANCHEZ",
+          "nit": "41730954",
+          "ciudad": "VILLAVICENCIO",
+          "documentos": 293,
+          "saldo": 1385896880.39,
+          "saldo_vencido": 1377712855.3100002,
+          "saldo_base": 1357516933.0700004,
+          "pct_vencido": 99.40947806465248,
+          "pct_del_total": 0.5924872036601813
+        },
+        {
+          "codigo": "890300279-0",
+          "nombre": "Sin nombre",
+          "nit": "",
+          "ciudad": "",
+          "documentos": 1,
+          "saldo": 1178775000,
+          "saldo_vencido": 1178775000,
+          "saldo_base": 1178775000,
+          "pct_vencido": 100,
+          "pct_del_total": 0.5039401656622485
+        },
+        {
+          "codigo": "901293584-0",
+          "nombre": "GLOBAL COSMETICA S.A.S",
+          "nit": "901293584",
+          "ciudad": "VILLAVICENCIO",
+          "documentos": 214,
+          "saldo": 1109859351.2800002,
+          "saldo_vencido": 1018568652.1900003,
+          "saldo_base": 1142069570.63,
+          "pct_vencido": 91.77457044582141,
+          "pct_del_total": 0.4744779159261428
+        },
+        {
+          "codigo": "3101663819-0",
+          "nombre": "Sin nombre",
+          "nit": "",
+          "ciudad": "",
+          "documentos": 28,
+          "saldo": 1093125693.6100001,
+          "saldo_vencido": 1093125693.6100001,
+          "saldo_base": 1474553684.73,
+          "pct_vencido": 100,
+          "pct_del_total": 0.46732408061545566
+        },
+        {
+          "codigo": "91284736-0",
+          "nombre": "ECAR RAMIRO ARENIS ACEVEDO",
+          "nit": "91284736",
+          "ciudad": "BUCARAMANGA",
+          "documentos": 812,
+          "saldo": 1086554893.4699988,
+          "saldo_vencido": 1065945772.559999,
+          "saldo_base": 963403471.8199991,
+          "pct_vencido": 98.10326003464188,
+          "pct_del_total": 0.46451498633445565
+        },
+        {
+          "codigo": "900651421-0",
+          "nombre": "SURTIMOS COSMETICOS S.A.S",
+          "nit": "900651421",
+          "ciudad": "M6DELLIN",
+          "documentos": 376,
+          "saldo": 1040132997.2900002,
+          "saldo_vencido": 1023602436.1700003,
+          "saldo_base": 1010170643.9499999,
+          "pct_vencido": 98.41072620875704,
+          "pct_del_total": 0.44466908015956713
+        },
+        {
+          "codigo": "800024702-0",
+          "nombre": "Sin nombre",
+          "nit": "",
+          "ciudad": "",
+          "documentos": 1,
+          "saldo": 1006013838,
+          "saldo_vencido": 1006013838,
+          "saldo_base": 1006013838,
+          "pct_vencido": 100,
+          "pct_del_total": 0.4300827385889881
+        },
+        {
+          "codigo": "902010904-0",
+          "nombre": "PCN POCION S A S",
+          "nit": "902010904",
+          "ciudad": "CALI",
+          "documentos": 32,
+          "saldo": 894313458.5,
+          "saldo_vencido": 894313458.5,
+          "saldo_base": 850995631.2800001,
+          "pct_vencido": 100,
+          "pct_del_total": 0.3823295136310733
+        },
+        {
+          "codigo": "901875433-0",
+          "nombre": "COMERCIALIZADORA COSMOBELLEZA DEL HUILA SAS",
+          "nit": "901875433",
+          "ciudad": "NEIVA",
+          "documentos": 182,
+          "saldo": 866309747.8800001,
+          "saldo_vencido": 708587768.6999999,
+          "saldo_base": 947869879.5400007,
+          "pct_vencido": 81.79381225179893,
+          "pct_del_total": 0.37035759823670167
+        }
+      ],
+      "cartera_vendedor": [
+        {
+          "codigo": "101",
+          "nombre": "EMPLEADOS",
+          "documentos": 2533,
+          "saldo_total": 81545199441.81995,
+          "saldo_vencido": 81545199441.81995,
+          "saldo_corriente": 0,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "7",
+          "nombre": "EXPORTACIONES",
+          "documentos": 183,
+          "saldo_total": 5203963597.109999,
+          "saldo_vencido": 5199125111.849998,
+          "saldo_corriente": 4838485.26,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "33",
+          "nombre": "CALI NORTE",
+          "documentos": 5312,
+          "saldo_total": 5008147586.419996,
+          "saldo_vencido": 4966508294.749996,
+          "saldo_corriente": 41639291.67000002,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "132",
+          "nombre": "MEDELLIN CENTRO",
+          "documentos": 3571,
+          "saldo_total": 4854827224.420005,
+          "saldo_vencido": 4776283901.650006,
+          "saldo_corriente": 78543322.77000001,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "44",
+          "nombre": "VIAJERA ANTIOQUIA",
+          "documentos": 4476,
+          "saldo_total": 3440361793.7599897,
+          "saldo_vencido": 3419541721.8899894,
+          "saldo_corriente": 20820071.870000005,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "157",
+          "nombre": "MAQUILA MEJIA NU©EZ ANDRES",
+          "documentos": 133,
+          "saldo_total": 2721958246.81,
+          "saldo_vencido": 2721958246.81,
+          "saldo_corriente": 0,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "47",
+          "nombre": "SANTANDER",
+          "documentos": 2981,
+          "saldo_total": 2645969477.000005,
+          "saldo_vencido": 2599542718.0900035,
+          "saldo_corriente": 46426758.910000004,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "129",
+          "nombre": "EJE CAFETERO",
+          "documentos": 4435,
+          "saldo_total": 2575183159.5799994,
+          "saldo_vencido": 2542964680.040001,
+          "saldo_corriente": 32218479.540000007,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "140",
+          "nombre": "RECAUDOS OF.CENTRAL",
+          "documentos": 35267,
+          "saldo_total": 2516037188.4706273,
+          "saldo_vencido": 1465756423.8906138,
+          "saldo_corriente": 1050280764.5799996,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "23",
+          "nombre": "NAPROLAB NORTE DE SANTANDER",
+          "documentos": 364,
+          "saldo_total": 2332610652.6400003,
+          "saldo_vencido": 2333126702.6400003,
+          "saldo_corriente": -516050,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "71",
+          "nombre": "CALI SUR",
+          "documentos": 3726,
+          "saldo_total": 2242526915.4500046,
+          "saldo_vencido": 2191645494.600003,
+          "saldo_corriente": 50881420.85000001,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "19",
+          "nombre": "NAPROLAB HUILA",
+          "documentos": 434,
+          "saldo_total": 2184640634.8,
+          "saldo_vencido": 2132066641.7400007,
+          "saldo_corriente": 52573993.06,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "9999",
+          "nombre": "OFICINAS",
+          "documentos": 670,
+          "saldo_total": 1868382412.9199996,
+          "saldo_vencido": 1868382412.9199996,
+          "saldo_corriente": 0,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "17",
+          "nombre": "NAPROLAB NARI©O",
+          "documentos": 279,
+          "saldo_total": 1721314683.0800006,
+          "saldo_vencido": 1687806827.260001,
+          "saldo_corriente": 33507855.82,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "145",
+          "nombre": "TRANSFERENCISTA URABA",
+          "documentos": 2605,
+          "saldo_total": 1687148559.4299989,
+          "saldo_vencido": 1666328487.5599985,
+          "saldo_corriente": 20820071.870000005,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "1",
+          "nombre": "NAPROLAB VALLE",
+          "documentos": 704,
+          "saldo_total": 1564470508.8800004,
+          "saldo_vencido": 1564470508.8800004,
+          "saldo_corriente": 0,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "146",
+          "nombre": "TRANSFERENCISTA SANTANDER",
+          "documentos": 1702,
+          "saldo_total": 1516818186.8700004,
+          "saldo_vencido": 1470391427.96,
+          "saldo_corriente": 46426758.910000004,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "21",
+          "nombre": "NAPROLAB META",
+          "documentos": 306,
+          "saldo_total": 1479691994.52,
+          "saldo_vencido": 1446533753.13,
+          "saldo_corriente": 33158241.39,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "25",
+          "nombre": "MEDELLIN SUR",
+          "documentos": 2552,
+          "saldo_total": 1463068251.7500033,
+          "saldo_vencido": 1435982138.4100027,
+          "saldo_corriente": 27086113.34,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "135",
+          "nombre": "VIAJERA VALLE",
+          "documentos": 3066,
+          "saldo_total": 1448377117.0399992,
+          "saldo_vencido": 1419744478.1299994,
+          "saldo_corriente": 28632638.910000004,
+          "dias_mora_promedio": 0
+        }
+      ]
+    },
+    "1y": {
+      "kpis": {
+        "total_documentos": 14340,
+        "saldo_total": 20587692259.140026,
+        "cartera_vencida": 17708506108.589897,
+        "cartera_por_vencer": 2879186150.550129,
+        "pct_vencida": 86.01501268666041,
+        "total_clientes": 1040,
+        "total_vendedores": 35,
+        "saldo_base_total": 233911698316.58948,
+        "base_retencion_total": 21075501237.200047,
+        "dias_mora_promedio": 167.3910676182768
+      },
+      "aging": [
+        {
+          "rango": "Corriente (sin mora)",
+          "key": "corriente",
+          "documentos": 749,
+          "saldo": 2879186150.5499935,
+          "pct_del_total": 13.984987313338928
+        },
+        {
+          "rango": "1 - 30 días",
+          "key": "1_30",
+          "documentos": 1163,
+          "saldo": 1635080227.8699982,
+          "pct_del_total": 7.942027728455553
+        },
+        {
+          "rango": "31 - 60 días",
+          "key": "31_60",
+          "documentos": 1011,
+          "saldo": 1820123664.730001,
+          "pct_del_total": 8.840833842957538
+        },
+        {
+          "rango": "61 - 90 días",
+          "key": "61_90",
+          "documentos": 1260,
+          "saldo": 1713344845.5899978,
+          "pct_del_total": 8.322180184276595
+        },
+        {
+          "rango": "91 - 180 días",
+          "key": "91_180",
+          "documentos": 4032,
+          "saldo": 6226043692.950025,
+          "pct_del_total": 30.2415813029551
+        },
+        {
+          "rango": "181 - 360 días",
+          "key": "181_360",
+          "documentos": 6125,
+          "saldo": 6313913677.449996,
+          "pct_del_total": 30.668389628016214
+        },
+        {
+          "rango": "Más de 360 días",
+          "key": "mas_360",
+          "documentos": 0,
+          "saldo": 0,
+          "pct_del_total": 0
+        }
+      ],
+      "top_clientes": [
+        {
+          "codigo": "800155993-0",
+          "nombre": "DISISTEMA LTDA",
+          "nit": "800155993",
+          "ciudad": "VALLEDUPAR",
+          "documentos": 200,
+          "saldo": 4303299536.52,
+          "saldo_vencido": 3119797912.9199996,
+          "saldo_base": 4259410489.94,
+          "pct_vencido": 72.49780979557195,
+          "pct_del_total": 1.8397111249629203
+        },
+        {
+          "codigo": "6549981-0",
+          "nombre": "ARISTIZABAL GRISALES HECTOR FABIO",
+          "nit": "6549981",
+          "ciudad": "CALI",
+          "documentos": 108,
+          "saldo": 3031669024.2600017,
+          "saldo_vencido": 3031669024.2600017,
+          "saldo_base": 2929308241.200001,
+          "pct_vencido": 100,
+          "pct_del_total": 1.2960741365559099
+        },
+        {
+          "codigo": "72139503-0",
+          "nombre": "ELMER ENRIQUE PACHECO POLO",
+          "nit": "72139503",
+          "ciudad": "VALLEDUPAR",
+          "documentos": 65,
+          "saldo": 965097021.3300002,
+          "saldo_vencido": 621682780.9499999,
+          "saldo_base": 949518086.76,
+          "pct_vencido": 64.41660964752113,
+          "pct_del_total": 0.41259031860124523
+        },
+        {
+          "codigo": "902010904-0",
+          "nombre": "PCN POCION S A S",
+          "nit": "902010904",
+          "ciudad": "CALI",
+          "documentos": 32,
+          "saldo": 894313458.5,
+          "saldo_vencido": 894313458.5,
+          "saldo_base": 850995631.2800001,
+          "pct_vencido": 100,
+          "pct_del_total": 0.3823295136310733
+        },
+        {
+          "codigo": "87713814-0",
+          "nombre": "HUBER ALEX BURBANO PANTOJA",
+          "nit": "87713814",
+          "ciudad": "PASTO",
+          "documentos": 59,
+          "saldo": 545323413.3999999,
+          "saldo_vencido": 444799845.9400001,
+          "saldo_base": 631025775.0399998,
+          "pct_vencido": 81.56624766333574,
+          "pct_del_total": 0.2331321679610602
+        },
+        {
+          "codigo": "901875433-0",
+          "nombre": "COMERCIALIZADORA COSMOBELLEZA DEL HUILA SAS",
+          "nit": "901875433",
+          "ciudad": "NEIVA",
+          "documentos": 110,
+          "saldo": 503928730.17999995,
+          "saldo_vencido": 346206751,
+          "saldo_base": 597894642.4800003,
+          "pct_vencido": 68.70153064627557,
+          "pct_del_total": 0.2154354544072242
+        },
+        {
+          "codigo": "88216979-0",
+          "nombre": "WILSON RODOLFO JAIMES FLOREZ",
+          "nit": "88216979",
+          "ciudad": "CUCUTA",
+          "documentos": 102,
+          "saldo": 420738558.21999997,
+          "saldo_vencido": 422286708.2199999,
+          "saldo_base": 462040231.50000006,
+          "pct_vencido": 100.36796009534984,
+          "pct_del_total": 0.17987067822941816
+        },
+        {
+          "codigo": "900464794-0",
+          "nombre": "INVERSIONES KAUTIVA SAS",
+          "nit": "900464794",
+          "ciudad": "M6DELLIN",
+          "documentos": 166,
+          "saldo": 361225356.4199998,
+          "saldo_vencido": 316738270.82,
+          "saldo_base": 389468733.65999997,
+          "pct_vencido": 87.68439568005456,
+          "pct_del_total": 0.15442808505075137
+        },
+        {
+          "codigo": "65735335-0",
+          "nombre": "MARTINEZ CARDENAS MELIDA",
+          "nit": "65735335",
+          "ciudad": "IBAGUE",
+          "documentos": 107,
+          "saldo": 306574618.9399998,
+          "saldo_vencido": 236231617.4000001,
+          "saldo_base": 275178273.00000006,
+          "pct_vencido": 77.05517769761408,
+          "pct_del_total": 0.131064252513384
+        },
+        {
+          "codigo": "901370080-1",
+          "nombre": "LUCEGO SAS",
+          "nit": "901370080",
+          "ciudad": "CALI",
+          "documentos": 52,
+          "saldo": 285471634.03999996,
+          "saldo_vencido": 285408854.43999994,
+          "saldo_base": 268348388.89999998,
+          "pct_vencido": 99.97800846300854,
+          "pct_del_total": 0.1220424784628028
+        },
+        {
+          "codigo": "900429621-2",
+          "nombre": "DISTRIBUCIONES ERVI SAS",
+          "nit": "900429621",
+          "ciudad": "CALI",
+          "documentos": 34,
+          "saldo": 270792600,
+          "saldo_vencido": 261472600,
+          "saldo_base": 225045234,
+          "pct_vencido": 96.55825159180864,
+          "pct_del_total": 0.11576701890022353
+        },
+        {
+          "codigo": "901883014-0",
+          "nombre": "HOLE COSMETICS SAS",
+          "nit": "901883014",
+          "ciudad": "CALI",
+          "documentos": 106,
+          "saldo": 268589736.36,
+          "saldo_vencido": 236547152.94,
+          "saldo_base": 275190988.8,
+          "pct_vencido": 88.07006408575037,
+          "pct_del_total": 0.11482526880569918
+        },
+        {
+          "codigo": "900179959-0",
+          "nombre": "DIMOBE SAS",
+          "nit": "900179959",
+          "ciudad": "M6DELLIN",
+          "documentos": 86,
+          "saldo": 239829282.70000005,
+          "saldo_vencido": 219415230.96000004,
+          "saldo_base": 304385110.44000006,
+          "pct_vencido": 91.48809039906286,
+          "pct_del_total": 0.10252983686835591
+        },
+        {
+          "codigo": "91284736-0",
+          "nombre": "ECAR RAMIRO ARENIS ACEVEDO",
+          "nit": "91284736",
+          "ciudad": "BUCARAMANGA",
+          "documentos": 147,
+          "saldo": 232878537.92999983,
+          "saldo_vencido": 212269417.01999986,
+          "saldo_base": 197038800.53999996,
+          "pct_vencido": 91.15027039709653,
+          "pct_del_total": 0.09955831179285814
+        },
+        {
+          "codigo": "901293584-0",
+          "nombre": "GLOBAL COSMETICA S.A.S",
+          "nit": "901293584",
+          "ciudad": "VILLAVICENCIO",
+          "documentos": 52,
+          "saldo": 211671869.22000003,
+          "saldo_vencido": 120381170.12999995,
+          "saldo_base": 243157585.01000005,
+          "pct_vencido": 56.871595915696496,
+          "pct_del_total": 0.09049221169499236
+        },
+        {
+          "codigo": "41730954-0",
+          "nombre": "BEATRIZ ELENA RAMIREZ SANCHEZ",
+          "nit": "41730954",
+          "ciudad": "VILLAVICENCIO",
+          "documentos": 14,
+          "saldo": 155761956.84000006,
+          "saldo_vencido": 147577931.76000005,
+          "saldo_base": 131488135.19999999,
+          "pct_vencido": 94.74581261944037,
+          "pct_del_total": 0.06659006708983957
+        },
+        {
+          "codigo": "901561616-0",
+          "nombre": "BELLEZAPRO SOCIEDAD POR ACCIONES SIMPLIFICADA",
+          "nit": "901561616",
+          "ciudad": "DUITAMA",
+          "documentos": 35,
+          "saldo": 155691676.32999995,
+          "saldo_vencido": 125027853.46000002,
+          "saldo_base": 133756790.50000003,
+          "pct_vencido": 80.30477698434841,
+          "pct_del_total": 0.06656002134586614
+        },
+        {
+          "codigo": "900651421-0",
+          "nombre": "SURTIMOS COSMETICOS S.A.S",
+          "nit": "900651421",
+          "ciudad": "M6DELLIN",
+          "documentos": 78,
+          "saldo": 147470658.11999995,
+          "saldo_vencido": 130940096.99999999,
+          "saldo_base": 146277459.15999997,
+          "pct_vencido": 88.79061005712153,
+          "pct_del_total": 0.06304543944630112
+        },
+        {
+          "codigo": "900479120-5",
+          "nombre": "GRUPO ADAL MAS SAS 5",
+          "nit": "900479120",
+          "ciudad": "BUCARAMANGA",
+          "documentos": 57,
+          "saldo": 123329937.60000001,
+          "saldo_vencido": 109967965.44000001,
+          "saldo_base": 143106910.41000003,
+          "pct_vencido": 89.16567021760984,
+          "pct_del_total": 0.052724997718189455
+        },
+        {
+          "codigo": "900479120-3",
+          "nombre": "GRUPO ADAL MAS SAS 3",
+          "nit": "900479120",
+          "ciudad": "BARRANCABERMEJA",
+          "documentos": 48,
+          "saldo": 108248994.90000004,
+          "saldo_vencido": 87885027.9,
+          "saldo_base": 111014612.76000002,
+          "pct_vencido": 81.18784657648584,
+          "pct_del_total": 0.046277717480161955
+        }
+      ],
+      "cartera_vendedor": [
+        {
+          "codigo": "140",
+          "nombre": "RECAUDOS OF.CENTRAL",
+          "documentos": 6598,
+          "saldo_total": 9191487055.89003,
+          "saldo_vencido": 8141206291.310023,
+          "saldo_corriente": 1050280764.5799996,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "24",
+          "nombre": "NAPROLAB CESAR",
+          "documentos": 114,
+          "saldo_total": 2298424019.3799996,
+          "saldo_vencido": 1789452064.72,
+          "saldo_corriente": 508971954.65999997,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "157",
+          "nombre": "MAQUILA MEJIA NU©EZ ANDRES",
+          "documentos": 70,
+          "saldo_total": 1962991241.38,
+          "saldo_vencido": 1962991241.38,
+          "saldo_corriente": 0,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "78",
+          "nombre": "COORDINADOR VENTAS SUR",
+          "documentos": 86,
+          "saldo_total": 897415154.7700003,
+          "saldo_vencido": 278913684.04999995,
+          "saldo_corriente": 618501470.7200001,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "132",
+          "nombre": "MEDELLIN CENTRO",
+          "documentos": 618,
+          "saldo_total": 786430428.5699998,
+          "saldo_vencido": 707887105.7999995,
+          "saldo_corriente": 78543322.77000001,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "33",
+          "nombre": "CALI NORTE",
+          "documentos": 530,
+          "saldo_total": 501356222.71999973,
+          "saldo_vencido": 459716931.04999965,
+          "saldo_corriente": 41639291.67000002,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "129",
+          "nombre": "EJE CAFETERO",
+          "documentos": 735,
+          "saldo_total": 403864339.13000023,
+          "saldo_vencido": 371645859.59000003,
+          "saldo_corriente": 32218479.540000007,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "71",
+          "nombre": "CALI SUR",
+          "documentos": 602,
+          "saldo_total": 390248646.8199999,
+          "saldo_vencido": 339367225.9699995,
+          "saldo_corriente": 50881420.85000001,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "148",
+          "nombre": "TRANSFERENCISTA POPAYAN",
+          "documentos": 602,
+          "saldo_total": 390248646.8199999,
+          "saldo_vencido": 339367225.96999955,
+          "saldo_corriente": 50881420.85000001,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "47",
+          "nombre": "SANTANDER",
+          "documentos": 402,
+          "saldo_total": 387319749.87999994,
+          "saldo_vencido": 340892990.9699999,
+          "saldo_corriente": 46426758.910000004,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "146",
+          "nombre": "TRANSFERENCISTA SANTANDER",
+          "documentos": 402,
+          "saldo_total": 387319749.87999994,
+          "saldo_vencido": 340892990.9699999,
+          "saldo_corriente": 46426758.910000004,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "44",
+          "nombre": "VIAJERA ANTIOQUIA",
+          "documentos": 460,
+          "saldo_total": 354138303.7600001,
+          "saldo_vencido": 333318231.8899999,
+          "saldo_corriente": 20820071.870000005,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "145",
+          "nombre": "TRANSFERENCISTA URABA",
+          "documentos": 460,
+          "saldo_total": 354138303.7600001,
+          "saldo_vencido": 333318231.8899999,
+          "saldo_corriente": 20820071.870000005,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "135",
+          "nombre": "VIAJERA VALLE",
+          "documentos": 621,
+          "saldo_total": 242843159.29000035,
+          "saldo_vencido": 214210520.38000017,
+          "saldo_corriente": 28632638.910000004,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "17",
+          "nombre": "NAPROLAB NARI©O",
+          "documentos": 25,
+          "saldo_total": 227464994.49,
+          "saldo_vencido": 193957138.67000002,
+          "saldo_corriente": 33507855.82,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "25",
+          "nombre": "MEDELLIN SUR",
+          "documentos": 434,
+          "saldo_total": 220572566.7600002,
+          "saldo_vencido": 193486453.42000017,
+          "saldo_corriente": 27086113.34,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "19",
+          "nombre": "NAPROLAB HUILA",
+          "documentos": 48,
+          "saldo_total": 216031296.26000002,
+          "saldo_vencido": 163457303.2,
+          "saldo_corriente": 52573993.06,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "23",
+          "nombre": "NAPROLAB NORTE DE SANTANDER",
+          "documentos": 41,
+          "saldo_total": 169193950.87,
+          "saldo_vencido": 169710000.87,
+          "saldo_corriente": -516050,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "10",
+          "nombre": "MAQUILAS NAPROLAB",
+          "documentos": 64,
+          "saldo_total": 162001557.47999996,
+          "saldo_vencido": 151794531.60999998,
+          "saldo_corriente": 10207025.87,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "21",
+          "nombre": "NAPROLAB META",
+          "documentos": 29,
+          "saldo_total": 148050265.36000004,
+          "saldo_vencido": 114892023.96999998,
+          "saldo_corriente": 33158241.39,
+          "dias_mora_promedio": 0
+        }
+      ]
+    },
+    "6m": {
+      "kpis": {
+        "total_documentos": 6367,
+        "saldo_total": 10254181881.94999,
+        "cartera_vencida": 7374995731.400013,
+        "cartera_por_vencer": 2879186150.5499763,
+        "pct_vencida": 71.92183458713475,
+        "total_clientes": 759,
+        "total_vendedores": 31,
+        "saldo_base_total": 233911698316.58948,
+        "base_retencion_total": 10431096638.130043,
+        "dias_mora_promedio": 76.0186899252403
+      },
+      "aging": [
+        {
+          "rango": "Corriente (sin mora)",
+          "key": "corriente",
+          "documentos": 749,
+          "saldo": 2879186150.5499935,
+          "pct_del_total": 28.078165412865413
+        },
+        {
+          "rango": "1 - 30 días",
+          "key": "1_30",
+          "documentos": 1163,
+          "saldo": 1635080227.8699982,
+          "pct_del_total": 15.945496644136595
+        },
+        {
+          "rango": "31 - 60 días",
+          "key": "31_60",
+          "documentos": 1011,
+          "saldo": 1820123664.730001,
+          "pct_del_total": 17.750062225187257
+        },
+        {
+          "rango": "61 - 90 días",
+          "key": "61_90",
+          "documentos": 1260,
+          "saldo": 1713344845.5899978,
+          "pct_del_total": 16.708742494668712
+        },
+        {
+          "rango": "91 - 180 días",
+          "key": "91_180",
+          "documentos": 2184,
+          "saldo": 2206446993.2100015,
+          "pct_del_total": 21.51753322314205
+        },
+        {
+          "rango": "181 - 360 días",
+          "key": "181_360",
+          "documentos": 0,
+          "saldo": 0,
+          "pct_del_total": 0
+        },
+        {
+          "rango": "Más de 360 días",
+          "key": "mas_360",
+          "documentos": 0,
+          "saldo": 0,
+          "pct_del_total": 0
+        }
+      ],
+      "top_clientes": [
+        {
+          "codigo": "800155993-0",
+          "nombre": "DISISTEMA LTDA",
+          "nit": "800155993",
+          "ciudad": "VALLEDUPAR",
+          "documentos": 106,
+          "saldo": 1969969179.4999995,
+          "saldo_vencido": 786467555.9000001,
+          "saldo_base": 2035665635.8399997,
+          "pct_vencido": 39.92283554911323,
+          "pct_del_total": 0.8421849756456944
+        },
+        {
+          "codigo": "6549981-0",
+          "nombre": "ARISTIZABAL GRISALES HECTOR FABIO",
+          "nit": "6549981",
+          "ciudad": "CALI",
+          "documentos": 38,
+          "saldo": 1227543708.52,
+          "saldo_vencido": 1227543708.52,
+          "saldo_base": 1180965868.72,
+          "pct_vencido": 100,
+          "pct_del_total": 0.5247893616926214
+        },
+        {
+          "codigo": "902010904-0",
+          "nombre": "PCN POCION S A S",
+          "nit": "902010904",
+          "ciudad": "CALI",
+          "documentos": 32,
+          "saldo": 894313458.5,
+          "saldo_vencido": 894313458.5,
+          "saldo_base": 850995631.2800001,
+          "pct_vencido": 100,
+          "pct_del_total": 0.3823295136310733
+        },
+        {
+          "codigo": "72139503-0",
+          "nombre": "ELMER ENRIQUE PACHECO POLO",
+          "nit": "72139503",
+          "ciudad": "VALLEDUPAR",
+          "documentos": 41,
+          "saldo": 532375780.5700001,
+          "saldo_vencido": 188961540.19,
+          "saldo_base": 575478041.28,
+          "pct_vencido": 35.49401514615937,
+          "pct_del_total": 0.22759690276347458
+        },
+        {
+          "codigo": "87713814-0",
+          "nombre": "HUBER ALEX BURBANO PANTOJA",
+          "nit": "87713814",
+          "ciudad": "PASTO",
+          "documentos": 31,
+          "saldo": 271180274.85999995,
+          "saldo_vencido": 170656707.40000004,
+          "saldo_base": 379968174.4,
+          "pct_vencido": 62.93109168360552,
+          "pct_del_total": 0.11593275445889374
+        },
+        {
+          "codigo": "901875433-0",
+          "nombre": "COMERCIALIZADORA COSMOBELLEZA DEL HUILA SAS",
+          "nit": "901875433",
+          "ciudad": "NEIVA",
+          "documentos": 48,
+          "saldo": 270675675.3800001,
+          "saldo_vencido": 112953696.19999999,
+          "saldo_base": 304732942.88,
+          "pct_vencido": 41.73027223130594,
+          "pct_del_total": 0.11571703225105577
+        },
+        {
+          "codigo": "901370080-1",
+          "nombre": "LUCEGO SAS",
+          "nit": "901370080",
+          "ciudad": "CALI",
+          "documentos": 30,
+          "saldo": 260562643.18,
+          "saldo_vencido": 260499863.57999998,
+          "saldo_base": 231362414.02000004,
+          "pct_vencido": 99.975906139409,
+          "pct_del_total": 0.11139359213549876
+        },
+        {
+          "codigo": "65735335-0",
+          "nombre": "MARTINEZ CARDENAS MELIDA",
+          "nit": "65735335",
+          "ciudad": "IBAGUE",
+          "documentos": 71,
+          "saldo": 215367290.5999999,
+          "saldo_vencido": 145024289.06,
+          "saldo_base": 180084036.38,
+          "pct_vencido": 67.33812207785654,
+          "pct_del_total": 0.09207204776415649
+        },
+        {
+          "codigo": "88216979-0",
+          "nombre": "WILSON RODOLFO JAIMES FLOREZ",
+          "nit": "88216979",
+          "ciudad": "CUCUTA",
+          "documentos": 67,
+          "saldo": 201769752.02000007,
+          "saldo_vencido": 203317902.02000007,
+          "saldo_base": 220123786.88,
+          "pct_vencido": 100.76728547490437,
+          "pct_del_total": 0.08625894022064401
+        },
+        {
+          "codigo": "900464794-0",
+          "nombre": "INVERSIONES KAUTIVA SAS",
+          "nit": "900464794",
+          "ciudad": "M6DELLIN",
+          "documentos": 68,
+          "saldo": 196252251,
+          "saldo_vencido": 151765165.4,
+          "saldo_base": 184850872.61999995,
+          "pct_vencido": 77.33168135737715,
+          "pct_del_total": 0.08390014369199311
+        },
+        {
+          "codigo": "901883014-0",
+          "nombre": "HOLE COSMETICS SAS",
+          "nit": "901883014",
+          "ciudad": "CALI",
+          "documentos": 40,
+          "saldo": 155900404.74000004,
+          "saldo_vencido": 123857821.32,
+          "saldo_base": 134401767.12,
+          "pct_vencido": 79.44676059472812,
+          "pct_del_total": 0.06664925519415259
+        },
+        {
+          "codigo": "901293584-0",
+          "nombre": "GLOBAL COSMETICA S.A.S",
+          "nit": "901293584",
+          "ciudad": "VILLAVICENCIO",
+          "documentos": 26,
+          "saldo": 146150657.34000003,
+          "saldo_vencido": 54859958.25,
+          "saldo_base": 142029632.79000002,
+          "pct_vencido": 37.536579888502054,
+          "pct_del_total": 0.06248112359997976
+        },
+        {
+          "codigo": "900179959-0",
+          "nombre": "DIMOBE SAS",
+          "nit": "900179959",
+          "ciudad": "M6DELLIN",
+          "documentos": 58,
+          "saldo": 130334206.82000002,
+          "saldo_vencido": 109920155.08,
+          "saldo_base": 144084069,
+          "pct_vencido": 84.33714967230885,
+          "pct_del_total": 0.055719405125090514
+        },
+        {
+          "codigo": "900429621-2",
+          "nombre": "DISTRIBUCIONES ERVI SAS",
+          "nit": "900429621",
+          "ciudad": "CALI",
+          "documentos": 20,
+          "saldo": 129548000,
+          "saldo_vencido": 120228000,
+          "saldo_base": 103805234,
+          "pct_vencido": 92.80575539568345,
+          "pct_del_total": 0.0553832924699056
+        },
+        {
+          "codigo": "41730954-0",
+          "nombre": "BEATRIZ ELENA RAMIREZ SANCHEZ",
+          "nit": "41730954",
+          "ciudad": "VILLAVICENCIO",
+          "documentos": 6,
+          "saldo": 124857765.47999999,
+          "saldo_vencido": 116673740.39999999,
+          "saldo_base": 104922492,
+          "pct_vencido": 93.44532152362527,
+          "pct_del_total": 0.05337816209217991
+        },
+        {
+          "codigo": "91284736-0",
+          "nombre": "ECAR RAMIRO ARENIS ACEVEDO",
+          "nit": "91284736",
+          "ciudad": "BUCARAMANGA",
+          "documentos": 42,
+          "saldo": 111664872.99,
+          "saldo_vencido": 91055752.08000001,
+          "saldo_base": 94565224.2,
+          "pct_vencido": 81.54377436864536,
+          "pct_del_total": 0.04773804550761133
+        },
+        {
+          "codigo": "901561616-0",
+          "nombre": "BELLEZAPRO SOCIEDAD POR ACCIONES SIMPLIFICADA",
+          "nit": "901561616",
+          "ciudad": "DUITAMA",
+          "documentos": 15,
+          "saldo": 100182476.42999998,
+          "saldo_vencido": 69518653.56,
+          "saldo_base": 85993542,
+          "pct_vencido": 69.39202946193333,
+          "pct_del_total": 0.042829186035153864
+        },
+        {
+          "codigo": "900651421-0",
+          "nombre": "SURTIMOS COSMETICOS S.A.S",
+          "nit": "900651421",
+          "ciudad": "M6DELLIN",
+          "documentos": 30,
+          "saldo": 86866649.35999998,
+          "saldo_vencido": 70336088.24,
+          "saldo_base": 81375277.52,
+          "pct_vencido": 80.97018678423676,
+          "pct_del_total": 0.0371365134728874
+        },
+        {
+          "codigo": "901289100-0",
+          "nombre": "INVERSIONES 111 TIENDAS DE BELLEZA SAS",
+          "nit": "901289100",
+          "ciudad": "M6DELLIN",
+          "documentos": 30,
+          "saldo": 58907345.08,
+          "saldo_vencido": 45083441.099999994,
+          "saldo_base": 50396670.94,
+          "pct_vencido": 76.53280085662281,
+          "pct_del_total": 0.02518358231073652
+        },
+        {
+          "codigo": "94318366-0",
+          "nombre": "LUIS ALBEIRO ARISTIZABAL GIRALDO",
+          "nit": "94318366",
+          "ciudad": "CALI",
+          "documentos": 42,
+          "saldo": 56939258.730000004,
+          "saldo_vencido": 37024455.15000001,
+          "saldo_base": 57269477.64000001,
+          "pct_vencido": 65.02447691770294,
+          "pct_del_total": 0.024342202266829406
+        }
+      ],
+      "cartera_vendedor": [
+        {
+          "codigo": "140",
+          "nombre": "RECAUDOS OF.CENTRAL",
+          "documentos": 2934,
+          "saldo_total": 4365595023.589997,
+          "saldo_vencido": 3315314259.0099945,
+          "saldo_corriente": 1050280764.5799996,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "157",
+          "nombre": "MAQUILA MEJIA NU©EZ ANDRES",
+          "documentos": 35,
+          "saldo_total": 1060928583.5100001,
+          "saldo_vencido": 1060928583.5100001,
+          "saldo_corriente": 0,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "24",
+          "nombre": "NAPROLAB CESAR",
+          "documentos": 55,
+          "saldo_total": 915398220.49,
+          "saldo_vencido": 406426265.83000004,
+          "saldo_corriente": 508971954.65999997,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "78",
+          "nombre": "COORDINADOR VENTAS SUR",
+          "documentos": 86,
+          "saldo_total": 897415154.7700003,
+          "saldo_vencido": 278913684.04999995,
+          "saldo_corriente": 618501470.7200001,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "132",
+          "nombre": "MEDELLIN CENTRO",
+          "documentos": 255,
+          "saldo_total": 382128464.7100001,
+          "saldo_vencido": 303585141.94,
+          "saldo_corriente": 78543322.77000001,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "33",
+          "nombre": "CALI NORTE",
+          "documentos": 212,
+          "saldo_total": 299123661.9900001,
+          "saldo_vencido": 257484370.32000005,
+          "saldo_corriente": 41639291.67000002,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "71",
+          "nombre": "CALI SUR",
+          "documentos": 281,
+          "saldo_total": 185196093.45999998,
+          "saldo_vencido": 134314672.60999992,
+          "saldo_corriente": 50881420.85000001,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "148",
+          "nombre": "TRANSFERENCISTA POPAYAN",
+          "documentos": 281,
+          "saldo_total": 185196093.45999998,
+          "saldo_vencido": 134314672.60999995,
+          "saldo_corriente": 50881420.85000001,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "47",
+          "nombre": "SANTANDER",
+          "documentos": 178,
+          "saldo_total": 171007031.25999996,
+          "saldo_vencido": 124580272.35000002,
+          "saldo_corriente": 46426758.910000004,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "146",
+          "nombre": "TRANSFERENCISTA SANTANDER",
+          "documentos": 178,
+          "saldo_total": 171007031.25999996,
+          "saldo_vencido": 124580272.35000002,
+          "saldo_corriente": 46426758.910000004,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "129",
+          "nombre": "EJE CAFETERO",
+          "documentos": 339,
+          "saldo_total": 166102587.61000007,
+          "saldo_vencido": 133884108.06999996,
+          "saldo_corriente": 32218479.540000007,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "44",
+          "nombre": "VIAJERA ANTIOQUIA",
+          "documentos": 187,
+          "saldo_total": 146199482.1700001,
+          "saldo_vencido": 125379410.30000001,
+          "saldo_corriente": 20820071.870000005,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "145",
+          "nombre": "TRANSFERENCISTA URABA",
+          "documentos": 187,
+          "saldo_total": 146199482.1700001,
+          "saldo_vencido": 125379410.30000001,
+          "saldo_corriente": 20820071.870000005,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "135",
+          "nombre": "VIAJERA VALLE",
+          "documentos": 266,
+          "saldo_total": 114937855.55000001,
+          "saldo_vencido": 86305216.64,
+          "saldo_corriente": 28632638.910000004,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "79",
+          "nombre": "COORDINADOR VENTAS CENTRO",
+          "documentos": 13,
+          "saldo_total": 104727454.14999999,
+          "saldo_vencido": 61347938.47,
+          "saldo_corriente": 43379515.68,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "25",
+          "nombre": "MEDELLIN SUR",
+          "documentos": 214,
+          "saldo_total": 103723871.66000004,
+          "saldo_vencido": 76637758.32000004,
+          "saldo_corriente": 27086113.34,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "21",
+          "nombre": "NAPROLAB META",
+          "documentos": 12,
+          "saldo_total": 99837563.74000001,
+          "saldo_vencido": 66679322.349999994,
+          "saldo_corriente": 33158241.39,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "19",
+          "nombre": "NAPROLAB HUILA",
+          "documentos": 17,
+          "saldo_total": 99404768.86000001,
+          "saldo_vencido": 46830775.8,
+          "saldo_corriente": 52573993.06,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "17",
+          "nombre": "NAPROLAB NARI©O",
+          "documentos": 11,
+          "saldo_total": 90393425.22,
+          "saldo_vencido": 56885569.39999999,
+          "saldo_corriente": 33507855.82,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "23",
+          "nombre": "NAPROLAB NORTE DE SANTANDER",
+          "documentos": 26,
+          "saldo_total": 81252692.47,
+          "saldo_vencido": 81768742.47,
+          "saldo_corriente": -516050,
+          "dias_mora_promedio": 0
+        }
+      ]
+    },
+    "3m": {
+      "kpis": {
+        "total_documentos": 2576,
+        "saldo_total": 4632741538.929988,
+        "cartera_vencida": 1753555388.3800032,
+        "cartera_por_vencer": 2879186150.549985,
+        "pct_vencida": 37.851353753376394,
+        "total_clientes": 505,
+        "total_vendedores": 31,
+        "saldo_base_total": 233911698316.58948,
+        "base_retencion_total": 4419341538.28,
+        "dias_mora_promedio": 27.351395730706077
+      },
+      "aging": [
+        {
+          "rango": "Corriente (sin mora)",
+          "key": "corriente",
+          "documentos": 749,
+          "saldo": 2879186150.5499935,
+          "pct_del_total": 62.1486462466238
+        },
+        {
+          "rango": "1 - 30 días",
+          "key": "1_30",
+          "documentos": 1127,
+          "saldo": 1477341941.049998,
+          "pct_del_total": 31.889150919289484
+        },
+        {
+          "rango": "31 - 60 días",
+          "key": "31_60",
+          "documentos": 627,
+          "saldo": 265864661.03,
+          "pct_del_total": 5.738819202320665
+        },
+        {
+          "rango": "61 - 90 días",
+          "key": "61_90",
+          "documentos": 73,
+          "saldo": 10348786.3,
+          "pct_del_total": 0.223383631766132
+        },
+        {
+          "rango": "91 - 180 días",
+          "key": "91_180",
+          "documentos": 0,
+          "saldo": 0,
+          "pct_del_total": 0
+        },
+        {
+          "rango": "181 - 360 días",
+          "key": "181_360",
+          "documentos": 0,
+          "saldo": 0,
+          "pct_del_total": 0
+        },
+        {
+          "rango": "Más de 360 días",
+          "key": "mas_360",
+          "documentos": 0,
+          "saldo": 0,
+          "pct_del_total": 0
+        }
+      ],
+      "top_clientes": [
+        {
+          "codigo": "800155993-0",
+          "nombre": "DISISTEMA LTDA",
+          "nit": "800155993",
+          "ciudad": "VALLEDUPAR",
+          "documentos": 48,
+          "saldo": 1071775290.3599999,
+          "saldo_vencido": -111726333.24,
+          "saldo_base": 905864744.76,
+          "pct_vencido": -10.42441771562695,
+          "pct_del_total": 0.4581965323125472
+        },
+        {
+          "codigo": "902010904-0",
+          "nombre": "PCN POCION S A S",
+          "nit": "902010904",
+          "ciudad": "CALI",
+          "documentos": 28,
+          "saldo": 743114208.26,
+          "saldo_vencido": 743114208.26,
+          "saldo_base": 721210867.12,
+          "pct_vencido": 100,
+          "pct_del_total": 0.31769005723442983
+        },
+        {
+          "codigo": "72139503-0",
+          "nombre": "ELMER ENRIQUE PACHECO POLO",
+          "nit": "72139503",
+          "ciudad": "VALLEDUPAR",
+          "documentos": 24,
+          "saldo": 339225669.9,
+          "saldo_vencido": -4188570.4799999995,
+          "saldo_base": 294007313.52,
+          "pct_vencido": -1.2347445525672467,
+          "pct_del_total": 0.1450229605194318
+        },
+        {
+          "codigo": "901370080-1",
+          "nombre": "LUCEGO SAS",
+          "nit": "901370080",
+          "ciudad": "CALI",
+          "documentos": 14,
+          "saldo": 197778440.06,
+          "saldo_vencido": 197715660.45999998,
+          "saldo_base": 177546203.2,
+          "pct_vencido": 99.9682576119111,
+          "pct_del_total": 0.08455260745117388
+        },
+        {
+          "codigo": "901875433-0",
+          "nombre": "COMERCIALIZADORA COSMOBELLEZA DEL HUILA SAS",
+          "nit": "901875433",
+          "ciudad": "NEIVA",
+          "documentos": 18,
+          "saldo": 156704614.85999998,
+          "saldo_vencido": -1017364.3200000001,
+          "saldo_base": 183778285.68,
+          "pct_vencido": -0.6492242241295281,
+          "pct_del_total": 0.06699306447166528
+        },
+        {
+          "codigo": "901293584-0",
+          "nombre": "GLOBAL COSMETICA S.A.S",
+          "nit": "901293584",
+          "ciudad": "VILLAVICENCIO",
+          "documentos": 15,
+          "saldo": 89087257.44,
+          "saldo_vencido": -2203441.65,
+          "saldo_base": 76150639.35,
+          "pct_vencido": -2.473352209191097,
+          "pct_del_total": 0.03808584952404741
+        },
+        {
+          "codigo": "88216979-0",
+          "nombre": "WILSON RODOLFO JAIMES FLOREZ",
+          "nit": "88216979",
+          "ciudad": "CUCUTA",
+          "documentos": 27,
+          "saldo": 88386581.16,
+          "saldo_vencido": 89934731.16,
+          "saldo_base": 95586564,
+          "pct_vencido": 101.75156678726773,
+          "pct_del_total": 0.037786302179881805
+        },
+        {
+          "codigo": "87713814-0",
+          "nombre": "HUBER ALEX BURBANO PANTOJA",
+          "nit": "87713814",
+          "ciudad": "PASTO",
+          "documentos": 18,
+          "saldo": 88357932.66,
+          "saldo_vencido": -12165634.799999999,
+          "saldo_base": 76258009.19999999,
+          "pct_vencido": -13.768582439352874,
+          "pct_del_total": 0.037774054609449804
+        },
+        {
+          "codigo": "900464794-0",
+          "nombre": "INVERSIONES KAUTIVA SAS",
+          "nit": "900464794",
+          "ciudad": "M6DELLIN",
+          "documentos": 36,
+          "saldo": 73613838.07999998,
+          "saldo_vencido": 29126752.479999997,
+          "saldo_base": 70477761.46,
+          "pct_vencido": 39.56695268129674,
+          "pct_del_total": 0.031470780901418104
+        },
+        {
+          "codigo": "65735335-0",
+          "nombre": "MARTINEZ CARDENAS MELIDA",
+          "nit": "65735335",
+          "ciudad": "IBAGUE",
+          "documentos": 27,
+          "saldo": 64797791.76000001,
+          "saldo_vencido": -5545209.779999999,
+          "saldo_base": 53566556.22,
+          "pct_vencido": -8.557714127880333,
+          "pct_del_total": 0.027701817491957575
+        },
+        {
+          "codigo": "900179959-0",
+          "nombre": "DIMOBE SAS",
+          "nit": "900179959",
+          "ciudad": "M6DELLIN",
+          "documentos": 32,
+          "saldo": 53697068.260000005,
+          "saldo_vencido": 33283016.52,
+          "saldo_base": 66240073.32,
+          "pct_vencido": 61.982930536997614,
+          "pct_del_total": 0.022956127738136177
+        },
+        {
+          "codigo": "94318366-0",
+          "nombre": "LUIS ALBEIRO ARISTIZABAL GIRALDO",
+          "nit": "94318366",
+          "ciudad": "CALI",
+          "documentos": 24,
+          "saldo": 46967329.8,
+          "saldo_vencido": 27052526.219999995,
+          "saldo_base": 40220163,
+          "pct_vencido": 57.59860382780372,
+          "pct_del_total": 0.02007908545746683
+        },
+        {
+          "codigo": "901883014-0",
+          "nombre": "HOLE COSMETICS SAS",
+          "nit": "901883014",
+          "ciudad": "CALI",
+          "documentos": 18,
+          "saldo": 45860150.30000001,
+          "saldo_vencido": 13817566.879999999,
+          "saldo_base": 39435892.400000006,
+          "pct_vencido": 30.129789783964128,
+          "pct_del_total": 0.019605753209456955
+        },
+        {
+          "codigo": "91284736-0",
+          "nombre": "ECAR RAMIRO ARENIS ACEVEDO",
+          "nit": "91284736",
+          "ciudad": "BUCARAMANGA",
+          "documentos": 21,
+          "saldo": 43601725.65,
+          "saldo_vencido": 22992604.740000002,
+          "saldo_base": 36324259.2,
+          "pct_vencido": 52.73324483660661,
+          "pct_del_total": 0.018640250130195254
+        },
+        {
+          "codigo": "901989450-0",
+          "nombre": "GRUPO EMPRESARIAL CASA ROSA SAS",
+          "nit": "901989450",
+          "ciudad": "POPAYAN",
+          "documentos": 9,
+          "saldo": 39437341.410000004,
+          "saldo_vencido": 12606065.639999999,
+          "saldo_base": 33966520.32000001,
+          "pct_vencido": 31.964795772981585,
+          "pct_del_total": 0.016859926927050586
+        },
+        {
+          "codigo": "900429621-2",
+          "nombre": "DISTRIBUCIONES ERVI SAS",
+          "nit": "900429621",
+          "ciudad": "CALI",
+          "documentos": 6,
+          "saldo": 37280000,
+          "saldo_vencido": 27960000,
+          "saldo_base": 24605234,
+          "pct_vencido": 75,
+          "pct_del_total": 0.015937638120836144
+        },
+        {
+          "codigo": "8322794-0",
+          "nombre": "DAVID DE JESUS ARISTIZABAL GIRALDO",
+          "nit": "8322794",
+          "ciudad": "APARTADO ANTIOQUIA",
+          "documentos": 6,
+          "saldo": 31342232.940000005,
+          "saldo_vencido": 31342232.940000005,
+          "saldo_base": 27188443.47,
+          "pct_vencido": 100,
+          "pct_del_total": 0.013399172921048025
+        },
+        {
+          "codigo": "900479120-5",
+          "nombre": "GRUPO ADAL MAS SAS 5",
+          "nit": "900479120",
+          "ciudad": "BUCARAMANGA",
+          "documentos": 12,
+          "saldo": 31191001.68,
+          "saldo_vencido": 17829029.52,
+          "saldo_base": 26773392,
+          "pct_vencido": 57.16081100220697,
+          "pct_del_total": 0.013334519780102794
+        },
+        {
+          "codigo": "901561616-0",
+          "nombre": "BELLEZAPRO SOCIEDAD POR ACCIONES SIMPLIFICADA",
+          "nit": "901561616",
+          "ciudad": "DUITAMA",
+          "documentos": 6,
+          "saldo": 30663822.869999997,
+          "saldo_vencido": 0,
+          "saldo_base": 26320878,
+          "pct_vencido": 0,
+          "pct_del_total": 0.013109144643333667
+        },
+        {
+          "codigo": "901163495-0",
+          "nombre": "INVERSIONES ETEREO SAS",
+          "nit": "901163495",
+          "ciudad": "M6DELLIN",
+          "documentos": 8,
+          "saldo": 24656231.7,
+          "saldo_vencido": 10308622.94,
+          "saldo_base": 21056496,
+          "pct_vencido": 41.809401636990614,
+          "pct_del_total": 0.01054082881593585
+        }
+      ],
+      "cartera_vendedor": [
+        {
+          "codigo": "140",
+          "nombre": "RECAUDOS OF.CENTRAL",
+          "documentos": 1168,
+          "saldo_total": 1868065074.2899997,
+          "saldo_vencido": 817784309.7099997,
+          "saldo_corriente": 1050280764.5799996,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "78",
+          "nombre": "COORDINADOR VENTAS SUR",
+          "documentos": 45,
+          "saldo_total": 573620433.1800002,
+          "saldo_vencido": -44881037.53999999,
+          "saldo_corriente": 618501470.7200001,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "24",
+          "nombre": "NAPROLAB CESAR",
+          "documentos": 24,
+          "saldo_total": 470333653.41999996,
+          "saldo_vencido": -38638301.239999995,
+          "saldo_corriente": 508971954.65999997,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "157",
+          "nombre": "MAQUILA MEJIA NU©EZ ANDRES",
+          "documentos": 14,
+          "saldo_total": 371557104.13,
+          "saldo_vencido": 371557104.13,
+          "saldo_corriente": 0,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "33",
+          "nombre": "CALI NORTE",
+          "documentos": 73,
+          "saldo_total": 150130990.29,
+          "saldo_vencido": 108491698.61999997,
+          "saldo_corriente": 41639291.67000002,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "132",
+          "nombre": "MEDELLIN CENTRO",
+          "documentos": 118,
+          "saldo_total": 143808775.64,
+          "saldo_vencido": 65265452.870000005,
+          "saldo_corriente": 78543322.77000001,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "71",
+          "nombre": "CALI SUR",
+          "documentos": 121,
+          "saldo_total": 99470244.17000006,
+          "saldo_vencido": 48588823.32,
+          "saldo_corriente": 50881420.85000001,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "148",
+          "nombre": "TRANSFERENCISTA POPAYAN",
+          "documentos": 121,
+          "saldo_total": 99470244.17000006,
+          "saldo_vencido": 48588823.32,
+          "saldo_corriente": 50881420.85000001,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "44",
+          "nombre": "VIAJERA ANTIOQUIA",
+          "documentos": 80,
+          "saldo_total": 79545923.74000005,
+          "saldo_vencido": 58725851.870000005,
+          "saldo_corriente": 20820071.870000005,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "145",
+          "nombre": "TRANSFERENCISTA URABA",
+          "documentos": 80,
+          "saldo_total": 79545923.74000005,
+          "saldo_vencido": 58725851.870000005,
+          "saldo_corriente": 20820071.870000005,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "47",
+          "nombre": "SANTANDER",
+          "documentos": 73,
+          "saldo_total": 79484558.61000001,
+          "saldo_vencido": 33057799.700000003,
+          "saldo_corriente": 46426758.910000004,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "146",
+          "nombre": "TRANSFERENCISTA SANTANDER",
+          "documentos": 73,
+          "saldo_total": 79484558.61000001,
+          "saldo_vencido": 33057799.700000003,
+          "saldo_corriente": 46426758.910000004,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "129",
+          "nombre": "EJE CAFETERO",
+          "documentos": 132,
+          "saldo_total": 62609085.290000014,
+          "saldo_vencido": 30390605.749999996,
+          "saldo_corriente": 32218479.540000007,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "135",
+          "nombre": "VIAJERA VALLE",
+          "documentos": 102,
+          "saldo_total": 54089147.51000001,
+          "saldo_vencido": 25456508.6,
+          "saldo_corriente": 28632638.910000004,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "19",
+          "nombre": "NAPROLAB HUILA",
+          "documentos": 6,
+          "saldo_total": 52234871.620000005,
+          "saldo_vencido": -339121.44,
+          "saldo_corriente": 52573993.06,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "25",
+          "nombre": "MEDELLIN SUR",
+          "documentos": 90,
+          "saldo_total": 42659216.580000006,
+          "saldo_vencido": 15573103.239999996,
+          "saldo_corriente": 27086113.34,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "79",
+          "nombre": "COORDINADOR VENTAS CENTRO",
+          "documentos": 8,
+          "saldo_total": 42645035.13,
+          "saldo_vencido": -734480.55,
+          "saldo_corriente": 43379515.68,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "21",
+          "nombre": "NAPROLAB META",
+          "documentos": 6,
+          "saldo_total": 32423760.84,
+          "saldo_vencido": -734480.55,
+          "saldo_corriente": 33158241.39,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "23",
+          "nombre": "NAPROLAB NORTE DE SANTANDER",
+          "documentos": 9,
+          "saldo_total": 29462193.720000003,
+          "saldo_vencido": 29978243.720000003,
+          "saldo_corriente": -516050,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "77",
+          "nombre": "COORDINADOR VENTAS NORTE",
+          "documentos": 9,
+          "saldo_total": 29462193.720000003,
+          "saldo_vencido": 29978243.720000003,
+          "saldo_corriente": -516050,
+          "dias_mora_promedio": 0
+        }
+      ]
+    },
+    "1m": {
+      "kpis": {
+        "total_documentos": 135,
+        "saldo_total": 88030572.18999997,
+        "cartera_vencida": 5726114.829999999,
+        "cartera_por_vencer": 82304457.35999997,
+        "pct_vencida": 6.504688868363928,
+        "total_clientes": 52,
+        "total_vendedores": 21,
+        "saldo_base_total": 233911698316.58948,
+        "base_retencion_total": 74418613,
+        "dias_mora_promedio": 3.890909090909091
+      },
+      "aging": [
+        {
+          "rango": "Corriente (sin mora)",
+          "key": "corriente",
+          "documentos": 80,
+          "saldo": 82304457.35999997,
+          "pct_del_total": 93.49531113163607
+        },
+        {
+          "rango": "1 - 30 días",
+          "key": "1_30",
+          "documentos": 55,
+          "saldo": 5726114.829999999,
+          "pct_del_total": 6.504688868363928
+        },
+        {
+          "rango": "31 - 60 días",
+          "key": "31_60",
+          "documentos": 0,
+          "saldo": 0,
+          "pct_del_total": 0
+        },
+        {
+          "rango": "61 - 90 días",
+          "key": "61_90",
+          "documentos": 0,
+          "saldo": 0,
+          "pct_del_total": 0
+        },
+        {
+          "rango": "91 - 180 días",
+          "key": "91_180",
+          "documentos": 0,
+          "saldo": 0,
+          "pct_del_total": 0
+        },
+        {
+          "rango": "181 - 360 días",
+          "key": "181_360",
+          "documentos": 0,
+          "saldo": 0,
+          "pct_del_total": 0
+        },
+        {
+          "rango": "Más de 360 días",
+          "key": "mas_360",
+          "documentos": 0,
+          "saldo": 0,
+          "pct_del_total": 0
+        }
+      ],
+      "top_clientes": [
+        {
+          "codigo": "900179959-0",
+          "nombre": "DIMOBE SAS",
+          "nit": "900179959",
+          "ciudad": "M6DELLIN",
+          "documentos": 10,
+          "saldo": 23217263.02,
+          "saldo_vencido": 2803211.28,
+          "saldo_base": 19946023.4,
+          "pct_vencido": 12.073823161607098,
+          "pct_del_total": 0.009925652794233672
+        },
+        {
+          "codigo": "800155993-0",
+          "nombre": "DISISTEMA LTDA",
+          "nit": "800155993",
+          "ciudad": "VALLEDUPAR",
+          "documentos": 3,
+          "saldo": 14253141.24,
+          "saldo_vencido": 0,
+          "saldo_base": 12234456,
+          "pct_vencido": 0,
+          "pct_del_total": 0.00609338538541539
+        },
+        {
+          "codigo": "901501576-0",
+          "nombre": "VARIEDADES H Y S S.A.S",
+          "nit": "901501576",
+          "ciudad": "M6DELLIN",
+          "documentos": 2,
+          "saldo": 10122528.88,
+          "saldo_vencido": 0,
+          "saldo_base": 8688866,
+          "pct_vencido": 0,
+          "pct_del_total": 0.004327500057863541
+        },
+        {
+          "codigo": "900429621-2",
+          "nombre": "DISTRIBUCIONES ERVI SAS",
+          "nit": "900429621",
+          "ciudad": "CALI",
+          "documentos": 2,
+          "saldo": 9320000,
+          "saldo_vencido": 0,
+          "saldo_base": 8000000,
+          "pct_vencido": 0,
+          "pct_del_total": 0.003984409530209036
+        },
+        {
+          "codigo": "72139503-0",
+          "nombre": "ELMER ENRIQUE PACHECO POLO",
+          "nit": "72139503",
+          "ciudad": "VALLEDUPAR",
+          "documentos": 3,
+          "saldo": 5959170.72,
+          "saldo_vencido": 0,
+          "saldo_base": 5115168,
+          "pct_vencido": 0,
+          "pct_del_total": 0.0025476155159775368
+        },
+        {
+          "codigo": "43652680-0",
+          "nombre": "VALENTINA ANDRADE JIMENEZ",
+          "nit": "43652680",
+          "ciudad": "CHIGORODO ANTIOQUIA",
+          "documentos": 3,
+          "saldo": 4503865.59,
+          "saldo_vencido": 0,
+          "saldo_base": 3784761,
+          "pct_vencido": 0,
+          "pct_del_total": 0.0019254554699116462
+        },
+        {
+          "codigo": "31195387-0",
+          "nombre": "MARIA ELVIA ORTIZ ORTIZ",
+          "nit": "31195387",
+          "ciudad": "BUGA",
+          "documentos": 2,
+          "saldo": 2647539.38,
+          "saldo_vencido": 0,
+          "saldo_base": 2272566,
+          "pct_vencido": 0,
+          "pct_del_total": 0.0011318541992785109
+        },
+        {
+          "codigo": "901370080-1",
+          "nombre": "LUCEGO SAS",
+          "nit": "901370080",
+          "ciudad": "CALI",
+          "documentos": 4,
+          "saldo": 2495117.28,
+          "saldo_vencido": 2495117.28,
+          "saldo_base": 2495117.28,
+          "pct_vencido": 100,
+          "pct_del_total": 0.0010666919602383312
+        },
+        {
+          "codigo": "1067521143-0",
+          "nombre": "ALBA LIBIA ASCUE TENORIO",
+          "nit": "1067521143",
+          "ciudad": "TORIBIO CAUCA",
+          "documentos": 6,
+          "saldo": 2055166.89,
+          "saldo_vencido": 0,
+          "saldo_base": 1727031,
+          "pct_vencido": 0,
+          "pct_del_total": 0.0008786079981422816
+        },
+        {
+          "codigo": "4778322-0",
+          "nombre": "ARLEX ANTONIO MELLIZO FERNANDEZ",
+          "nit": "4778322",
+          "ciudad": "TIMBIO CAUCA",
+          "documentos": 3,
+          "saldo": 2002354.44,
+          "saldo_vencido": 0,
+          "saldo_base": 1682650.7999999998,
+          "pct_vencido": 0,
+          "pct_del_total": 0.0008560300551064782
+        },
+        {
+          "codigo": "52186323-0",
+          "nombre": "PALENCIA RODRIGUEZ BLANCA ELVIRA",
+          "nit": "52186323",
+          "ciudad": "MOSQUERA - CUNDINAMARCA",
+          "documentos": 2,
+          "saldo": 1475050.22,
+          "saldo_vencido": 0,
+          "saldo_base": 1239538,
+          "pct_vencido": 0,
+          "pct_del_total": 0.0006306013040885123
+        },
+        {
+          "codigo": "70828339-0",
+          "nombre": "EUDIN DE JESUS LOPEZ ARISTIZABAL",
+          "nit": "70828339",
+          "ciudad": "M6DELLIN",
+          "documentos": 2,
+          "saldo": 1370226.4,
+          "saldo_vencido": 0,
+          "saldo_base": 1176160,
+          "pct_vencido": 0,
+          "pct_del_total": 0.0005857878891313324
+        },
+        {
+          "codigo": "31497358-0",
+          "nombre": "ORLADIS OSPINA MUNOZ",
+          "nit": "31497358",
+          "ciudad": "ZARZAL",
+          "documentos": 2,
+          "saldo": 1329625.08,
+          "saldo_vencido": 0,
+          "saldo_base": 1117332,
+          "pct_vencido": 0,
+          "pct_del_total": 0.0005684303476777845
+        },
+        {
+          "codigo": "1088257132-0",
+          "nombre": "DANA VANESSA QUINTERO ALZATE",
+          "nit": "1088257132",
+          "ciudad": "PEREIRA",
+          "documentos": 2,
+          "saldo": 1297561.72,
+          "saldo_vencido": 0,
+          "saldo_base": 1090388,
+          "pct_vencido": 0,
+          "pct_del_total": 0.0005547228844637799
+        },
+        {
+          "codigo": "4241369-0",
+          "nombre": "CONSTANTINO ORTIZ ORTIZ",
+          "nit": "4241369",
+          "ciudad": "BOGOTA",
+          "documentos": 2,
+          "saldo": 1047295.2,
+          "saldo_vencido": 0,
+          "saldo_base": 880080,
+          "pct_vencido": 0,
+          "pct_del_total": 0.00044773100598950407
+        },
+        {
+          "codigo": "25102869-0",
+          "nombre": "LINA ESMERALDA GONZALEZ SANCHEZ",
+          "nit": "25102869",
+          "ciudad": "FLORIDA",
+          "documentos": 2,
+          "saldo": 941780.28,
+          "saldo_vencido": 0,
+          "saldo_base": 791412,
+          "pct_vencido": 0,
+          "pct_del_total": 0.00040262213766040065
+        },
+        {
+          "codigo": "890109640-0",
+          "nombre": "FEDCO S.A.EN REORGANIZACI®N",
+          "nit": "890109640",
+          "ciudad": "M6DELLIN",
+          "documentos": 8,
+          "saldo": 898721.1399999999,
+          "saldo_vencido": 287158.66,
+          "saldo_base": 755227.8,
+          "pct_vencido": 31.95192003606369,
+          "pct_del_total": 0.0003842138492721383
+        },
+        {
+          "codigo": "20392064-0",
+          "nombre": "NANCY YANETH LEON GUTIERREZ",
+          "nit": "20392064",
+          "ciudad": "BOGOTA",
+          "documentos": 2,
+          "saldo": 896636.44,
+          "saldo_vencido": 0,
+          "saldo_base": 753476,
+          "pct_vencido": 0,
+          "pct_del_total": 0.00038332261552239294
+        },
+        {
+          "codigo": "52978200-0",
+          "nombre": "SAIDA LILIANA FLORIDO MAHECHA",
+          "nit": "52978200",
+          "ciudad": "BOGOTA",
+          "documentos": 2,
+          "saldo": 894659.14,
+          "saldo_vencido": 0,
+          "saldo_base": 751814.4,
+          "pct_vencido": 0,
+          "pct_del_total": 0.0003824772965348304
+        },
+        {
+          "codigo": "16863800-0",
+          "nombre": "JHON JAIRO CORDOBA BA©OL",
+          "nit": "16863800",
+          "ciudad": "GINEBRA",
+          "documentos": 2,
+          "saldo": 825524.42,
+          "saldo_vencido": 0,
+          "saldo_base": 693718,
+          "pct_vencido": 0,
+          "pct_del_total": 0.0003529213912519621
+        }
+      ],
+      "cartera_vendedor": [
+        {
+          "codigo": "140",
+          "nombre": "RECAUDOS OF.CENTRAL",
+          "documentos": 67,
+          "saldo_total": 39875282.28000001,
+          "saldo_vencido": 2848180.4100000006,
+          "saldo_corriente": 37027101.87000001,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "10",
+          "nombre": "MAQUILAS NAPROLAB",
+          "documentos": 5,
+          "saldo_total": 11608631.51,
+          "saldo_vencido": 1401605.64,
+          "saldo_corriente": 10207025.87,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "24",
+          "nombre": "NAPROLAB CESAR",
+          "documentos": 2,
+          "saldo_total": 6737437.32,
+          "saldo_vencido": 0,
+          "saldo_corriente": 6737437.32,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "78",
+          "nombre": "COORDINADOR VENTAS SUR",
+          "documentos": 2,
+          "saldo_total": 6737437.32,
+          "saldo_vencido": 0,
+          "saldo_corriente": 6737437.32,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "132",
+          "nombre": "MEDELLIN CENTRO",
+          "documentos": 2,
+          "saldo_total": 5746377.640000001,
+          "saldo_vencido": 0,
+          "saldo_corriente": 5746377.640000001,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "154",
+          "nombre": "OTROS",
+          "documentos": 1,
+          "saldo_total": 4660000,
+          "saldo_vencido": 0,
+          "saldo_corriente": 4660000,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "147",
+          "nombre": "BOGOTA 3",
+          "documentos": 6,
+          "saldo_total": 2553422.95,
+          "saldo_vencido": 28946,
+          "saldo_corriente": 2524476.95,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "135",
+          "nombre": "VIAJERA VALLE",
+          "documentos": 4,
+          "saldo_total": 2256902.24,
+          "saldo_vencido": 0,
+          "saldo_corriente": 2256902.24,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "44",
+          "nombre": "VIAJERA ANTIOQUIA",
+          "documentos": 1,
+          "saldo_total": 1501288.53,
+          "saldo_vencido": 0,
+          "saldo_corriente": 1501288.53,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "145",
+          "nombre": "TRANSFERENCISTA URABA",
+          "documentos": 1,
+          "saldo_total": 1501288.53,
+          "saldo_vencido": 0,
+          "saldo_corriente": 1501288.53,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "33",
+          "nombre": "CALI NORTE",
+          "documentos": 11,
+          "saldo_total": 1424953.6,
+          "saldo_vencido": 1497367.48,
+          "saldo_corriente": -72413.88,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "71",
+          "nombre": "CALI SUR",
+          "documentos": 4,
+          "saldo_total": 1396144.41,
+          "saldo_vencido": 0,
+          "saldo_corriente": 1396144.41,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "148",
+          "nombre": "TRANSFERENCISTA POPAYAN",
+          "documentos": 4,
+          "saldo_total": 1396144.41,
+          "saldo_vencido": 0,
+          "saldo_corriente": 1396144.41,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "129",
+          "nombre": "EJE CAFETERO",
+          "documentos": 6,
+          "saldo_total": 1119144.31,
+          "saldo_vencido": -194449.09,
+          "saldo_corriente": 1313593.4,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "141",
+          "nombre": "BOGOTA 1",
+          "documentos": 5,
+          "saldo_total": 421922.88999999996,
+          "saldo_vencido": 116141.65,
+          "saldo_corriente": 305781.24,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "162",
+          "nombre": "CAMILO SANCHEZ",
+          "documentos": 1,
+          "saldo_total": 97971.51,
+          "saldo_vencido": 0,
+          "saldo_corriente": 97971.51,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "47",
+          "nombre": "SANTANDER",
+          "documentos": 5,
+          "saldo_total": 29754.00999999998,
+          "saldo_vencido": 29754.00999999998,
+          "saldo_corriente": 0,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "146",
+          "nombre": "TRANSFERENCISTA SANTANDER",
+          "documentos": 5,
+          "saldo_total": 29754.00999999998,
+          "saldo_vencido": 29754.00999999998,
+          "saldo_corriente": 0,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "25",
+          "nombre": "MEDELLIN SUR",
+          "documentos": 1,
+          "saldo_total": -31185.28,
+          "saldo_vencido": -31185.28,
+          "saldo_corriente": 0,
+          "dias_mora_promedio": 0
+        },
+        {
+          "codigo": "23",
+          "nombre": "NAPROLAB NORTE DE SANTANDER",
+          "documentos": 1,
+          "saldo_total": -516050,
+          "saldo_vencido": 0,
+          "saldo_corriente": -516050,
+          "dias_mora_promedio": 0
+        }
+      ]
+    }
+  },
+  "generated_from": "data/cartera_export.xlsx"
+}
