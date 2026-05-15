@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* ============================================================
    WattVision Design System
    Sistema de Monitoreo Financiero · ADATEC
