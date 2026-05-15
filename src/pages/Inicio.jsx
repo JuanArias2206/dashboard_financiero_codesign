@@ -1,13 +1,13 @@
 import { useMemo, useState } from 'react';
 import {
-  Activity, CalendarCheck, CalendarX, CheckCircle2, Layers,
-  ListChecks, MapPinned, TrendingUp, Users,
+  CalendarCheck, CalendarX, CheckCircle2, ListChecks, MapPinned,
+  Users, AlertCircle, Activity,
 } from 'lucide-react';
 import { Card, KpiCard, Loader, ErrorPanel, Segmented } from '../components/ui';
 import { AreaTrend, BarsChart, Donut } from '../components/charts/Charts';
 import { useFetch } from '../lib/useFetch';
 import { api } from '../lib/api';
-import { fmtInt, fmtCompact } from '../lib/format';
+import { fmtInt, fmtPct } from '../lib/format';
 
 const PERIODS = [
   { value: 'hoy', label: 'Hoy' },
@@ -20,69 +20,49 @@ export default function Inicio() {
   const [period, setPeriod] = useState('mes');
   const { data, loading, error, reload } = useFetch(() => api.rsalesIndicators({ period }), [period]);
 
-  const kpis = useMemo(() => {
-    if (!data) return null;
-    const i = data.indicators || data || {};
-    return {
-      agendas: i.totalAgendas ?? i.agendas ?? 0,
-      cumplidas: i.cumplidas ?? 0,
-      canceladas: i.canceladas ?? 0,
-      vencidas: i.vencidas ?? 0,
-      ventas: i.ventasMonto ?? 0,
-      transacciones: i.transacciones ?? 0,
-      usuariosActivos: i.usuariosActivos ?? i.usuarios ?? 0,
-      visitas: i.visitas ?? 0,
-    };
-  }, [data]);
+  const agendas = data?.agendas || {};
+  const clientes = data?.clientes || {};
+  const gestionesDia = data?.gestiones_dia || [];
+  const causales = data?.causales || [];
+  const labor = data?.labor || [];
 
-  const diaSeries = useMemo(() => {
-    const arr = (data && (data.porDia || data.serieDiaria)) || [];
-    return arr.map((d) => ({
-      label: d.fecha || d.dia || d.label,
-      planeadas: d.planeadas ?? d.programadas ?? 0,
-      realizadas: d.realizadas ?? d.cumplidas ?? 0,
-    }));
-  }, [data]);
-
-  const tipoData = useMemo(() => {
-    const t = (data && (data.porTipo || data.tipos)) || [];
-    return t.map((d) => ({ name: d.tipo || d.label || d.name, value: d.cantidad ?? d.total ?? 0 }));
-  }, [data]);
+  const totalAgendas = (agendas.cumplidas || 0) + (agendas.vencidas || 0) + (agendas.pendientes || 0);
+  const periodLabel = data?.period?.label;
 
   return (
     <>
-      <SectionHead
-        title="Indicadores en vivo"
-        sub="Resumen ejecutivo del periodo · datos RSales"
-        right={<Segmented options={PERIODS} value={period} onChange={setPeriod} />}
-      />
+      <div className="section-head">
+        <div>
+          <div className="crumb">Resumen ejecutivo</div>
+          <h1>Indicadores en vivo</h1>
+          <div style={{ fontSize: 13, color: 'var(--wv-text-muted)', marginTop: 4 }}>
+            {periodLabel ? `Período: ${periodLabel}` : 'Resumen ejecutivo del período · datos RSales'}
+          </div>
+        </div>
+        <Segmented options={PERIODS} value={period} onChange={setPeriod} />
+      </div>
 
       {loading && <Loader label="Sincronizando con RSales…" />}
       {error && <ErrorPanel message={error} onRetry={reload} />}
 
-      {kpis && !loading && (
+      {data && !loading && (
         <>
           <div className="wv-grid wv-grid-kpis" style={{ marginBottom: 24 }}>
-            <KpiCard icon={ListChecks} label="Total agendas" value={fmtInt(kpis.agendas)} tone="info" />
-            <KpiCard icon={CheckCircle2} label="Cumplidas" value={fmtInt(kpis.cumplidas)} tone="success" />
-            <KpiCard icon={CalendarX} label="Vencidas" value={fmtInt(kpis.vencidas)} tone="danger" />
-            <KpiCard icon={CalendarCheck} label="Canceladas" value={fmtInt(kpis.canceladas)} tone="warn" />
-            <KpiCard icon={TrendingUp} label="Ventas (Bs.)" value={fmtCompact(kpis.ventas)} tone="info" />
-            <KpiCard icon={Activity} label="Transacciones" value={fmtInt(kpis.transacciones)} tone="info" />
-            <KpiCard icon={Users} label="Usuarios activos" value={fmtInt(kpis.usuariosActivos)} tone="info" />
-            <KpiCard icon={MapPinned} label="Visitas registradas" value={fmtInt(kpis.visitas)} tone="info" />
+            <KpiCard icon={ListChecks} label="Total agendas" value={fmtInt(totalAgendas)} tone="info" />
+            <KpiCard icon={CheckCircle2} label="Cumplidas" value={fmtInt(agendas.cumplidas)} tone="success" />
+            <KpiCard icon={CalendarX} label="Vencidas" value={fmtInt(agendas.vencidas)} tone="danger" />
+            <KpiCard icon={CalendarCheck} label="Pendientes" value={fmtInt(agendas.pendientes)} tone="warn" />
+            <KpiCard icon={Activity} label="Extraruta" value={fmtInt(agendas.extraruta)} tone="info" />
+            <KpiCard icon={Users} label="Clientes gestionados" value={fmtInt(clientes.gestionados)} tone="info" foot={`${fmtInt(clientes.activos)} activos`} />
+            <KpiCard icon={MapPinned} label="Cobertura" value={fmtPct(clientes.pct ?? 0)} tone="info" />
+            <KpiCard icon={AlertCircle} label="Sin gestión" value={fmtInt(clientes.sin_gestion)} tone="warn" />
           </div>
 
-          <div className="wv-grid wv-grid-12">
-            <Card
-              className="wv-col-8"
-              accent
-              title="Gestiones por día"
-              subtitle="Planeadas vs realizadas en el período"
-            >
-              {diaSeries.length ? (
+          <div className="wv-grid wv-grid-12" style={{ marginBottom: 24 }}>
+            <Card className="wv-col-8" accent title="Gestiones por día" subtitle="Planeadas vs realizadas">
+              {gestionesDia.length ? (
                 <AreaTrend
-                  data={diaSeries}
+                  data={gestionesDia}
                   xKey="label"
                   series={[
                     { key: 'planeadas', name: 'Planeadas', color: '#5AC8FA' },
@@ -91,47 +71,48 @@ export default function Inicio() {
                   valueFormatter={fmtInt}
                 />
               ) : (
-                <PlaceholderChart label="Sin datos de gestiones diarias en el período seleccionado" />
+                <Empty label="Sin datos de gestiones diarias en el período" />
               )}
             </Card>
 
-            <Card className="wv-col-4" title="Distribución por tipo" subtitle="Transacciones del período" accent>
-              {tipoData.length ? (
-                <Donut data={tipoData} formatter={fmtInt} centerLabel="Transacciones" />
+            <Card className="wv-col-4" title="Causales de visita" subtitle="% del total" accent>
+              {causales.length ? (
+                <Donut
+                  data={causales.map((c) => ({ name: c.cat, value: c.count }))}
+                  formatter={fmtInt}
+                  centerLabel="Visitas"
+                />
               ) : (
-                <PlaceholderChart label="Sin distribución por tipo disponible" />
+                <Empty label="Sin causales registradas" />
               )}
             </Card>
           </div>
+
+          {labor.length > 0 && (
+            <Card title="Gestiones por usuario" subtitle={`Top ${Math.min(labor.length, 20)} vendedores activos`} accent>
+              <BarsChart
+                data={labor.slice(0, 20).map((l) => ({ label: l.nombre, value: l.gestiones }))}
+                xKey="label"
+                yKey="value"
+                layout="horizontal"
+                color="#00E5FF"
+                valueFormatter={fmtInt}
+                height={Math.max(280, labor.slice(0, 20).length * 28)}
+              />
+            </Card>
+          )}
         </>
       )}
     </>
   );
 }
 
-function SectionHead({ title, sub, right }) {
-  return (
-    <div className="section-head">
-      <div>
-        <div className="crumb">Resumen ejecutivo</div>
-        <h1>{title}</h1>
-        {sub && <div style={{ fontSize: 13, color: 'var(--wv-text-muted)', marginTop: 4 }}>{sub}</div>}
-      </div>
-      {right}
-    </div>
-  );
-}
-
-function PlaceholderChart({ label }) {
+function Empty({ label }) {
   return (
     <div style={{
-      height: 240,
-      display: 'grid',
-      placeItems: 'center',
-      color: 'var(--wv-text-muted)',
-      fontSize: 13,
-      border: '1px dashed var(--wv-border)',
-      borderRadius: 12,
+      height: 240, display: 'grid', placeItems: 'center',
+      color: 'var(--wv-text-muted)', fontSize: 13,
+      border: '1px dashed var(--wv-border)', borderRadius: 12,
     }}>
       {label}
     </div>

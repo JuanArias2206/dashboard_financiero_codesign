@@ -1,12 +1,13 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import {
-  Activity, BarChart3, CalendarCheck2, CheckCircle, ListChecks, MapPin, TrendingUp,
+  Activity, CalendarCheck2, CheckCircle, ListChecks, MapPin, Clock,
+  Users, AlertCircle,
 } from 'lucide-react';
 import { Card, KpiCard, Loader, ErrorPanel, Segmented, EmptyState } from '../components/ui';
-import { AreaTrend, BarsChart, Donut, MultiLine } from '../components/charts/Charts';
+import { BarsChart, Donut, MultiLine } from '../components/charts/Charts';
 import { useFetch } from '../lib/useFetch';
 import { api } from '../lib/api';
-import { fmtInt, fmtCompact, fmtPct } from '../lib/format';
+import { fmtInt, fmtPct } from '../lib/format';
 
 const PERIODS = [
   { value: 'hoy', label: 'Hoy' },
@@ -19,12 +20,15 @@ export default function ResumenGestion() {
   const [period, setPeriod] = useState('mes');
   const { data, loading, error, reload } = useFetch(() => api.rsalesIndicators({ period }), [period]);
 
-  const ind = (data && (data.indicators || data)) || {};
-  const porDia = data?.porDia || data?.serieDiaria || [];
-  const acumulado = data?.acumulado || [];
-  const cumplimiento = data?.cumplimiento || data?.estadoAgendas || [];
-  const etapas = data?.etapas || data?.porEtapa || [];
+  const agendas = data?.agendas || {};
+  const clientes = data?.clientes || {};
+  const tiempos = data?.tiempos || {};
+  const labor = data?.labor || [];
+  const gestionesDia = data?.gestiones_dia || [];
   const causales = data?.causales || [];
+  const totalApps = data?.total_appointments ?? ((agendas.cumplidas || 0) + (agendas.vencidas || 0) + (agendas.pendientes || 0));
+  const tasaCumpl = totalApps > 0 ? (agendas.cumplidas / totalApps) * 100 : 0;
+  const periodLabel = data?.period?.label;
 
   return (
     <>
@@ -32,6 +36,9 @@ export default function ResumenGestion() {
         <div>
           <div className="crumb">RSales Analytics</div>
           <h1>Resumen Gestión Comercial</h1>
+          {periodLabel && (
+            <div style={{ fontSize: 12, color: 'var(--wv-text-muted)', marginTop: 4 }}>{periodLabel}</div>
+          )}
         </div>
         <Segmented options={PERIODS} value={period} onChange={setPeriod} />
       </div>
@@ -42,58 +49,67 @@ export default function ResumenGestion() {
       {!loading && data && (
         <>
           <div className="wv-grid wv-grid-kpis" style={{ marginBottom: 24 }}>
-            <KpiCard icon={ListChecks} label="Total agendas" value={fmtInt(ind.totalAgendas || ind.agendas)} tone="info" />
-            <KpiCard icon={CheckCircle} label="Cumplidas" value={fmtInt(ind.cumplidas)} tone="success" />
-            <KpiCard icon={CalendarCheck2} label="Tasa de cumplimiento" value={fmtPct(ind.tasaCumplimiento ?? 0)} tone="info" />
-            <KpiCard icon={MapPin} label="Visitas" value={fmtInt(ind.visitas)} tone="info" />
-            <KpiCard icon={TrendingUp} label="Ventas" value={fmtCompact(ind.ventasMonto)} tone="success" foot="Bs." />
-            <KpiCard icon={Activity} label="Transacciones" value={fmtInt(ind.transacciones)} tone="info" />
+            <KpiCard icon={ListChecks} label="Total agendas" value={fmtInt(totalApps)} tone="info" />
+            <KpiCard icon={CheckCircle} label="Cumplidas" value={fmtInt(agendas.cumplidas)} tone="success" />
+            <KpiCard icon={CalendarCheck2} label="Tasa cumplimiento" value={fmtPct(tasaCumpl)} tone="info" />
+            <KpiCard icon={Activity} label="Extraruta" value={fmtInt(agendas.extraruta)} tone="warn" />
+            <KpiCard icon={MapPin} label="Clientes gestionados" value={fmtInt(clientes.gestionados)} tone="info" />
+            <KpiCard icon={Users} label="Cobertura" value={fmtPct(clientes.pct ?? 0)} tone="info" />
+            <KpiCard icon={Clock} label="Hora inicio prom." value={tiempos.inicio || '—'} tone="info" />
+            <KpiCard icon={AlertCircle} label="Hora fin prom." value={tiempos.fin || '—'} tone="info" />
           </div>
 
           <div className="wv-grid wv-grid-12" style={{ marginBottom: 24 }}>
             <Card className="wv-col-8" title="Gestiones por día" subtitle="Planeadas vs realizadas" accent>
-              {porDia.length ? (
+              {gestionesDia.length ? (
                 <MultiLine
-                  data={porDia.map((d) => ({
-                    label: d.fecha || d.label,
-                    planeadas: d.planeadas ?? d.programadas ?? 0,
-                    realizadas: d.realizadas ?? d.cumplidas ?? 0,
+                  data={gestionesDia.map((d) => ({
+                    label: d.label,
+                    planeadas: d.planeadas,
+                    realizadas: d.realizadas,
                   }))}
                   series={[
                     { key: 'planeadas', name: 'Planeadas', color: '#5AC8FA', dashed: true },
                     { key: 'realizadas', name: 'Realizadas', color: '#00E5FF' },
                   ]}
+                  valueFormatter={fmtInt}
                 />
               ) : <EmptyState message="Sin datos diarios" />}
             </Card>
 
             <Card className="wv-col-4" title="Cumplimiento" subtitle="Estado de agendas" accent>
-              {cumplimiento.length ? (
+              {totalApps > 0 ? (
                 <Donut
-                  data={cumplimiento.map((c) => ({ name: c.estado || c.label, value: c.cantidad ?? c.value }))}
-                  colors={['#32D74B', '#FF453A', '#FFD60A', '#5AC8FA']}
+                  data={[
+                    { name: 'Cumplidas', value: agendas.cumplidas || 0 },
+                    { name: 'Vencidas', value: agendas.vencidas || 0 },
+                    { name: 'Pendientes', value: agendas.pendientes || 0 },
+                  ]}
+                  colors={['#32D74B', '#FF453A', '#FFD60A']}
                   formatter={fmtInt}
+                  centerLabel="Total"
                 />
               ) : <EmptyState message="Sin distribución" />}
             </Card>
           </div>
 
           <div className="wv-grid wv-grid-12" style={{ marginBottom: 24 }}>
-            <Card className="wv-col-6" title="Agendas por etapa" subtitle="Fuente: RSales" accent>
-              {etapas.length ? (
+            <Card className="wv-col-6" title="Gestiones por usuario" subtitle="Top 15 vendedores" accent>
+              {labor.length ? (
                 <BarsChart
-                  data={etapas.map((e) => ({ label: e.etapa || e.label, value: e.cantidad ?? e.value }))}
+                  data={labor.slice(0, 15).map((l) => ({ label: l.nombre, value: l.gestiones }))}
                   layout="horizontal"
                   color="#00E5FF"
                   valueFormatter={fmtInt}
+                  height={Math.max(280, labor.slice(0, 15).length * 28)}
                 />
-              ) : <EmptyState message="Sin etapas" />}
+              ) : <EmptyState message="Sin gestiones por usuario" />}
             </Card>
 
             <Card className="wv-col-6" title="Causales de visita" subtitle="% del total" accent>
               {causales.length ? (
                 <BarsChart
-                  data={causales.map((c) => ({ label: c.causal || c.label, value: c.porcentaje ?? c.value }))}
+                  data={causales.map((c) => ({ label: c.cat, value: c.pct }))}
                   layout="horizontal"
                   color="#BF5AF2"
                   valueFormatter={(v) => `${Math.round(v)}%`}
@@ -101,21 +117,6 @@ export default function ResumenGestion() {
               ) : <EmptyState message="Sin causales" />}
             </Card>
           </div>
-
-          {acumulado.length > 0 && (
-            <Card title="Gestiones acumuladas" subtitle="Evolución acumulada del período" accent>
-              <AreaTrend
-                data={acumulado.map((a) => ({
-                  label: a.fecha || a.label,
-                  acumulado: a.acumulado ?? a.total ?? 0,
-                }))}
-                xKey="label"
-                series={[{ key: 'acumulado', name: 'Acumulado', color: '#00E5FF' }]}
-                valueFormatter={fmtInt}
-                height={300}
-              />
-            </Card>
-          )}
         </>
       )}
     </>

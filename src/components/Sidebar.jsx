@@ -9,8 +9,8 @@ export default function Sidebar({ active, onSelect, user, onLogout, collapsed, o
           <Zap size={20} strokeWidth={2.5} />
         </div>
         <div className="sidebar-brand-text">
-          <span className="sidebar-brand-name">WattVision</span>
-          <span className="sidebar-brand-sub">ADATEC · v2.0</span>
+          <span className="sidebar-brand-name">ADATEC</span>
+          <span className="sidebar-brand-sub">Dashboard · v2.0</span>
         </div>
         <button
           className="wv-icon-btn"

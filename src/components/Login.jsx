@@ -28,8 +28,8 @@ export default function Login({ onSuccess }) {
         <div className="login-logo">
           <Zap size={28} strokeWidth={2.4} />
         </div>
-        <h1>WattVision Analytics</h1>
-        <div className="login-sub">Dashboard financiero · ADATEC</div>
+        <h1>Dashboard Financiero</h1>
+        <div className="login-sub">Análisis de Cartera · ADATEC</div>
 
         <form className="login-form" onSubmit={submit} autoComplete="on">
           <div>

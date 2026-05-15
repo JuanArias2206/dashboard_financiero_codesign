@@ -1,5 +1,6 @@
 // Minimal fetch wrapper around the existing Express backend.
 // Uses JWT in Authorization: Bearer <token> header, token stored in localStorage.
+// Most endpoints return { success: true, data: {...} } — we transparently unwrap that.
 
 const TOKEN_KEY = 'authToken';
 
@@ -14,7 +15,7 @@ export function setToken(t) {
   } catch {}
 }
 
-async function request(path, opts = {}) {
+async function request(path, opts = {}, { unwrap = true } = {}) {
   const headers = {
     'Content-Type': 'application/json',
     ...(opts.headers || {}),
@@ -25,16 +26,19 @@ async function request(path, opts = {}) {
   const res = await fetch(path, { ...opts, headers });
   const ct = res.headers.get('content-type') || '';
   const isJson = ct.includes('application/json');
-  const data = isJson ? await res.json() : await res.text();
+  const body = isJson ? await res.json() : await res.text();
   if (!res.ok) {
-    const msg = (isJson && data && (data.error || data.message)) || res.statusText;
+    const msg = (isJson && body && (body.error || body.message)) || res.statusText;
     const err = new Error(msg);
     err.status = res.status;
-    err.data = data;
+    err.data = body;
     if (res.status === 401) setToken(null);
     throw err;
   }
-  return data;
+  if (unwrap && body && typeof body === 'object' && 'success' in body && 'data' in body) {
+    return body.data;
+  }
+  return body;
 }
 
 export const api = {
@@ -42,26 +46,32 @@ export const api = {
     const res = await request('/api/login', {
       method: 'POST',
       body: JSON.stringify({ username, password }),
-    });
+    }, { unwrap: false });
     if (res?.token || res?.sessionId) setToken(res.token || res.sessionId);
     return { user: { username }, ...res };
   },
   async logout() {
-    try { await request('/api/logout', { method: 'POST' }); } catch {}
+    try { await request('/api/logout', { method: 'POST' }, { unwrap: false }); } catch {}
     setToken(null);
     return { ok: true };
   },
-  verify: () => request('/api/verify'),
-  health: () => request('/api/health'),
+  verify: () => request('/api/verify', {}, { unwrap: false }),
+  health: () => request('/api/health', {}, { unwrap: false }),
   dashboardData: () => request('/api/dashboard-data'),
   carteraData: () => request('/api/cartera-data'),
   rsalesIndicators: (params = {}) => {
     const q = new URLSearchParams(params).toString();
-    return request('/api/rsales-indicators' + (q ? `?${q}` : ''));
+    return request('/api/rsales-indicators' + (q ? `?${q}` : ''), {}, { unwrap: false });
   },
   inventario: () => request('/api/inventario'),
-  tiempos: () => request('/api/tiempos'),
-  pedidos: () => request('/api/pedidos'),
+  tiempos: (params = {}) => {
+    const q = new URLSearchParams(params).toString();
+    return request('/api/tiempos' + (q ? `?${q}` : ''));
+  },
+  pedidos: (params = {}) => {
+    const q = new URLSearchParams(params).toString();
+    return request('/api/pedidos' + (q ? `?${q}` : ''));
+  },
   chat: (message, history = []) =>
-    request('/api/chat', { method: 'POST', body: JSON.stringify({ message, history }) }),
+    request('/api/chat', { method: 'POST', body: JSON.stringify({ message, history }) }, { unwrap: false }),
 };

@@ -88,7 +88,7 @@ export default function Chatbot({ user }) {
             <Zap size={18} strokeWidth={2.5} />
           </div>
           <div>
-            <div style={{ fontSize: 14, fontWeight: 700 }}>WattVision Assistant</div>
+            <div style={{ fontSize: 14, fontWeight: 700 }}>Asistente Financiero</div>
             <div style={{ fontSize: 12, color: 'var(--wv-text-muted)', display: 'flex', gap: 6, alignItems: 'center' }}>
               <span className="wv-badge live" style={{ padding: '2px 8px', fontSize: 10 }}>EN VIVO</span>
               Conectado a datos de ADATEC
@@ -189,7 +189,7 @@ export default function Chatbot({ user }) {
           maxWidth: 820, margin: '8px auto 0',
           fontSize: 11, color: 'var(--wv-text-dim)', textAlign: 'center',
         }}>
-          WattVision Assistant puede cometer errores. Verifica información crítica con la fuente original.
+          El asistente puede cometer errores. Verifica información crítica con la fuente original.
         </div>
       </div>
     </div>
