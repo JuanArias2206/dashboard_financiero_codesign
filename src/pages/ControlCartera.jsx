@@ -134,7 +134,7 @@ export default function ControlCartera() {
           </div>
 
           <div className="wv-grid wv-grid-12" style={{ marginBottom: 24 }}>
-            <Card className="wv-col-6" title="Distribución por edad de cartera" subtitle="Buckets de mora · Bs." accent>
+            <Card className="wv-col-6" title="Distribución por edad de cartera" subtitle="Buckets de mora · $ COP" accent>
               {agingBI.length ? (
                 <BarsChart
                   data={agingBI.map((a) => ({ label: a.label, value: a.saldo }))}
@@ -173,7 +173,7 @@ export default function ControlCartera() {
                 }))}
                 xKey="label"
                 series={[
-                  { key: 'saldo', name: 'Saldo (Bs.)', color: '#00E5FF' },
+                  { key: 'saldo', name: 'Saldo ($)', color: '#00E5FF' },
                   { key: 'clientes', name: 'Clientes', color: '#BF5AF2' },
                 ]}
                 valueFormatter={fmtCompact}

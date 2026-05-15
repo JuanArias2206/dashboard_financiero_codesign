@@ -46,7 +46,7 @@ export default function Recaudos() {
                 <Donut
                   data={tipoDoc.map((t) => ({ name: t.label, value: t.saldo }))}
                   formatter={fmtCompact}
-                  centerLabel="Saldo Bs."
+                  centerLabel="Saldo $"
                 />
               ) : <EmptyState message="Sin tipos de documento" />}
             </Card>
@@ -84,7 +84,7 @@ export default function Recaudos() {
                   documentos: m.docs || 0,
                 }))}
                 series={[
-                  { key: 'saldo', name: 'Saldo Bs.', color: '#00E5FF' },
+                  { key: 'saldo', name: 'Saldo ($)', color: '#00E5FF' },
                   { key: 'documentos', name: 'Documentos', color: '#BF5AF2' },
                 ]}
                 valueFormatter={fmtCompact}

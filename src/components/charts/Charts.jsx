@@ -8,7 +8,7 @@ import {
   XAxis, YAxis,
   CartesianGrid, Tooltip, Legend,
 } from 'recharts';
-import { fmtCompact, fmtMoney } from '../../lib/format';
+import { fmtCompact, fmtMoney, fmtInt } from '../../lib/format';
 
 const ACCENT = '#00E5FF';
 const ACCENT_STRONG = '#00B8D4';
@@ -56,10 +56,13 @@ export const AreaTrend = memo(function AreaTrend({
   data, xKey = 'label', series = [{ key: 'value', name: 'Valor', color: ACCENT }],
   height = 320, valueFormatter = fmtCompact, suffix,
 }) {
+  // Multi-series with mixed scales (e.g. saldo en miles de millones + clientes en decenas)
+  // se renderiza con doble eje Y para que ambas curvas sean visibles.
+  const dualAxis = series.length === 2;
   return (
     <div className="chart-box" style={{ height }}>
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={data} margin={{ top: 12, right: 20, left: 0, bottom: 6 }}>
+        <AreaChart data={data} baseValue={0} margin={{ top: 12, right: dualAxis ? 50 : 20, left: 0, bottom: 6 }}>
           <defs>
             {series.map((s, i) => (
               <linearGradient key={s.key} id={`g-${s.key}-${i}`} x1="0" y1="0" x2="0" y2="1">
@@ -70,7 +73,23 @@ export const AreaTrend = memo(function AreaTrend({
           </defs>
           <CartesianGrid {...baseGrid} />
           <XAxis dataKey={xKey} {...axisCfg} />
-          <YAxis tickFormatter={valueFormatter} {...axisCfg} width={56} />
+          <YAxis
+            yAxisId="left"
+            tickFormatter={valueFormatter}
+            {...axisCfg}
+            width={70}
+            domain={[0, 'auto']}
+          />
+          {dualAxis && (
+            <YAxis
+              yAxisId="right"
+              orientation="right"
+              tickFormatter={fmtInt}
+              {...axisCfg}
+              width={55}
+              domain={[0, 'auto']}
+            />
+          )}
           <Tooltip content={<TooltipBox valueFormatter={valueFormatter} suffix={suffix} />} cursor={{ stroke: '#3A3A3C', strokeDasharray: '3 3' }} />
           {series.length > 1 && (
             <Legend verticalAlign="top" align="right" iconType="circle" wrapperStyle={{ paddingBottom: 8, fontSize: 12, color: '#98989D' }} />
@@ -78,9 +97,10 @@ export const AreaTrend = memo(function AreaTrend({
           {series.map((s, i) => (
             <Area
               key={s.key}
+              yAxisId={dualAxis ? (i === 0 ? 'left' : 'right') : 'left'}
               dataKey={s.key}
               name={s.name || s.key}
-              type="monotone"
+              type="linear"
               stroke={s.color || ACCENT}
               strokeWidth={2.4}
               fill={`url(#g-${s.key}-${i})`}
@@ -95,7 +115,7 @@ export const AreaTrend = memo(function AreaTrend({
 
 /* ────────── Multi-line ────────── */
 export const MultiLine = memo(function MultiLine({
-  data, xKey = 'label', series, height = 320, valueFormatter = fmtCompact,
+  data, xKey = 'label', series, height = 320, valueFormatter = fmtCompact, allowNegative = false,
 }) {
   return (
     <div className="chart-box" style={{ height }}>
@@ -103,7 +123,13 @@ export const MultiLine = memo(function MultiLine({
         <LineChart data={data} margin={{ top: 12, right: 20, left: 0, bottom: 6 }}>
           <CartesianGrid {...baseGrid} />
           <XAxis dataKey={xKey} {...axisCfg} />
-          <YAxis tickFormatter={valueFormatter} {...axisCfg} width={56} />
+          <YAxis
+            tickFormatter={valueFormatter}
+            {...axisCfg}
+            width={64}
+            domain={allowNegative ? ['auto', 'auto'] : [0, 'auto']}
+            allowDataOverflow={false}
+          />
           <Tooltip content={<TooltipBox valueFormatter={valueFormatter} />} cursor={{ stroke: '#3A3A3C', strokeDasharray: '3 3' }} />
           <Legend verticalAlign="top" align="right" iconType="circle" wrapperStyle={{ paddingBottom: 8, fontSize: 12, color: '#98989D' }} />
           {series.map((s) => (
@@ -117,6 +143,7 @@ export const MultiLine = memo(function MultiLine({
               dot={false}
               activeDot={{ r: 5, stroke: '#121212', strokeWidth: 2 }}
               strokeDasharray={s.dashed ? '6 4' : undefined}
+              connectNulls
             />
           ))}
         </LineChart>
@@ -143,13 +170,13 @@ export const BarsChart = memo(function BarsChart({
           <CartesianGrid {...baseGrid} vertical={horizontal} horizontal={!horizontal} />
           {horizontal ? (
             <>
-              <XAxis type="number" tickFormatter={valueFormatter} {...axisCfg} />
-              <YAxis dataKey={xKey} type="category" {...axisCfg} width={150} />
+              <XAxis type="number" tickFormatter={valueFormatter} {...axisCfg} domain={[0, 'auto']} />
+              <YAxis dataKey={xKey} type="category" {...axisCfg} width={150} interval={0} />
             </>
           ) : (
             <>
               <XAxis dataKey={xKey} {...axisCfg} />
-              <YAxis tickFormatter={valueFormatter} {...axisCfg} width={56} />
+              <YAxis tickFormatter={valueFormatter} {...axisCfg} width={64} domain={[0, 'auto']} />
             </>
           )}
           <Tooltip content={<TooltipBox valueFormatter={valueFormatter} />} cursor={{ fill: 'rgba(0,229,255,0.06)' }} />

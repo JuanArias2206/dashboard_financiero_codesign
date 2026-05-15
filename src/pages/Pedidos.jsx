@@ -67,7 +67,7 @@ export default function Pedidos() {
                 <Donut
                   data={tipoTrans.map((p) => ({ name: p.tipo, value: p.total }))}
                   formatter={fmtCompact}
-                  centerLabel="Bs."
+                  centerLabel="$"
                 />
               ) : <EmptyState message="Sin tipos" />}
             </Card>
@@ -93,7 +93,7 @@ export default function Pedidos() {
                   transacciones: s.tx,
                 }))}
                 series={[
-                  { key: 'ventas', name: 'Ventas (Bs.)', color: '#00E5FF' },
+                  { key: 'ventas', name: 'Ventas ($)', color: '#00E5FF' },
                   { key: 'transacciones', name: 'Transacciones', color: '#32D74B' },
                 ]}
                 layout="horizontal"
@@ -133,7 +133,7 @@ export default function Pedidos() {
             <Card title="Evolución mensual de ventas" accent style={{ marginBottom: 24 }}>
               <AreaTrend
                 data={evolucion.map((m) => ({ label: m.mes, ventas: m.total }))}
-                series={[{ key: 'ventas', name: 'Ventas Bs.', color: '#00E5FF' }]}
+                series={[{ key: 'ventas', name: 'Ventas ($)', color: '#00E5FF' }]}
                 valueFormatter={fmtCompact}
               />
             </Card>

@@ -110,21 +110,32 @@ export default function Inventario() {
           )}
 
           {porBodega.length > 0 && (
-            <Card title="Productos por bodega" subtitle="Distribución y disponibilidad" accent style={{ marginBottom: 24 }}>
-              <BarsChart
-                data={porBodega.map((b) => ({
-                  label: b.bodega,
-                  disponible: b.si,
-                  agotado: b.no,
-                }))}
-                series={[
-                  { key: 'disponible', name: 'Disponible', color: '#00E5FF' },
-                  { key: 'agotado', name: 'Agotado', color: '#FF453A' },
-                ]}
-                stacked
-                valueFormatter={fmtInt}
-                height={Math.max(280, porBodega.length * 30)}
-              />
+            <Card title="Productos por bodega" subtitle="Top 20 bodegas por volumen · disponibilidad" accent style={{ marginBottom: 24 }}>
+              {(() => {
+                const sorted = [...porBodega].sort((a, b) => (b.si + b.no) - (a.si + a.no));
+                const top = sorted.slice(0, 20);
+                const rest = sorted.slice(20);
+                const others = rest.length
+                  ? [{ bodega: `Otros (${rest.length})`, si: rest.reduce((s, r) => s + r.si, 0), no: rest.reduce((s, r) => s + r.no, 0) }]
+                  : [];
+                const data = [...top, ...others];
+                return (
+                  <BarsChart
+                    data={data.map((b) => ({
+                      label: b.bodega,
+                      disponible: b.si,
+                      agotado: b.no,
+                    }))}
+                    series={[
+                      { key: 'disponible', name: 'Disponible', color: '#00E5FF' },
+                      { key: 'agotado', name: 'Agotado', color: '#FF453A' },
+                    ]}
+                    stacked
+                    valueFormatter={fmtInt}
+                    height={Math.max(360, data.length * 28)}
+                  />
+                );
+              })()}
             </Card>
           )}
 
