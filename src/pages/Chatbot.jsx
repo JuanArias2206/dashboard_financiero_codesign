@@ -43,12 +43,15 @@ export default function Chatbot({ user }) {
     if (!content || sending) return;
     setError('');
     setInput('');
-    const next = [...msgs, { role: 'user', content }];
+    const prevMsgs = msgs;
+    const next = [...prevMsgs, { role: 'user', content }];
     setMsgs(next);
     setSending(true);
     try {
-      const res = await api.chat(content, next);
-      setMsgs((m) => [...m, { role: 'assistant', content: res?.reply || res?.message || '…' }]);
+      // Pass prevMsgs as history — server adds the new user message itself
+      const res = await api.chat(content, prevMsgs);
+      const reply = res?.response || res?.reply || res?.message || '…';
+      setMsgs((m) => [...m, { role: 'assistant', content: reply }]);
     } catch (e) {
       setError(e.message || 'No se pudo enviar el mensaje');
       setMsgs((m) => m.slice(0, -1));

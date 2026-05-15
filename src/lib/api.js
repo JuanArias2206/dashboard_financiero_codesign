@@ -72,6 +72,6 @@ export const api = {
     const q = new URLSearchParams(params).toString();
     return request('/api/pedidos' + (q ? `?${q}` : ''));
   },
-  chat: (message, history = []) =>
-    request('/api/chat', { method: 'POST', body: JSON.stringify({ message, history }) }, { unwrap: false }),
+  chat: (message, conversationHistory = []) =>
+    request('/api/chat', { method: 'POST', body: JSON.stringify({ message, conversationHistory }) }, { unwrap: false }),
 };
